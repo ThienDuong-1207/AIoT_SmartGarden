@@ -1,3 +1,13 @@
+# Testing & Configuration
+
+This document contains testing notes and miscellaneous configuration snippets.
+
+---
+
+## 1. Firebase Configuration
+*(Source: Test.md)*
+
+```javascript
 # Cấu hình của Firebase
 npm install firebase
 
@@ -22,4 +32,4 @@ const firebaseConfig = {
 // Initialize Firebase
 const app = initializeApp(firebaseConfig);
 const analytics = getAnalytics(app);
-
+```
