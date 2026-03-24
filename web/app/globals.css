@@ -1,0 +1,829 @@
+@import "tailwindcss";
+
+/* ============================================================
+   DESIGN TOKENS — Dark Luxury Theme
+   AIoT SmartGarden
+   ============================================================ */
+:root {
+  /* --- Background Hierarchy — Cyber Galaxy Black --- */
+  --bg-base:        #000000;   /* nền chính — absolute black */
+  --bg-elevated:    #030303;   /* card, panel level 1 */
+  --bg-overlay:     #050505;   /* dropdown, modal, level 2 */
+  --bg-subtle:      #020202;   /* sidebar, muted section */
+
+  /* --- Border — Cyber Cyan tint --- */
+  --border-subtle:  rgba(6, 182, 212, 0.07);
+  --border-normal:  rgba(6, 182, 212, 0.12);
+  --border-strong:  rgba(6, 182, 212, 0.22);
+  --border-cyan:    rgba(6, 182, 212, 0.35);
+  --border-gold:    rgba(245, 158, 11, 0.30);
+
+  /* --- Brand: Vibrant Cyber Cyan (Primary) --- */
+  --cyan-500:       #06B6D4;
+  --cyan-400:       #22D3EE;
+  --cyan-600:       #0891B2;
+  --cyan-glow:      rgba(6, 182, 212, 0.25);
+  --cyan-glow-sm:   rgba(6, 182, 212, 0.12);
+
+  /* --- Brand: Gold / Amber (Premium Accent) --- */
+  --gold-400:       #FBBF24;
+  --gold-500:       #F59E0B;
+  --gold-600:       #D97706;
+  --gold-glow:      rgba(245, 158, 11, 0.15);
+
+  /* --- Brand: Blue (Info / Secondary) --- */
+  --blue-400:       #60A5FA;
+  --blue-500:       #3B82F6;
+  --blue-glow:      rgba(59, 130, 246, 0.15);
+
+  /* --- Text Hierarchy --- */
+  --text-primary:   #FFFFFF;   /* headings, main content */
+  --text-secondary: #D4D4D8;   /* sub-labels, descriptions */
+  --text-muted:     #71717A;   /* placeholders, disabled */
+  --text-cyan:      #22D3EE;
+  --text-gold:      #FBBF24;
+
+  /* --- Semantic --- */
+  --success:        #06B6D4;   /* unified to cyan for aesthetic */
+  --warning:        #F59E0B;
+  --danger:         #EF4444;
+  --danger-glow:    rgba(239, 68, 68, 0.12);
+  --info:           #3B82F6;
+
+  /* --- Shadow / Glow --- */
+  --shadow-card:    0 2px 8px rgba(0, 0, 0, 0.5), 0 0 0 1px rgba(6, 182, 212, 0.08); /* cyan */
+  --shadow-elevated:0 12px 40px rgba(0, 0, 0, 0.8);
+  --glow-cyan:      0 0 32px rgba(6, 182, 212, 0.2), 0 0 64px rgba(6, 182, 212, 0.1);
+  --glow-gold:      0 0 24px rgba(245, 158, 11, 0.15), 0 0 48px rgba(245, 158, 11, 0.06);
+
+  /* --- Radius --- */
+  --radius-sm:      6px;
+  --radius-md:      10px;
+  --radius-lg:      16px;
+  --radius-xl:      24px;
+
+  /* --- Font stacks --- */
+  --font-sans:      var(--font-manrope), "Inter", "Segoe UI", sans-serif;
+  --font-mono:      var(--font-geist-mono), "JetBrains Mono", "Fira Code", monospace;
+
+  /* Legacy compat */
+  --background:     var(--bg-base);
+  --foreground:     var(--text-primary);
+}
+
+/* ============================================================
+   TAILWIND THEME BRIDGE
+   ============================================================ */
+@theme inline {
+  --color-background: var(--bg-base);
+  --color-foreground: var(--text-primary);
+  --font-sans:        var(--font-manrope);
+  --font-serif:       var(--font-playfair);
+  --font-mono:        var(--font-geist-mono);
+}
+
+/* ============================================================
+   BASE RESET
+   ============================================================ */
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+html {
+  scroll-behavior: smooth;
+  -webkit-text-size-adjust: 100%;
+}
+
+body {
+  background: var(--bg-base);
+  color: var(--text-primary);
+  font-family: var(--font-sans);
+  min-height: 100vh;
+  line-height: 1.6;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+/* ============================================================
+   TYPOGRAPHY
+   ============================================================ */
+h1, h2, h3, h4, h5, h6 {
+  font-family: var(--font-sans);
+  font-weight: 700;
+  letter-spacing: -0.025em;
+  color: var(--text-primary);
+  line-height: 1.2;
+}
+
+h1 { font-size: clamp(2rem, 5vw, 3.5rem); }
+h2 { font-size: clamp(1.5rem, 3vw, 2.25rem); }
+h3 { font-size: clamp(1.125rem, 2vw, 1.5rem); }
+
+p {
+  color: var(--text-secondary);
+  line-height: 1.7;
+}
+
+a {
+  color: var(--text-primary);
+  text-decoration: none;
+  transition: color 0.15s ease;
+}
+
+a:hover {
+  color: var(--emerald-400);
+}
+
+code, pre, kbd {
+  font-family: var(--font-mono);
+}
+
+/* ============================================================
+   DARK SCROLLBAR
+   ============================================================ */
+::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+
+::-webkit-scrollbar-track {
+  background: var(--bg-base);
+}
+
+::-webkit-scrollbar-thumb {
+  background: rgba(255, 255, 255, 0.10);
+  border-radius: 999px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: rgba(255, 255, 255, 0.18);
+}
+
+/* ============================================================
+   UTILITY: CARDS & PANELS
+   ============================================================ */
+
+/* Card cơ bản — HUD crystal clear glass */
+.dark-card {
+  background: rgba(0, 0, 0, 0.2);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  border: 1px solid rgba(34, 211, 238, 0.2);
+  border-radius: var(--radius-xl);
+  transition: all 0.3s ease;
+  animation: border-breathe 4s ease-in-out infinite;
+  position: relative;
+}
+
+.dark-card:hover {
+  border-color: rgba(6, 182, 212, 0.4);
+  box-shadow: 0 0 24px rgba(6, 182, 212, 0.15);
+  transform: translateY(-3px);
+  background: rgba(0, 0, 0, 0.3);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  border: 1px solid rgba(34, 211, 238, 0.3);
+}
+
+/* Card nâng cao (overlay level) */
+.dark-card-overlay {
+  background: rgba(0, 0, 0, 0.5);
+  backdrop-filter: blur(15px);
+  -webkit-backdrop-filter: blur(15px);
+  border: 1px solid rgba(6, 182, 212, 0.15);
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-elevated);
+  animation: border-breathe 4s ease-in-out infinite;
+}
+
+/* Glass panel */
+.glass-panel {
+  background: rgba(0, 0, 0, 0.2);
+  border: 1px solid rgba(6, 182, 212, 0.1);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+}
+
+/* Luxury panel (now Cyber transparent panel) */
+.lux-panel {
+  background: rgba(6, 182, 212, 0.015);
+  backdrop-filter: blur(15px);
+  -webkit-backdrop-filter: blur(15px);
+  border: 1px solid rgba(6, 182, 212, 0.2);
+  border-radius: var(--radius-xl);
+  box-shadow: var(--glow-cyan), var(--shadow-elevated);
+  animation: border-breathe 4s ease-in-out infinite;
+}
+
+.lux-panel:hover {
+  border-color: rgba(6, 182, 212, 0.5);
+  box-shadow: 0 0 28px rgba(6, 182, 212, 0.25);
+  background: rgba(6, 182, 212, 0.04);
+}
+
+@keyframes border-breathe {
+  0%, 100% { border-color: rgba(6, 182, 212, 0.12); }
+  50% { border-color: rgba(6, 182, 212, 0.30); box-shadow: 0 0 12px rgba(6, 182, 212, 0.1); }
+  100% {
+    box-shadow: 0 0 10px rgba(6, 182, 212, 0.4);
+    border-color: rgba(6, 182, 212, 0.15);
+  }
+}
+
+@keyframes glitch-materialize {
+  0% { opacity: 0; filter: contrast(1) blur(10px) drop-shadow(0 0 0 rgba(34,211,238,0)); transform: skewX(0); }
+  5% { opacity: 0.8; filter: contrast(2) brightness(1.5); transform: skewX(-15deg); }
+  10% { opacity: 0; }
+  15% { opacity: 1; filter: contrast(1.5) brightness(1.2); transform: skewX(10deg); }
+  20% { opacity: 0.2; transform: skewX(0); }
+  25% { opacity: 1; filter: contrast(1) blur(0px); }
+  100% { opacity: 1; }
+}
+
+@keyframes dashed-scan {
+  0% { opacity: 0; transform: scale(0.95); }
+  10% { opacity: 1; transform: scale(1); }
+  85% { opacity: 1; }
+  100% { opacity: 0; transform: scale(1.02); }
+}
+
+/* Animations that will be used by Tailwind arbitrary classes if needed,
+   but it's better to export them as utility classes. */
+.animate-glitch-in {
+  animation: glitch-materialize 0.5s cubic-bezier(0.25, 0.46, 0.45, 0.94) forwards;
+  opacity: 0;
+}
+.animate-dashed-scan {
+  animation: dashed-scan 0.6s cubic-bezier(0.25, 0.46, 0.45, 0.94) forwards;
+  opacity: 0;
+}
+
+/* Stat card — metric numbers */
+.stat-card {
+  background: rgba(255, 255, 255, 0.01);
+  backdrop-filter: blur(15px);
+  -webkit-backdrop-filter: blur(15px);
+  border: 1px solid rgba(6, 182, 212, 0.15);
+  border-radius: var(--radius-lg);
+  padding: 1.25rem 1.5rem;
+  transition: all 0.3s ease;
+}
+
+.stat-card:hover {
+  border-color: rgba(6, 182, 212, 0.35);
+  box-shadow: 0 0 16px rgba(6, 182, 212, 0.1);
+}
+
+@keyframes border-breathe {
+  0%, 100% { border-color: rgba(6, 182, 212, 0.12); }
+  50% { border-color: rgba(6, 182, 212, 0.30); box-shadow: 0 0 12px rgba(6, 182, 212, 0.1); }
+}
+
+/* ============================================================
+   UTILITY: BUTTONS
+   ============================================================ */
+
+/* Primary — Cyan gradient */
+.btn-cyan {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  padding: 0.625rem 1.25rem;
+  background: linear-gradient(135deg, var(--cyan-500), var(--cyan-600));
+  color: #fff;
+  font-weight: 600;
+  font-size: 0.875rem;
+  border-radius: var(--radius-md);
+  border: none;
+  cursor: pointer;
+  transition: filter 0.15s ease, transform 0.1s ease, box-shadow 0.15s ease;
+  white-space: nowrap;
+}
+
+.btn-cyan:hover {
+  filter: brightness(1.10);
+  box-shadow: 0 0 28px rgba(6, 182, 212, 0.45);
+}
+
+.btn-cyan:active {
+  transform: scale(0.97);
+}
+
+/* Ghost — transparent with border */
+.btn-ghost {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  padding: 0.625rem 1.25rem;
+  background: transparent;
+  color: var(--text-primary);
+  font-weight: 500;
+  font-size: 0.875rem;
+  border-radius: var(--radius-md);
+  border: 1px solid var(--border-normal);
+  cursor: pointer;
+  transition: background 0.15s ease, border-color 0.15s ease, transform 0.1s ease;
+  white-space: nowrap;
+}
+
+.btn-ghost:hover {
+  background: rgba(255, 255, 255, 0.04);
+  border-color: var(--border-strong);
+}
+
+.btn-ghost:active {
+  transform: scale(0.97);
+}
+
+/* Gold CTA — premium action */
+.btn-gold {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  padding: 0.625rem 1.25rem;
+  background: linear-gradient(135deg, var(--gold-500), var(--gold-600));
+  color: #000;
+  font-weight: 700;
+  font-size: 0.875rem;
+  border-radius: var(--radius-md);
+  border: none;
+  cursor: pointer;
+  transition: filter 0.15s ease, transform 0.1s ease, box-shadow 0.15s ease;
+  white-space: nowrap;
+}
+
+.btn-gold:hover {
+  filter: brightness(1.1);
+  box-shadow: 0 0 20px rgba(245, 158, 11, 0.35);
+}
+
+.btn-gold:active {
+  transform: scale(0.97);
+}
+
+/* Danger button */
+.btn-danger {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  padding: 0.625rem 1.25rem;
+  background: transparent;
+  color: var(--danger);
+  font-weight: 500;
+  font-size: 0.875rem;
+  border-radius: var(--radius-md);
+  border: 1px solid rgba(239, 68, 68, 0.30);
+  cursor: pointer;
+  transition: background 0.15s ease, transform 0.1s ease;
+  white-space: nowrap;
+}
+
+.btn-danger:hover {
+  background: var(--danger-glow);
+}
+
+.btn-danger:active {
+  transform: scale(0.97);
+}
+
+/* Icon button */
+.btn-icon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 2.25rem;
+  height: 2.25rem;
+  background: transparent;
+  color: var(--text-secondary);
+  border-radius: var(--radius-md);
+  border: 1px solid var(--border-subtle);
+  cursor: pointer;
+  transition: color 0.15s ease, background 0.15s ease, border-color 0.15s ease;
+}
+
+.btn-icon:hover {
+  color: var(--text-primary);
+  background: rgba(255, 255, 255, 0.04);
+  border-color: var(--border-normal);
+}
+
+/* ============================================================
+   UTILITY: FORM INPUTS
+   ============================================================ */
+.dark-input {
+  width: 100%;
+  padding: 0.625rem 0.875rem;
+  background: rgba(255, 255, 255, 0.03);
+  color: var(--text-primary);
+  font-size: 0.875rem;
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-md);
+  outline: none;
+  transition: border-color 0.15s ease, box-shadow 0.15s ease;
+}
+
+.dark-input::placeholder {
+  color: var(--text-muted);
+}
+
+.dark-input:focus {
+  border-color: rgba(16, 185, 129, 0.50);
+  box-shadow: 0 0 0 3px rgba(16, 185, 129, 0.10);
+}
+
+.dark-input:disabled {
+  opacity: 0.4;
+  cursor: not-allowed;
+}
+
+/* Input error state */
+.dark-input.error {
+  border-color: rgba(239, 68, 68, 0.50);
+  box-shadow: 0 0 0 3px rgba(239, 68, 68, 0.10);
+}
+
+/* Input success state */
+.dark-input.success {
+  border-color: rgba(16, 185, 129, 0.50);
+}
+
+/* Label */
+.dark-label {
+  display: block;
+  font-size: 0.8125rem;
+  font-weight: 500;
+  color: var(--text-secondary);
+  margin-bottom: 0.375rem;
+}
+
+/* Select */
+.dark-select {
+  width: 100%;
+  padding: 0.625rem 2rem 0.625rem 0.875rem;
+  background: rgba(255, 255, 255, 0.03);
+  color: var(--text-primary);
+  font-size: 0.875rem;
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-md);
+  outline: none;
+  appearance: none;
+  cursor: pointer;
+  transition: border-color 0.15s ease;
+}
+
+.dark-select:focus {
+  border-color: rgba(16, 185, 129, 0.50);
+  box-shadow: 0 0 0 3px rgba(16, 185, 129, 0.10);
+}
+
+/* ============================================================
+   UTILITY: BADGES
+   ============================================================ */
+.badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.25rem;
+  padding: 0.1875rem 0.625rem;
+  font-size: 0.75rem;
+  font-weight: 600;
+  border-radius: 999px;
+  white-space: nowrap;
+}
+
+.badge-emerald {
+  background: rgba(16, 185, 129, 0.12);
+  color: var(--emerald-400);
+  border: 1px solid rgba(16, 185, 129, 0.20);
+}
+
+.badge-gold {
+  background: rgba(245, 158, 11, 0.12);
+  color: var(--gold-400);
+  border: 1px solid rgba(245, 158, 11, 0.20);
+}
+
+.badge-blue {
+  background: rgba(59, 130, 246, 0.12);
+  color: var(--blue-400);
+  border: 1px solid rgba(59, 130, 246, 0.20);
+}
+
+.badge-red {
+  background: rgba(239, 68, 68, 0.12);
+  color: #F87171;
+  border: 1px solid rgba(239, 68, 68, 0.20);
+}
+
+.badge-slate {
+  background: rgba(255, 255, 255, 0.06);
+  color: var(--text-secondary);
+  border: 1px solid var(--border-subtle);
+}
+
+/* ============================================================
+   UTILITY: DIVIDERS
+   ============================================================ */
+
+/* Đường kẻ ngang mờ */
+.divider {
+  width: 100%;
+  height: 1px;
+  background: var(--border-subtle);
+}
+
+/* Đường kẻ có ánh emerald ở giữa */
+.divider-glow {
+  width: 100%;
+  height: 1px;
+  background: linear-gradient(90deg, transparent, var(--border-emerald), transparent);
+}
+
+/* Mesh divider (dùng ::after pseudo) */
+.mesh-divider {
+  position: relative;
+}
+
+.mesh-divider::after {
+  content: "";
+  position: absolute;
+  inset: auto 0 -1px;
+  height: 1px;
+  background: linear-gradient(90deg, transparent, rgba(16, 185, 129, 0.30), transparent);
+}
+
+/* ============================================================
+   UTILITY: ONLINE / STATUS INDICATORS
+   ============================================================ */
+.status-dot {
+  display: inline-block;
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  flex-shrink: 0;
+}
+
+.status-online {
+  background: var(--emerald-500);
+  box-shadow: 0 0 0 2px rgba(16, 185, 129, 0.20);
+  animation: pulseDot 2s ease-in-out infinite;
+}
+
+.status-offline {
+  background: #3F3F46;
+}
+
+.status-warning {
+  background: var(--gold-500);
+  box-shadow: 0 0 0 2px rgba(245, 158, 11, 0.20);
+}
+
+/* ============================================================
+   UTILITY: ALERT ROWS (Dashboard)
+   ============================================================ */
+.alert-row {
+  display: flex;
+  align-items: flex-start;
+  gap: 0.75rem;
+  padding: 0.875rem 1rem;
+  border-radius: var(--radius-md);
+  border-left: 3px solid transparent;
+}
+
+.alert-row-warning {
+  background: rgba(245, 158, 11, 0.06);
+  border-left-color: var(--gold-500);
+}
+
+.alert-row-danger {
+  background: rgba(239, 68, 68, 0.06);
+  border-left-color: var(--danger);
+}
+
+.alert-row-info {
+  background: rgba(59, 130, 246, 0.06);
+  border-left-color: var(--blue-500);
+}
+
+.alert-row-success {
+  background: rgba(16, 185, 129, 0.06);
+  border-left-color: var(--emerald-500);
+}
+
+/* ============================================================
+   UTILITY: MISC
+   ============================================================ */
+
+/* Skeleton loading */
+.skeleton {
+  background: linear-gradient(
+    90deg,
+    rgba(255, 255, 255, 0.04) 25%,
+    rgba(255, 255, 255, 0.08) 50%,
+    rgba(255, 255, 255, 0.04) 75%
+  );
+  background-size: 200% 100%;
+  animation: shimmer 1.5s infinite;
+  border-radius: var(--radius-md);
+}
+
+/* Section spacing */
+.section-gap {
+  padding-top: 5rem;
+  padding-bottom: 5rem;
+}
+
+/* Container max-width */
+.container-app {
+  width: 100%;
+  max-width: 1280px;
+  margin-inline: auto;
+  padding-inline: 1.5rem;
+}
+
+/* Gradient text */
+.text-gradient-cyan {
+  background: linear-gradient(135deg, #67E8F9 0%, #22D3EE 50%, #06B6D4 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+.text-gradient-gold {
+  background: linear-gradient(135deg, var(--gold-400), var(--gold-500));
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+.text-gradient-hero {
+  background: linear-gradient(135deg, #A5F3FC 0%, #22D3EE 45%, #06B6D4 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+/* Noise texture overlay (optional for sections) */
+.noise-overlay {
+  position: relative;
+}
+
+.noise-overlay::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.03'/%3E%3C/svg%3E");
+  pointer-events: none;
+  z-index: 0;
+}
+
+/* ============================================================
+   HOVER UTILITY CLASSES (dùng cho Server Components — không dùng event handlers)
+   ============================================================ */
+
+/* Link màu muted → secondary khi hover */
+.link-muted {
+  color: var(--text-muted);
+  transition: color 0.15s ease;
+}
+.link-muted:hover { color: var(--text-secondary); }
+
+/* Link màu secondary → emerald khi hover */
+.link-emerald {
+  color: var(--text-secondary);
+  transition: color 0.15s ease;
+}
+.link-emerald:hover { color: var(--emerald-400); }
+
+/* Link màu muted → emerald khi hover */
+.link-muted-emerald {
+  color: var(--text-muted);
+  transition: color 0.15s ease;
+}
+.link-muted-emerald:hover { color: var(--emerald-400); }
+
+/* Card hover — border + glow (pure CSS, không cần JS) */
+.card-hover {
+  transition: border-color 0.2s ease, box-shadow 0.2s ease, transform 0.15s ease;
+}
+.card-hover:hover {
+  border-color: var(--border-emerald);
+  box-shadow: var(--shadow-card), var(--glow-emerald);
+  transform: translateY(-2px);
+}
+
+/* ============================================================
+   ANIMATIONS
+   ============================================================ */
+@keyframes fadeUp {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to   { opacity: 1; }
+}
+
+@keyframes slideInLeft {
+  from {
+    opacity: 0;
+    transform: translateX(-16px);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+@keyframes slideInRight {
+  from {
+    opacity: 0;
+    transform: translateX(16px);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+@keyframes softFloat {
+  0%, 100% { transform: translateY(0px); }
+  50%       { transform: translateY(-8px); }
+}
+
+@keyframes pulseDot {
+  0%, 100% { box-shadow: 0 0 0 2px rgba(16, 185, 129, 0.20); }
+  50%       { box-shadow: 0 0 0 5px rgba(16, 185, 129, 0.08); }
+}
+
+@keyframes shimmer {
+  from { background-position: 200% 0; }
+  to   { background-position: -200% 0; }
+}
+
+@keyframes glowPulse {
+  0%, 100% { box-shadow: 0 0 12px rgba(16, 185, 129, 0.15); }
+  50%       { box-shadow: 0 0 28px rgba(16, 185, 129, 0.30); }
+}
+
+@keyframes scaleIn {
+  from {
+    opacity: 0;
+    transform: scale(0.95);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+/* Animation utility classes */
+.animate-fade-up      { animation: fadeUp 600ms ease both; }
+.animate-fade-in      { animation: fadeIn 400ms ease both; }
+.animate-slide-left   { animation: slideInLeft 400ms ease both; }
+.animate-slide-right  { animation: slideInRight 400ms ease both; }
+.animate-soft-float   { animation: softFloat 6s ease-in-out infinite; }
+.animate-glow-pulse   { animation: glowPulse 3s ease-in-out infinite; }
+.animate-scale-in     { animation: scaleIn 300ms ease both; }
+
+/* Staggered delay helpers */
+.delay-100 { animation-delay: 100ms; }
+.delay-200 { animation-delay: 200ms; }
+.delay-300 { animation-delay: 300ms; }
+.delay-400 { animation-delay: 400ms; }
+.delay-500 { animation-delay: 500ms; }
+.delay-600 { animation-delay: 600ms; }
+
+/* Scan line animation (dùng trong BentoGrid Vision AI card) */
+@keyframes scanDown {
+  0%   { top: 8%;  opacity: 0.8; }
+  48%  { opacity: 0.8; }
+  50%  { top: 88%; opacity: 0; }
+  51%  { top: 8%;  opacity: 0; }
+  55%  { opacity: 0.8; }
+  100% { top: 88%; opacity: 0.8; }
+}
+.animate-scan-down {
+  animation: scanDown 3s linear infinite;
+}
+
+/* Draw SVG line (stroke-dashoffset trick) */
+@keyframes drawLine {
+  from { stroke-dashoffset: 400; }
+  to   { stroke-dashoffset: 0; }
+}
+.animate-draw-line {
+  animation: drawLine 1.4s ease forwards;
+}
