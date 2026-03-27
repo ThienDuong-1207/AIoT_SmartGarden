@@ -46,6 +46,7 @@ function VisionMockup({ visible }: { visible: boolean }) {
           src="/images/chaucay.webp"
           alt="Vision Target"
           fill
+          sizes="(max-width: 768px) 100vw, 50vw"
           className="object-cover"
           style={{
             filter: "grayscale(100%) brightness(0.8) sepia(100%) hue-rotate(140deg) saturate(200%)",
@@ -294,18 +295,12 @@ function NotificationStack() {
    Main component
 ───────────────────────────────────── */
 export default function BentoGrid() {
-  const containerRef = useRef<HTMLElement>(null);
   const [revealed, setRevealed] = useState(false);
 
-  useEffect(() => {
-    // Empty: Master Timeline will scrub DOM directly using classes
-  }, []);
-
   return (
-    <section
+    <div
       id="bento-grid"
-      ref={containerRef as any}
-      className="bento-section absolute inset-0 z-20 opacity-0 invisible flex flex-col justify-center w-full max-w-6xl mx-auto px-4 md:px-6"
+      className="relative z-10 w-full"
     >
       <div className="relative z-10 w-full">
 
@@ -314,54 +309,50 @@ export default function BentoGrid() {
           className="mb-14 flex flex-col items-center justify-center text-center"
         >
           <span
-            className="bento-subtitle font-mono text-[10px] font-bold mb-4 px-2 py-1"
-            style={{ color: "var(--text-muted)", background: "rgba(0,0,0,0.6)", backdropFilter: "blur(4px)" }}
+            className="font-mono text-[10px] font-bold mb-4 px-3 py-1 bg-cyan-950/40 text-cyan-400 rounded-full border border-cyan-800/50"
           >
             [ SYST_LOAD: 0x3B9F ]
           </span>
           <p
-            className="bento-subtitle mb-2 font-mono text-[11px] font-bold uppercase tracking-[0.2em]"
-            style={{ color: "var(--cyan-500)" }}
+            className="mb-2 font-mono text-[11px] font-bold uppercase tracking-[0.2em] text-cyan-600"
           >
             // DATA_MATRIX_INITIALIZED
           </p>
           <h2
-            className="bento-title text-3xl md:text-5xl font-extrabold leading-tight uppercase text-white"
+            className="text-3xl md:text-5xl font-black leading-tight uppercase text-white"
           >
-            Mạng lưới phân tích <br/> Thời gian thực
+            Mạng lưới phân tích <br/><span className="text-gradient-cyan">Thời gian thực</span>
           </h2>
         </div>
 
         {/* ── Bento grid ── */}
         <div
-          className="grid auto-rows-[220px] grid-cols-1 gap-5 md:grid-cols-4 md:grid-rows-2"
+          className="grid auto-rows-[220px] grid-cols-1 gap-6 md:grid-cols-4 md:grid-rows-2"
         >
           {/* ══ Card 1: Vision AI (2×2) ══ */}
           <div
-            className="bento-card dark-card group relative col-span-1 overflow-hidden md:col-span-2 md:row-span-2"
+            className="eco-card group relative col-span-1 overflow-hidden md:col-span-2 md:row-span-2"
+            style={{ willChange: "transform, opacity" }}
           >
-            <HudCorners />
-            <div className="relative z-10 flex h-full flex-col justify-between p-6 w-[48%]">
+            <div className="relative z-10 flex h-full flex-col justify-between p-8 w-[48%]">
               <div>
                 <span
-                  className="font-mono text-[11px] font-bold uppercase tracking-[0.15em]"
-                  style={{ color: "var(--cyan-500)" }}
+                  className="font-mono text-[11px] font-bold uppercase tracking-[0.15em] text-cyan-600"
                 >
                   <span className="mr-2 animate-pulse">●</span>OPTICS_NET
                 </span>
                 <p
-                  className="mt-6 text-[13px] leading-relaxed font-mono"
-                  style={{ color: "var(--text-secondary)" }}
+                  className="mt-6 text-[14px] leading-relaxed font-medium text-slate-400"
                 >
                   Liên tục định vị và xử lý nhận diện tín hiệu sinh khối qua phân tích phổ ảnh.
                 </p>
               </div>
 
               {/* Data tags matrix */}
-              <div className="grid grid-cols-2 gap-2 mt-4 font-mono text-[9px] font-bold tracking-widest text-[var(--cyan-400)]">
-                <div className="border border-[rgba(34,211,238,0.3)] bg-black/40 px-2 py-1.5 uppercase text-center">Scan_Rate</div>
-                <div className="border border-[rgba(34,211,238,0.3)] bg-black/40 px-2 py-1.5 uppercase text-center">30_FPS</div>
-                <div className="col-span-2 border border-[rgba(34,211,238,0.3)] bg-black/40 px-2 py-1.5 uppercase text-center flex justify-between">
+              <div className="grid grid-cols-2 gap-2 mt-4 font-mono text-[9px] font-bold tracking-widest">
+                <div className="border border-cyan-800/30 bg-white/5 px-2 py-1.5 uppercase text-center text-cyan-400/80">Scan_Rate</div>
+                <div className="border border-cyan-800/30 bg-white/5 px-2 py-1.5 uppercase text-center text-cyan-400/80">30_FPS</div>
+                <div className="col-span-2 border border-cyan-800/30 bg-white/5 px-2 py-1.5 uppercase text-center flex justify-between text-cyan-400/80">
                   <span>LATENCY</span>
                   <span>12MS</span>
                 </div>
@@ -373,19 +364,18 @@ export default function BentoGrid() {
 
           {/* ══ Card 2: Telemetry (2×1) ══ */}
           <div
-            className="bento-card dark-card group relative col-span-1 flex flex-col justify-between p-5 md:col-span-2"
+            className="eco-card group relative col-span-1 flex flex-col justify-between p-8 md:col-span-2"
+            style={{ willChange: "transform, opacity" }}
           >
-            <HudCorners />
             <div className="relative z-10 flex items-start justify-between">
               <span
-                className="font-mono text-[11px] font-bold uppercase tracking-[0.15em]"
-                style={{ color: "var(--cyan-500)" }}
+                className="font-mono text-[11px] font-bold uppercase tracking-[0.15em] text-cyan-600"
               >
                 TELEMETRY_STREAM
               </span>
-              <div className="flex items-center gap-1.5 bg-black/60 px-2 py-1 border border-[rgba(34,211,238,0.3)]">
-                <span className="h-1.5 w-1.5 animate-pulse rounded-full bg-[var(--cyan-500)]" />
-                <span className="font-mono text-[9px] font-bold uppercase tracking-widest text-[var(--cyan-400)]">
+              <div className="flex items-center gap-1.5 bg-cyan-950/30 px-2 py-1 border border-cyan-800/30 rounded-md">
+                <span className="h-1.5 w-1.5 animate-pulse rounded-full bg-cyan-500" />
+                <span className="font-mono text-[9px] font-bold uppercase tracking-widest text-cyan-600">
                   LIVE
                 </span>
               </div>
@@ -398,13 +388,12 @@ export default function BentoGrid() {
 
           {/* ══ Card 3: ESP32 (1×1) ══ */}
           <div
-            className="bento-card dark-card group relative col-span-1 flex flex-col justify-between p-5"
+            className="eco-card group relative col-span-1 flex flex-col justify-between p-6"
+            style={{ willChange: "transform, opacity" }}
           >
-            <HudCorners />
             <div className="flex items-start justify-between">
               <span
-                className="font-mono text-[11px] font-bold uppercase tracking-[0.15em]"
-                style={{ color: "var(--cyan-500)" }}
+                className="font-mono text-[11px] font-bold uppercase tracking-[0.15em] text-cyan-600"
               >
                 SYS_HARDWARE
               </span>
@@ -414,13 +403,12 @@ export default function BentoGrid() {
 
           {/* ══ Card 4: FCM Alerts (1×1) ══ */}
           <div
-            className="bento-card dark-card group relative col-span-1 flex flex-col justify-between p-5"
+            className="eco-card group relative col-span-1 flex flex-col justify-between p-6"
+            style={{ willChange: "transform, opacity" }}
           >
-            <HudCorners />
             <div className="relative z-10 flex items-start justify-between">
               <span
-                className="font-mono text-[11px] font-bold uppercase tracking-[0.15em]"
-                style={{ color: "var(--cyan-500)" }}
+                className="font-mono text-[11px] font-bold uppercase tracking-[0.15em] text-cyan-600"
               >
                 EVENT_LOG
               </span>
@@ -433,6 +421,6 @@ export default function BentoGrid() {
 
         </div>
       </div>
-    </section>
+    </div>
   );
 }
