@@ -13,7 +13,7 @@ if (typeof window !== "undefined") gsap.registerPlugin(ScrollTrigger, useGSAP);
    HUD Components
 ───────────────────────────────────── */
 export function HudCorners() {
-  const c = "absolute w-3 h-3 border-[1.5px] border-[rgba(34,211,238,0.5)] pointer-events-none z-20";
+  const c = "absolute w-3 h-3 border-[1.5px] border-white/20 pointer-events-none z-20";
   return (
     <>
       <div className={`${c} top-[-1px] left-[-1px] border-r-0 border-b-0`} />
@@ -36,20 +36,20 @@ function VisionMockup({ visible }: { visible: boolean }) {
   return (
     <div
       className="absolute inset-y-0 right-0 w-[52%] overflow-hidden"
-      style={{ borderLeft: "1px solid rgba(6,182,212,0.2)" }}
+      style={{ borderLeft: "1px solid rgba(20,184,166,0.2)" }}
     >
       {/* Container for feed */}
-      <div className="relative h-full w-full bg-black">
+      <div className="relative h-full w-full bg-transparent">
         
         {/* The plant image strictly filtered identically to HUD expectations */}
         <Image
           src="/images/chaucay.webp"
           alt="Vision Target"
           fill
+          sizes="(max-width: 768px) 100vw, 50vw"
           className="object-cover"
           style={{
-            filter: "grayscale(100%) brightness(0.8) sepia(100%) hue-rotate(140deg) saturate(200%)",
-            opacity: 0.85
+            opacity: 1
           }}
         />
 
@@ -65,7 +65,7 @@ function VisionMockup({ visible }: { visible: boolean }) {
         <div 
           className="absolute inset-0 pointer-events-none"
           style={{
-            background: "repeating-linear-gradient(0deg, transparent, transparent 2px, rgba(34,211,238,0.08) 2px, rgba(34,211,238,0.08) 4px)",
+            background: "repeating-linear-gradient(0deg, transparent, transparent 2px, rgba(16,185,129,0.05) 2px, rgba(16,185,129,0.05) 4px)",
             backgroundSize: "100% 4px"
           }} 
         />
@@ -79,20 +79,20 @@ function VisionMockup({ visible }: { visible: boolean }) {
           style={{
             left: "24%", top: "32%",
             width: 80, height: 80,
-            border: "1px solid var(--cyan-500)",
-            boxShadow: "0 0 8px rgba(34,211,238,0.2) inset"
+            border: "1px solid #14B8A6",
+            boxShadow: "0 0 8px rgba(20,184,166,0.1) inset"
           }}
         >
           {/* Target Reticle corners on the box itself */}
-          <div className="absolute top-[-3px] left-[-3px] w-2 h-2 border-t-[1.5px] border-l-[1.5px] border-[var(--cyan-400)]" />
-          <div className="absolute bottom-[-3px] right-[-3px] w-2 h-2 border-b-[1.5px] border-r-[1.5px] border-[var(--cyan-400)]" />
+          <div className="absolute top-[-3px] left-[-3px] w-2 h-2 border-t-[1.5px] border-l-[1.5px] border-teal-400" />
+          <div className="absolute bottom-[-3px] right-[-3px] w-2 h-2 border-b-[1.5px] border-r-[1.5px] border-teal-400" />
 
           <span
             className="absolute -top-7 left-0 px-1 py-0.5 font-mono text-[9px] font-bold"
-            style={{ color: "var(--cyan-400)", whiteSpace: "nowrap" }}
+            style={{ color: "#2DD4BF", whiteSpace: "nowrap" }}
           >
             Anomaly_01 <span className="bento-counter-87">0</span>%<br/>
-            [<span className="text-[7px] text-[var(--cyan-600)]">240, 320, 80, 80</span>]
+            [<span className="text-[7px] text-teal-600">240, 320, 80, 80</span>]
           </span>
         </div>
 
@@ -100,21 +100,21 @@ function VisionMockup({ visible }: { visible: boolean }) {
         <div
           className="vision-scan-line absolute inset-x-0 top-0 h-px"
           style={{
-            background: "rgba(34,211,238,0.6)",
-            boxShadow: "0 0 12px 2px rgba(34,211,238,0.6)",
+            background: "rgba(16,185,129,0.6)",
+            boxShadow: "0 0 12px 2px rgba(16,185,129,0.4)",
             transform: "translateY(0px)",
           }}
         />
 
         {/* Status bar */}
         <div
-          className="absolute inset-x-0 bottom-0 flex items-center justify-between px-3 py-1.5 border-t border-[rgba(34,211,238,0.3)] backdrop-blur-md"
+          className="absolute inset-x-0 bottom-0 flex items-center justify-between px-3 py-1.5 border-t border-white/10 backdrop-blur-md"
           style={{ background: "rgba(0,0,0,0.6)" }}
         >
-          <span className="font-mono text-[10px] uppercase font-bold tracking-widest" style={{ color: "var(--cyan-500)" }}>
+          <span className="font-mono text-[10px] uppercase font-bold tracking-widest text-emerald-400">
             CAM_01 · <span className="animate-pulse">REC</span>
           </span>
-          <span className="font-mono text-[9px]" style={{ color: "var(--cyan-400)" }}>
+          <span className="font-mono text-[9px] text-teal-400">
              <span className="bento-counter-2">0</span> anomalies DETECTED
           </span>
         </div>
@@ -134,17 +134,17 @@ function TelemetryChart({ visible }: { visible: boolean }) {
     <div
       className="overflow-hidden rounded-xl p-3 relative h-[80px]"
       style={{
-        background: "rgba(0,0,0,0.4)",
-        border: "1px solid rgba(34,211,238,0.15)",
+        background: "rgba(255,255,255,0.03)",
+        border: "1px solid rgba(255,255,255,0.05)",
       }}
     >
       <HudCorners />
       {/* Axes */}
-      <div className="absolute left-3 bottom-5 right-3 h-[1px] bg-[rgba(34,211,238,0.2)]" />
-      <div className="absolute left-3 bottom-5 top-3 w-[1px] bg-[rgba(34,211,238,0.2)]" />
+      <div className="absolute left-3 bottom-5 right-3 h-[1px] bg-white/10" />
+      <div className="absolute left-3 bottom-5 top-3 w-[1px] bg-white/10" />
       
       {/* Grid lines */}
-      <div className="absolute left-3 bottom-[50%] right-3 h-[1px] bg-[rgba(34,211,238,0.05)] border-dashed border-b border-[rgba(34,211,238,0.1)]" />
+      <div className="absolute left-3 bottom-[50%] right-3 h-[1px] bg-white/5 border-dashed border-b border-white/10" />
 
       <svg
         viewBox="0 0 200 56"
@@ -155,7 +155,7 @@ function TelemetryChart({ visible }: { visible: boolean }) {
         {/* Line completely without fill */}
         <path
           d={LINE}
-          stroke="#06B6D4"
+          stroke="#10B981"
           strokeWidth="1.2"
           strokeLinecap="square"
           strokeLinejoin="miter"
@@ -164,11 +164,11 @@ function TelemetryChart({ visible }: { visible: boolean }) {
           className="telemetry-path"
           style={{ 
             strokeDashoffset: 400,
-            filter: "drop-shadow(0px 0px 4px rgba(6,182,212,0.6))"
+            filter: "drop-shadow(0px 0px 4px rgba(16,185,129,0.4))"
           }}
         />
         {/* End dot */}
-        <circle cx="200" cy="0" r="2" fill="#22D3EE" className="telemetry-dot" opacity="0" />
+        <circle cx="200" cy="0" r="2" fill="#10B981" className="telemetry-dot" opacity="0" />
       </svg>
 
       {/* Terminology */}
@@ -176,7 +176,7 @@ function TelemetryChart({ visible }: { visible: boolean }) {
         <span className="font-mono text-[8.5px]" style={{ color: "var(--text-muted)" }}>
           T-24H
         </span>
-        <span className="font-mono text-[8.5px] uppercase font-bold" style={{ color: "var(--cyan-400)" }}>
+        <span className="font-mono text-[8.5px] uppercase font-bold text-teal-400">
           SYNC ↑
         </span>
       </div>
@@ -201,48 +201,47 @@ function CircuitMockup() {
         className="relative flex items-center justify-center py-4"
         style={{
           background: "transparent",
-          border: "1px dashed rgba(34,211,238,0.3)",
+          border: "1px dashed rgba(20,184,166,0.2)",
         }}
       >
         <HudCorners />
         {/* SVG Chip Drawing */}
         <svg width="80" height="40" viewBox="0 0 80 40" className="opacity-80">
-          <rect x="25" y="5" width="30" height="30" fill="none" stroke="#22D3EE" strokeWidth="1" />
-          <rect x="28" y="8" width="24" height="24" fill="rgba(34,211,238,0.1)" stroke="#06B6D4" strokeWidth="0.5" />
+          <rect x="25" y="5" width="30" height="30" fill="none" stroke="#14B8A6" strokeWidth="1" />
+          <rect x="28" y="8" width="24" height="24" fill="rgba(20,184,166,0.05)" stroke="#0D9488" strokeWidth="0.5" />
           {/* Pins Top/Bottom */}
           {[1,2,3,4,5,6].map((i) => (
             <g key={i}>
-              <rect x={25 + i * 4.2} y="1" width="1.5" height="4" fill="#0891B2" />
-              <rect x={25 + i * 4.2} y="35" width="1.5" height="4" fill="#0891B2" />
+              <rect x={25 + i * 4.2} y="1" width="1.5" height="4" fill="#0F766E" />
+              <rect x={25 + i * 4.2} y="35" width="1.5" height="4" fill="#0F766E" />
             </g>
           ))}
           {/* Pins Left/Right */}
           {[1,2,3,4,5,6].map((i) => (
             <g key={`h${i}`}>
-              <rect x="21" y={5 + i * 4.2} width="4" height="1.5" fill="#0891B2" />
-              <rect x="55" y={5 + i * 4.2} width="4" height="1.5" fill="#0891B2" />
+              <rect x="21" y={5 + i * 4.2} width="4" height="1.5" fill="#0F766E" />
+              <rect x="55" y={5 + i * 4.2} width="4" height="1.5" fill="#0F766E" />
             </g>
           ))}
         </svg>
         <div className="absolute inset-0 flex items-center justify-center pointer-events-none">
-          <span className="font-mono text-[7px] font-bold text-[#22D3EE] tracking-widest mt-0.5 shadow-xl">MCU-XX</span>
+          <span className="font-mono text-[7px] font-bold text-teal-400 tracking-widest mt-0.5 shadow-xl">MCU-XX</span>
         </div>
       </div>
 
       {/* Terminal lines styling */}
       <div className="flex flex-col gap-1.5 mt-2">
         {STATUS.map(({ label, on }) => (
-          <div key={label} className="flex justify-between items-center text-[9px] font-mono border-b border-[rgba(34,211,238,0.1)] pb-1">
+          <div key={label} className="flex justify-between items-center text-[9px] font-mono border-b border-white/5 pb-1">
             <span style={{ color: "var(--text-muted)" }}>{label}</span>
             <div className="flex items-center gap-1.5">
-              <span style={{ color: on ? "var(--cyan-400)" : "var(--text-muted)", fontWeight: "bold" }}>
+              <span className={`font-bold ${on ? "text-emerald-400" : "text-amber-500"}`}>
                 {on ? "STATUS: ONLINE" : "STATUS: OFFLINE"}
               </span>
               <div 
-                className={`w-1.5 h-1.5 rounded-full ${on ? 'animate-pulse' : ''}`} 
+                className={`w-1.5 h-1.5 rounded-full ${on ? 'animate-pulse bg-emerald-400' : 'bg-amber-500'}`} 
                 style={{ 
-                  backgroundColor: on ? "var(--cyan-400)" : "var(--text-muted)",
-                  boxShadow: on ? "0 0 6px var(--cyan-500)" : "none" 
+                  boxShadow: on ? "0 0 6px #10B981" : "0 0 6px #F59E0B" 
                 }} 
               />
             </div>
@@ -269,15 +268,15 @@ function NotificationStack() {
           key={title}
           className="relative px-3 py-2"
           style={{
-            background: "rgba(0,0,0,0.4)",
-            borderLeft: "2px solid var(--cyan-500)",
+            background: "rgba(255,255,255,0.03)",
+            borderLeft: "2px solid #14B8A6",
             transform: i === 1 ? "scale(0.98)" : "scale(1)",
             opacity: i === 1 ? 0.65 : 1,
             transition: "transform 0.2s ease",
           }}
         >
           <div className="min-w-0 font-mono">
-            <p className="truncate text-[10px] font-bold uppercase tracking-wider text-[var(--cyan-400)]">
+            <p className="truncate text-[10px] font-bold uppercase tracking-wider text-teal-400">
               &gt; {title}
             </p>
             <p className="mt-0.5 text-[8.5px] text-[var(--text-muted)]">
@@ -294,18 +293,12 @@ function NotificationStack() {
    Main component
 ───────────────────────────────────── */
 export default function BentoGrid() {
-  const containerRef = useRef<HTMLElement>(null);
   const [revealed, setRevealed] = useState(false);
 
-  useEffect(() => {
-    // Empty: Master Timeline will scrub DOM directly using classes
-  }, []);
-
   return (
-    <section
+    <div
       id="bento-grid"
-      ref={containerRef as any}
-      className="bento-section absolute inset-0 z-20 opacity-0 invisible flex flex-col justify-center w-full max-w-6xl mx-auto px-4 md:px-6"
+      className="relative z-10 w-full"
     >
       <div className="relative z-10 w-full">
 
@@ -314,54 +307,49 @@ export default function BentoGrid() {
           className="mb-14 flex flex-col items-center justify-center text-center"
         >
           <span
-            className="bento-subtitle font-mono text-[10px] font-bold mb-4 px-2 py-1"
-            style={{ color: "var(--text-muted)", background: "rgba(0,0,0,0.6)", backdropFilter: "blur(4px)" }}
+            className="font-mono text-[10px] font-bold mb-4 px-3 py-1 bg-teal-950/40 text-teal-400 rounded-full border border-teal-800/30"
           >
             [ SYST_LOAD: 0x3B9F ]
           </span>
           <p
-            className="bento-subtitle mb-2 font-mono text-[11px] font-bold uppercase tracking-[0.2em]"
-            style={{ color: "var(--cyan-500)" }}
+            className="mb-2 font-mono text-[11px] font-bold uppercase tracking-[0.2em] text-teal-600"
           >
             // DATA_MATRIX_INITIALIZED
           </p>
           <h2
-            className="bento-title text-3xl md:text-5xl font-extrabold leading-tight uppercase text-white"
+            className="text-3xl md:text-5xl font-black leading-tight uppercase text-white"
           >
-            Mạng lưới phân tích <br/> Thời gian thực
+            Mạng lưới phân tích <br/><span className="bg-gradient-to-r from-teal-400 to-emerald-400 bg-clip-text text-transparent">Thời gian thực</span>
           </h2>
         </div>
 
         {/* ── Bento grid ── */}
         <div
-          className="grid auto-rows-[220px] grid-cols-1 gap-5 md:grid-cols-4 md:grid-rows-2"
+          className="grid auto-rows-[220px] grid-cols-1 gap-6 md:grid-cols-4 md:grid-rows-2"
         >
           {/* ══ Card 1: Vision AI (2×2) ══ */}
           <div
-            className="bento-card dark-card group relative col-span-1 overflow-hidden md:col-span-2 md:row-span-2"
+            className="eco-card group relative col-span-1 overflow-hidden md:col-span-2 md:row-span-2 transform-gpu hover:bg-white/[0.06] hover:border-emerald-500/30 hover:shadow-[0_8px_32px_rgba(16,185,129,0.1)]"
           >
-            <HudCorners />
-            <div className="relative z-10 flex h-full flex-col justify-between p-6 w-[48%]">
+            <div className="relative z-10 flex h-full flex-col justify-between p-8 w-[48%]">
               <div>
                 <span
-                  className="font-mono text-[11px] font-bold uppercase tracking-[0.15em]"
-                  style={{ color: "var(--cyan-500)" }}
+                  className="font-mono text-[11px] font-bold uppercase tracking-[0.15em] text-teal-500"
                 >
-                  <span className="mr-2 animate-pulse">●</span>OPTICS_NET
+                  <span className="mr-2 animate-pulse text-emerald-500">●</span>OPTICS_NET
                 </span>
                 <p
-                  className="mt-6 text-[13px] leading-relaxed font-mono"
-                  style={{ color: "var(--text-secondary)" }}
+                  className="mt-6 text-[14px] leading-relaxed font-medium text-slate-100"
                 >
                   Liên tục định vị và xử lý nhận diện tín hiệu sinh khối qua phân tích phổ ảnh.
                 </p>
               </div>
 
               {/* Data tags matrix */}
-              <div className="grid grid-cols-2 gap-2 mt-4 font-mono text-[9px] font-bold tracking-widest text-[var(--cyan-400)]">
-                <div className="border border-[rgba(34,211,238,0.3)] bg-black/40 px-2 py-1.5 uppercase text-center">Scan_Rate</div>
-                <div className="border border-[rgba(34,211,238,0.3)] bg-black/40 px-2 py-1.5 uppercase text-center">30_FPS</div>
-                <div className="col-span-2 border border-[rgba(34,211,238,0.3)] bg-black/40 px-2 py-1.5 uppercase text-center flex justify-between">
+              <div className="grid grid-cols-2 gap-2 mt-4 font-mono text-[9px] font-bold tracking-widest">
+                <div className="border border-white/10 bg-white/5 px-2 py-1.5 uppercase text-center text-teal-400/80">Scan_Rate</div>
+                <div className="border border-white/10 bg-white/5 px-2 py-1.5 uppercase text-center text-teal-400/80">30_FPS</div>
+                <div className="col-span-2 border border-white/10 bg-white/5 px-2 py-1.5 uppercase text-center flex justify-between text-teal-400/80">
                   <span>LATENCY</span>
                   <span>12MS</span>
                 </div>
@@ -373,19 +361,17 @@ export default function BentoGrid() {
 
           {/* ══ Card 2: Telemetry (2×1) ══ */}
           <div
-            className="bento-card dark-card group relative col-span-1 flex flex-col justify-between p-5 md:col-span-2"
+            className="eco-card group relative col-span-1 flex flex-col justify-between p-8 md:col-span-2 transform-gpu hover:bg-white/[0.06] hover:border-emerald-500/30 hover:shadow-[0_8px_32px_rgba(16,185,129,0.1)]"
           >
-            <HudCorners />
             <div className="relative z-10 flex items-start justify-between">
               <span
-                className="font-mono text-[11px] font-bold uppercase tracking-[0.15em]"
-                style={{ color: "var(--cyan-500)" }}
+                className="font-mono text-[11px] font-bold uppercase tracking-[0.15em] text-teal-600"
               >
                 TELEMETRY_STREAM
               </span>
-              <div className="flex items-center gap-1.5 bg-black/60 px-2 py-1 border border-[rgba(34,211,238,0.3)]">
-                <span className="h-1.5 w-1.5 animate-pulse rounded-full bg-[var(--cyan-500)]" />
-                <span className="font-mono text-[9px] font-bold uppercase tracking-widest text-[var(--cyan-400)]">
+              <div className="flex items-center gap-1.5 bg-emerald-950/20 px-2 py-1 border border-emerald-800/20 rounded-md">
+                <span className="h-1.5 w-1.5 animate-pulse rounded-full bg-emerald-500" />
+                <span className="font-mono text-[9px] font-bold uppercase tracking-widest text-emerald-400">
                   LIVE
                 </span>
               </div>
@@ -398,13 +384,11 @@ export default function BentoGrid() {
 
           {/* ══ Card 3: ESP32 (1×1) ══ */}
           <div
-            className="bento-card dark-card group relative col-span-1 flex flex-col justify-between p-5"
+            className="eco-card group relative col-span-1 flex flex-col justify-between p-6 transform-gpu hover:bg-white/[0.06] hover:border-emerald-500/30 hover:shadow-[0_8px_32px_rgba(16,185,129,0.1)]"
           >
-            <HudCorners />
             <div className="flex items-start justify-between">
               <span
-                className="font-mono text-[11px] font-bold uppercase tracking-[0.15em]"
-                style={{ color: "var(--cyan-500)" }}
+                className="font-mono text-[11px] font-bold uppercase tracking-[0.15em] text-teal-600"
               >
                 SYS_HARDWARE
               </span>
@@ -414,13 +398,11 @@ export default function BentoGrid() {
 
           {/* ══ Card 4: FCM Alerts (1×1) ══ */}
           <div
-            className="bento-card dark-card group relative col-span-1 flex flex-col justify-between p-5"
+            className="eco-card group relative col-span-1 flex flex-col justify-between p-6 transform-gpu hover:bg-white/[0.06] hover:border-emerald-500/30 hover:shadow-[0_8px_32px_rgba(16,185,129,0.1)]"
           >
-            <HudCorners />
             <div className="relative z-10 flex items-start justify-between">
               <span
-                className="font-mono text-[11px] font-bold uppercase tracking-[0.15em]"
-                style={{ color: "var(--cyan-500)" }}
+                className="font-mono text-[11px] font-bold uppercase tracking-[0.15em] text-teal-600"
               >
                 EVENT_LOG
               </span>
@@ -433,6 +415,6 @@ export default function BentoGrid() {
 
         </div>
       </div>
-    </section>
+    </div>
   );
 }

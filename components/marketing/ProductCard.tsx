@@ -19,22 +19,7 @@ type Product = {
   rating?: number;
 };
 
-/* ─────────────────────────────────────
-   HUD Components
-───────────────────────────────────── */
-function HudCorners() {
-  const c = "absolute w-3 h-3 border-[1.5px] border-[rgba(34,211,238,0.5)] pointer-events-none z-20 transition-colors duration-300";
-  return (
-    <>
-      <div className={`${c} top-[-1px] left-[-1px] border-r-0 border-b-0`} />
-      <div className={`${c} top-[-1px] right-[-1px] border-l-0 border-b-0`} />
-      <div className={`${c} bottom-[-1px] left-[-1px] border-r-0 border-t-0`} />
-      <div className={`${c} bottom-[-1px] right-[-1px] border-l-0 border-t-0`} />
-    </>
-  );
-}
-
-/* ── Per-category design tokens (Unified Cyber Cyan) ── */
+/* ── Per-category design tokens (Eco-Tech Emerald) ── */
 const CATEGORY_CONFIG: Record<
   string,
   {
@@ -52,31 +37,31 @@ const CATEGORY_CONFIG: Record<
     label: "Hạt Giống",
     icon: Leaf,
     gradient: "transparent",
-    glow: "rgba(6,182,212,0.15)",
-    accent: "var(--cyan-400)",
-    accentBg: "rgba(6,182,212,0.06)",
-    accentBorder: "rgba(6,182,212,0.25)",
-    badgeColor: "var(--cyan-500)",
+    glow: "rgba(16, 185, 129, 0.15)",
+    accent: "#34D399", // Emerald 400
+    accentBg: "rgba(16, 185, 129, 0.05)",
+    accentBorder: "rgba(16, 185, 129, 0.2)",
+    badgeColor: "#10B981", // Emerald 500
   },
   nutrients: {
     label: "Dinh Dưỡng",
     icon: FlaskConical,
     gradient: "transparent",
-    glow: "rgba(34,211,238,0.15)",
-    accent: "var(--cyan-400)",
-    accentBg: "rgba(34,211,238,0.06)",
-    accentBorder: "rgba(34,211,238,0.25)",
-    badgeColor: "#22D3EE",
+    glow: "rgba(20, 184, 166, 0.15)",
+    accent: "#2DD4BF", // Teal 400
+    accentBg: "rgba(20, 184, 166, 0.05)",
+    accentBorder: "rgba(20, 184, 166, 0.2)",
+    badgeColor: "#14B8A6", // Teal 500
   },
   "smart-pots": {
     label: "Smart Pot",
     icon: Cpu,
     gradient: "transparent",
-    glow: "rgba(8,145,178,0.15)",
-    accent: "var(--cyan-500)",
-    accentBg: "rgba(8,145,178,0.06)",
-    accentBorder: "rgba(8,145,178,0.25)",
-    badgeColor: "var(--cyan-600)",
+    glow: "rgba(5, 150, 105, 0.15)",
+    accent: "#10B981", // Emerald 500
+    accentBg: "rgba(5, 150, 105, 0.05)",
+    accentBorder: "rgba(5, 150, 105, 0.2)",
+    badgeColor: "#059669", // Emerald 600
   },
 };
 
@@ -101,9 +86,9 @@ export default function ProductCard({ product }: { product: Product }) {
 
   const handleMouseEnter = contextSafe(() => {
     gsap.to(".product-card-glass", { 
-      borderColor: "rgba(34,211,238,0.7)", 
-      boxShadow: "0 0 20px rgba(34,211,238,0.6)", 
-      y: -8, scale: 1.05,
+      borderColor: "rgba(52, 211, 153, 0.3)", 
+      background: "rgba(255, 255, 255, 0.06)",
+      y: -4,
       duration: 0.4, 
       ease: "power2.out" 
     });
@@ -145,9 +130,9 @@ export default function ProductCard({ product }: { product: Product }) {
 
   const handleMouseLeave = contextSafe(() => {
     gsap.to(".product-card-glass", { 
-      borderColor: "rgba(6, 182, 212, 0.12)", 
-      boxShadow: "none", 
-      y: 0, scale: 1,
+      borderColor: "rgba(255, 255, 255, 0.1)", 
+      background: "rgba(255, 255, 255, 0.02)",
+      y: 0,
       duration: 0.4, 
       ease: "power2.out" 
     });
@@ -186,18 +171,16 @@ export default function ProductCard({ product }: { product: Product }) {
   }
 
   return (
-    <div ref={containerRef} className="relative w-full h-full p-[1px]" style={{ perspective: "1000px" }}>
-      <div className="product-dashed absolute inset-0 border-[1px] border-dashed border-[var(--cyan-400)] pointer-events-none z-0 rounded-2xl opacity-0" style={{ willChange: "transform, opacity" }} />
+    <div ref={containerRef} className="relative w-full h-full" style={{ perspective: "1000px" }}>
       <article
-        className="product-card-glass dark-card group relative flex flex-col overflow-hidden h-full opacity-0"
+        className="product-card-glass group relative flex flex-col overflow-hidden h-full bg-white/[0.02] border border-white/10 rounded-2xl p-6 backdrop-blur-md transition-all duration-300 ease-out transform-gpu will-change-transform hover:shadow-[0_8px_32px_rgba(16,185,129,0.1)]"
         style={{
           transformStyle: "preserve-3d",
-          willChange: "transform, opacity, filter"
         }}
         onMouseEnter={handleMouseEnter}
         onMouseLeave={handleMouseLeave}
       >
-      <HudCorners />
+
       {/* ── Visual zone ── */}
       <div
         className="relative flex items-center justify-center overflow-hidden"
@@ -225,10 +208,10 @@ export default function ProductCard({ product }: { product: Product }) {
           
           {/* Phase 3 Base Projection Ring */}
           <div 
-            className="hologram-projection-base absolute inset-0 rounded-full opacity-0 invisible"
+            className="hologram-projection-base absolute inset-0 rounded-full"
             style={{
-              border: `2px dashed ${cfg.accent}`,
-              boxShadow: `0 0 15px ${cfg.glow}, inset 0 0 15px ${cfg.glow}`,
+              border: `1px solid ${cfg.accent}33`,
+              boxShadow: `0 0 15px ${cfg.glow}`,
               transform: "translateZ(0px) scale(0.8)",
               background: `radial-gradient(circle, ${cfg.glow} 0%, transparent 70%)`
             }}
@@ -251,20 +234,13 @@ export default function ProductCard({ product }: { product: Product }) {
 
         {/* Floating category badge — top left */}
         <div
-          className="absolute left-3.5 top-3.5 flex items-center gap-1.5 rounded-full px-2.5 py-1"
-          style={{
-            background: "rgba(0,0,0,0.4)",
-            border: "1px solid rgba(255,255,255,0.08)",
-            backdropFilter: "blur(12px)",
-          }}
+          className="absolute left-3.5 top-3.5 flex items-center gap-1.5 rounded-full px-2.5 py-1 bg-slate-800/50 border border-slate-700 backdrop-blur-md"
         >
           <span
-            className="h-1.5 w-1.5 rounded-full"
-            style={{ background: cfg.badgeColor }}
+            className="h-1.5 w-1.5 rounded-full bg-emerald-400"
           />
           <span
-            className="font-mono text-[10px] font-semibold uppercase tracking-wider"
-            style={{ color: cfg.accent }}
+            className="font-mono text-[10px] font-semibold uppercase tracking-wider text-slate-300"
           >
             {cfg.label}
           </span>
@@ -273,14 +249,10 @@ export default function ProductCard({ product }: { product: Product }) {
         {/* Sale badge — top right */}
         {hasDiscount && (
           <div
-            className="absolute right-3.5 top-3.5 flex items-center gap-1 rounded-full px-2 py-1"
-            style={{
-              background: "rgba(6,182,212,0.15)",
-              border: "1px solid rgba(6,182,212,0.30)",
-            }}
+            className="absolute right-3.5 top-3.5 flex items-center gap-1 rounded-full px-2 py-1 bg-emerald-500/10 border border-emerald-500/20"
           >
-            <Tag size={9} style={{ color: "var(--cyan-400)" }} />
-            <span className="font-mono text-[10px] font-bold" style={{ color: "var(--cyan-400)" }}>
+            <Tag size={9} className="text-emerald-400" />
+            <span className="font-mono text-[10px] font-bold text-emerald-400">
               -{discountPct}%
             </span>
           </div>
@@ -299,9 +271,7 @@ export default function ProductCard({ product }: { product: Product }) {
               key={i}
               size={10}
               fill={(product.rating ?? 0) > i ? "currentColor" : "none"}
-              style={{
-                color: (product.rating ?? 0) > i ? "var(--cyan-400)" : "rgba(255,255,255,0.15)",
-              }}
+              className={(product.rating ?? 0) > i ? "text-emerald-500" : "text-white/10"}
             />
           ))}
           <span
@@ -338,8 +308,7 @@ export default function ProductCard({ product }: { product: Product }) {
           {/* Price row */}
           <div className="mb-3 flex items-baseline gap-2">
             <span
-              className="text-2xl font-black"
-              style={{ color: cfg.accent }}
+              className="text-2xl font-black text-emerald-400"
             >
               {displayedPrice.toLocaleString("vi-VN")}đ
             </span>
@@ -358,15 +327,10 @@ export default function ProductCard({ product }: { product: Product }) {
             {/* Add to cart */}
             <button
               onClick={handleAddToCart}
-              className="flex flex-1 items-center justify-center gap-1.5 rounded-xl py-2.5 text-xs font-semibold transition-all duration-150"
-              style={{
-                background: added ? "rgba(6,182,212,0.15)" : cfg.accentBg,
-                color: added ? "var(--cyan-400)" : cfg.accent,
-                border: `1px solid ${added ? "rgba(6,182,212,0.30)" : cfg.accentBorder}`,
-              }}
+              className="flex flex-1 items-center justify-center gap-1.5 rounded-full py-2.5 text-xs font-semibold bg-transparent border border-emerald-500/30 text-emerald-400 hover:bg-emerald-500/10 transition-colors"
             >
               {added ? <Check size={12} /> : <ShoppingCart size={12} />}
-              {added ? "Đã xác nhận!" : "Khởi tạo lệnh"}
+              {added ? "Đã chọn!" : "Chọn mua"}
             </button>
 
             {/* View detail */}

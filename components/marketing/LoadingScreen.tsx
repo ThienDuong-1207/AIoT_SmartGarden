@@ -10,7 +10,7 @@ type LoadingScreenProps = {
   onComplete?: () => void;
 };
 
-const PARTICLE_COUNT = 48;
+const PARTICLE_COUNT = 8;
 
 export default function LoadingScreen({ onComplete }: LoadingScreenProps) {
   const rootRef = useRef<HTMLDivElement | null>(null);
@@ -40,7 +40,7 @@ export default function LoadingScreen({ onComplete }: LoadingScreenProps) {
       const particleNodes = gsap.utils.toArray<HTMLElement>(".scan-particle", root);
       const boxes = gsap.utils.toArray<HTMLElement>(".scan-box", root);
 
-      gsap.set(root, { opacity: 1, filter: "blur(0px)" });
+      gsap.set(root, { opacity: 1 });
       gsap.set(core, { scale: 1, transformOrigin: "50% 50%" });
       gsap.set(laser, { bottom: "0%" });
       gsap.set(solid, { clipPath: "inset(100% 0% 0% 0%)" });
@@ -89,8 +89,9 @@ export default function LoadingScreen({ onComplete }: LoadingScreenProps) {
             .to(
               core,
               {
-                scale: 10,
-                z: 400,
+                scale: 3,
+                opacity: 0,
+                z: 200,
                 duration: 0.65,
                 ease: "power4.in",
               },
@@ -115,20 +116,11 @@ export default function LoadingScreen({ onComplete }: LoadingScreenProps) {
             .to(
               root,
               {
-                filter: "blur(20px)",
-                duration: 0.35,
-                ease: "power2.out",
-              },
-              0.25
-            )
-            .to(
-              root,
-              {
                 opacity: 0,
-                duration: 0.45,
+                duration: 0.8,
                 ease: "power2.inOut",
               },
-              0.42
+              0.25
             );
         },
       });
@@ -146,7 +138,7 @@ export default function LoadingScreen({ onComplete }: LoadingScreenProps) {
       ref={rootRef}
       className="fixed inset-0 z-[120] flex items-center justify-center overflow-hidden"
       style={{
-        background: "#050505",
+        background: "#030303",
         perspective: "1100px",
       }}
       aria-label="Loading screen"
@@ -161,7 +153,7 @@ export default function LoadingScreen({ onComplete }: LoadingScreenProps) {
       />
 
       <div ref={coreRef} className="relative flex h-[320px] w-[320px] items-center justify-center">
-        <svg viewBox="0 0 240 240" className="h-[240px] w-[240px]">
+        <svg viewBox="0 0 240 240" className="h-[240px] w-[240px]" style={{ perspective: "1000px", willChange: "transform, opacity" }}>
           <path
             d="M120 30 C84 52, 70 90, 76 129 C82 172, 109 203, 120 214 C131 203, 158 172, 164 129 C170 90, 156 52, 120 30 Z"
             fill="none"
@@ -188,6 +180,7 @@ export default function LoadingScreen({ onComplete }: LoadingScreenProps) {
           style={{
             background: "linear-gradient(90deg, transparent, #33ffe4, transparent)",
             boxShadow: "0 0 24px rgba(59, 255, 228, 0.92)",
+            willChange: "bottom"
           }}
         />
 
@@ -208,6 +201,7 @@ export default function LoadingScreen({ onComplete }: LoadingScreenProps) {
           <span
             key={index}
             className="scan-particle absolute left-1/2 top-1/2 block h-1.5 w-1.5 rounded-[1px] bg-cyan-200 shadow-[0_0_14px_rgba(52,255,227,0.8)]"
+            style={{ willChange: "transform, opacity" }}
           />
         ))}
       </div>
