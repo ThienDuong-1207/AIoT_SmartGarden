@@ -197,7 +197,8 @@ export default function HomeHero({ isLoaded = false, shouldPlayVideo = true }: H
       </div>
 
       {/* Bottom fade shadow */}
-      <div className="absolute inset-x-0 bottom-0 h-32 bg-gradient-to-t from-transparent to-transparent z-30" />
+      {/* Bottom fade shadow (Vignette) — Restored for smooth section transition */}
+      <div className="absolute inset-x-0 bottom-0 h-48 bg-gradient-to-t from-[#030508] via-[#030508]/60 to-transparent z-10 pointer-events-none" />
     </section>
   );
 }
