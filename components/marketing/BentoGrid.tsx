@@ -329,8 +329,7 @@ export default function BentoGrid() {
         >
           {/* ══ Card 1: Vision AI (2×2) ══ */}
           <div
-            className="eco-card group relative col-span-1 overflow-hidden md:col-span-2 md:row-span-2"
-            style={{ willChange: "transform, opacity" }}
+            className="eco-card group relative col-span-1 overflow-hidden md:col-span-2 md:row-span-2 transform-gpu hover:bg-white/[0.06] hover:border-emerald-500/30 hover:shadow-[0_8px_32px_rgba(16,185,129,0.1)]"
           >
             <div className="relative z-10 flex h-full flex-col justify-between p-8 w-[48%]">
               <div>
@@ -362,8 +361,7 @@ export default function BentoGrid() {
 
           {/* ══ Card 2: Telemetry (2×1) ══ */}
           <div
-            className="eco-card group relative col-span-1 flex flex-col justify-between p-8 md:col-span-2"
-            style={{ willChange: "transform, opacity" }}
+            className="eco-card group relative col-span-1 flex flex-col justify-between p-8 md:col-span-2 transform-gpu hover:bg-white/[0.06] hover:border-emerald-500/30 hover:shadow-[0_8px_32px_rgba(16,185,129,0.1)]"
           >
             <div className="relative z-10 flex items-start justify-between">
               <span
@@ -386,8 +384,7 @@ export default function BentoGrid() {
 
           {/* ══ Card 3: ESP32 (1×1) ══ */}
           <div
-            className="eco-card group relative col-span-1 flex flex-col justify-between p-6"
-            style={{ willChange: "transform, opacity" }}
+            className="eco-card group relative col-span-1 flex flex-col justify-between p-6 transform-gpu hover:bg-white/[0.06] hover:border-emerald-500/30 hover:shadow-[0_8px_32px_rgba(16,185,129,0.1)]"
           >
             <div className="flex items-start justify-between">
               <span
@@ -401,8 +398,7 @@ export default function BentoGrid() {
 
           {/* ══ Card 4: FCM Alerts (1×1) ══ */}
           <div
-            className="eco-card group relative col-span-1 flex flex-col justify-between p-6"
-            style={{ willChange: "transform, opacity" }}
+            className="eco-card group relative col-span-1 flex flex-col justify-between p-6 transform-gpu hover:bg-white/[0.06] hover:border-emerald-500/30 hover:shadow-[0_8px_32px_rgba(16,185,129,0.1)]"
           >
             <div className="relative z-10 flex items-start justify-between">
               <span

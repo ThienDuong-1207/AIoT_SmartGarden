@@ -812,9 +812,9 @@ code, pre, kbd {
 
 .eco-card:hover {
   background: rgba(255, 255, 255, 0.06);
-  transform: translateY(-5px);
-  box-shadow: 0 12px 48px rgba(0, 0, 0, 0.4);
-  border-color: rgba(255, 255, 255, 0.15);
+  transform: translateY(-4px);
+  box-shadow: 0 8px 32px rgba(16, 185, 129, 0.1);
+  border-color: rgba(16, 185, 129, 0.3);
 }
 
 /* Animation utility classes */

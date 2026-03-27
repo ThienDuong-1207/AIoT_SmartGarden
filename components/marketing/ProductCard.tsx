@@ -87,8 +87,8 @@ export default function ProductCard({ product }: { product: Product }) {
   const handleMouseEnter = contextSafe(() => {
     gsap.to(".product-card-glass", { 
       borderColor: "rgba(52, 211, 153, 0.3)", 
-      background: "rgba(255, 255, 255, 0.04)",
-      y: -8, scale: 1.02,
+      background: "rgba(255, 255, 255, 0.06)",
+      y: -4,
       duration: 0.4, 
       ease: "power2.out" 
     });
@@ -132,7 +132,7 @@ export default function ProductCard({ product }: { product: Product }) {
     gsap.to(".product-card-glass", { 
       borderColor: "rgba(255, 255, 255, 0.1)", 
       background: "rgba(255, 255, 255, 0.02)",
-      y: 0, scale: 1,
+      y: 0,
       duration: 0.4, 
       ease: "power2.out" 
     });
@@ -173,10 +173,9 @@ export default function ProductCard({ product }: { product: Product }) {
   return (
     <div ref={containerRef} className="relative w-full h-full" style={{ perspective: "1000px" }}>
       <article
-        className="product-card-glass group relative flex flex-col overflow-hidden h-full bg-white/[0.02] border border-white/10 rounded-2xl p-6 backdrop-blur-md transition-all duration-300"
+        className="product-card-glass group relative flex flex-col overflow-hidden h-full bg-white/[0.02] border border-white/10 rounded-2xl p-6 backdrop-blur-md transition-all duration-300 ease-out transform-gpu will-change-transform hover:shadow-[0_8px_32px_rgba(16,185,129,0.1)]"
         style={{
           transformStyle: "preserve-3d",
-          willChange: "transform, opacity, filter"
         }}
         onMouseEnter={handleMouseEnter}
         onMouseLeave={handleMouseLeave}
