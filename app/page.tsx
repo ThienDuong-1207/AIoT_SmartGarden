@@ -53,6 +53,22 @@ export default function Home() {
       },
       once: true,
     });
+
+    // --- HARDWARE CARDS BATCH ANIMATION ---
+    gsap.set(".hardware-card", { y: 50, autoAlpha: 0 });
+    ScrollTrigger.batch(".hardware-card", {
+      start: "top 85%",
+      onEnter: (elements) => {
+        gsap.to(elements, { 
+          y: 0, 
+          autoAlpha: 1, 
+          duration: 0.8, 
+          stagger: 0.15, 
+          ease: "power2.out" 
+        });
+      },
+      once: true
+    });
   }, { dependencies: [loadingDone], scope: containerRef });
 
   return (
@@ -76,13 +92,13 @@ export default function Home() {
         <div className="container-app">
           {/* Section header */}
           <div className="mb-16 flex flex-col items-center text-center">
-            <span className="font-mono text-[11px] font-bold uppercase tracking-[0.2em] text-cyan-600 mb-3">
+            <span className="font-mono text-[11px] font-bold uppercase tracking-[0.2em] text-slate-400 mb-3">
               // HARDWARE_CONEXUS
             </span>
             <h2 className="text-4xl md:text-5xl font-black text-white uppercase tracking-tight">
-              Nâng cấp <span className="text-gradient-cyan">hệ thống</span>
+              Nâng cấp <span className="text-emerald-400">hệ thống</span>
             </h2>
-            <p className="mt-4 max-w-2xl text-slate-400">
+            <p className="mt-4 max-w-2xl text-slate-300">
               Các module phần cứng được tinh chỉnh tối ưu cho việc vận hành vườn thông minh AIoT.
             </p>
           </div>
@@ -90,7 +106,7 @@ export default function Home() {
           {/* Product cards grid */}
           <div className="grid gap-8 sm:grid-cols-2 lg:grid-cols-3">
             {sampleProducts.slice(0, 3).map((product) => (
-              <div key={product.slug} className="eco-card overflow-hidden h-full flex flex-col" style={{ willChange: "transform, opacity" }}>
+              <div key={product.slug} className="hardware-card overflow-hidden h-full flex flex-col" style={{ willChange: "transform, opacity" }}>
                 <ProductCard product={product} />
               </div>
             ))}
