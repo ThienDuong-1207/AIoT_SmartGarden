@@ -10,6 +10,7 @@ import BentoGrid from "@/components/marketing/BentoGrid";
 import TerminalCta from "@/components/marketing/TerminalCta";
 import SiteFooter from "@/components/marketing/SiteFooter";
 import LoadingScreen from "@/components/marketing/LoadingScreen";
+import GalaxyBackground from "@/components/ui/GalaxyBackground";
 import gsap from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 import { useGSAP } from "@gsap/react";
@@ -72,7 +73,8 @@ export default function Home() {
   }, { dependencies: [loadingDone], scope: containerRef });
 
   return (
-    <main ref={containerRef} className="flex-1 relative bg-[#030303] min-h-screen text-white">
+    <main ref={containerRef} className="flex-1 relative bg-transparent min-h-screen text-white overflow-x-hidden">
+      <GalaxyBackground />
       {!loadingDone ? <LoadingScreen onComplete={() => setLoadingDone(true)} /> : null}
 
       {/* --- HERO SECTION --- */}
@@ -81,14 +83,14 @@ export default function Home() {
       </section>
 
       {/* --- BENTO GRID SECTION --- */}
-      <section id="features" className="eco-section">
+      <section id="features" className="eco-section bg-transparent">
         <div className="container-app">
           <BentoGrid />
         </div>
       </section>
 
       {/* --- HARDWARE STORE SECTION --- */}
-      <section id="hardware" className="eco-section">
+      <section id="hardware" className="eco-section bg-transparent">
         <div className="container-app">
           {/* Section header */}
           <div className="mb-16 flex flex-col items-center text-center">
@@ -115,7 +117,7 @@ export default function Home() {
           <div className="mt-16 flex justify-center">
             <Link
               href="/products"
-              className="group flex items-center gap-2 rounded-full bg-slate-900 px-8 py-4 text-sm font-bold uppercase tracking-widest text-white transition-all hover:bg-cyan-600 hover:shadow-xl active:scale-95"
+              className="group flex items-center gap-2 rounded-full bg-white/5 border border-white/10 backdrop-blur-md px-8 py-4 text-sm font-bold uppercase tracking-widest text-emerald-400 transition-all hover:bg-emerald-500/10 hover:border-emerald-500/30 hover:shadow-xl active:scale-95"
             >
               Xem tất cả sản phẩm
               <ArrowRight size={16} className="transition-transform group-hover:translate-x-1" />
@@ -125,7 +127,7 @@ export default function Home() {
       </section>
 
       {/* --- TERMINAL CTA SECTION --- */}
-      <section id="community" className="eco-section">
+      <section id="community" className="eco-section bg-transparent">
         <div className="container-app">
           <TerminalCta />
         </div>

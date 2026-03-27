@@ -102,7 +102,7 @@ export default function HomeHero({ isLoaded = false, shouldPlayVideo = true }: H
   return (
     <section
       ref={heroRef}
-      className="relative w-full h-screen min-h-[700px] overflow-hidden bg-[#030303] flex flex-col items-center justify-center"
+      className="relative w-full h-screen min-h-[700px] overflow-hidden bg-transparent flex flex-col items-center justify-center"
     >
       {/* Background Video */}
       <video
@@ -124,7 +124,7 @@ export default function HomeHero({ isLoaded = false, shouldPlayVideo = true }: H
       {/* Cinematic Fade Overlay (Solid color instead of backdrop-blur to avoid repaint lag) */}
       <div 
         ref={fadeOverlayRef}
-        className="absolute inset-0 z-[1] bg-[#030303] pointer-events-none"
+        className="absolute inset-0 z-[1] bg-transparent pointer-events-none"
         style={{ willChange: "opacity" }}
       />
 
@@ -197,7 +197,7 @@ export default function HomeHero({ isLoaded = false, shouldPlayVideo = true }: H
       </div>
 
       {/* Bottom fade shadow */}
-      <div className="absolute inset-x-0 bottom-0 h-32 bg-gradient-to-t from-[#030303] to-transparent z-30" />
+      <div className="absolute inset-x-0 bottom-0 h-32 bg-gradient-to-t from-transparent to-transparent z-30" />
     </section>
   );
 }

@@ -39,7 +39,7 @@ function VisionMockup({ visible }: { visible: boolean }) {
       style={{ borderLeft: "1px solid rgba(20,184,166,0.2)" }}
     >
       {/* Container for feed */}
-      <div className="relative h-full w-full bg-black">
+      <div className="relative h-full w-full bg-transparent">
         
         {/* The plant image strictly filtered identically to HUD expectations */}
         <Image
@@ -134,7 +134,7 @@ function TelemetryChart({ visible }: { visible: boolean }) {
     <div
       className="overflow-hidden rounded-xl p-3 relative h-[80px]"
       style={{
-        background: "rgba(0,0,0,0.4)",
+        background: "rgba(255,255,255,0.03)",
         border: "1px solid rgba(255,255,255,0.05)",
       }}
     >
@@ -268,7 +268,7 @@ function NotificationStack() {
           key={title}
           className="relative px-3 py-2"
           style={{
-            background: "rgba(0,0,0,0.4)",
+            background: "rgba(255,255,255,0.03)",
             borderLeft: "2px solid #14B8A6",
             transform: i === 1 ? "scale(0.98)" : "scale(1)",
             opacity: i === 1 ? 0.65 : 1,
