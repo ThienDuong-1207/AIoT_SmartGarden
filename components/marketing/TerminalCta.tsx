@@ -32,7 +32,7 @@ export default function TerminalCta() {
 
       {/* Terminal panel */}
       <div
-        className="overflow-hidden w-full max-w-4xl bg-white/[0.03] backdrop-blur-xl border border-white/10 rounded-2xl shadow-2xl"
+        className="overflow-hidden w-full max-w-4xl bg-[#080808] border border-white/10 rounded-2xl shadow-2xl"
       >
         {/* Terminal title bar */}
         <div
