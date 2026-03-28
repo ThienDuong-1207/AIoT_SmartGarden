@@ -4,16 +4,20 @@ import Link from "next/link";
 import { useEffect, useState } from "react";
 import {
   CheckCircle, ShoppingBag, LayoutDashboard,
-  Package, Truck, Leaf,
+  Package, Truck, Leaf, Cpu, FlaskConical,
 } from "lucide-react";
-
-
+import GalaxyBackground from "@/components/ui/GalaxyBackground";
 
 const STEPS = [
-  { icon: Package, label: "Xác nhận đơn",  desc: "Đơn hàng đã được ghi nhận",      done: true  },
-  { icon: Truck,   label: "Đang chuẩn bị", desc: "Kho đang đóng gói sản phẩm",     done: true  },
-  { icon: Truck,   label: "Vận chuyển",    desc: "Dự kiến 2–4 ngày làm việc",       done: false },
-  { icon: Leaf,    label: "Đã nhận hàng",  desc: "Kích hoạt thiết bị trong 30 ngày", done: false },
+  { icon: Package, label: "Xác nhận",  desc: "Đã ghi nhận",      done: true  },
+  { icon: Truck,   label: "Chuẩn bị",  desc: "Đang đóng gói",    done: true  },
+  { icon: Truck,   label: "Vận chuyển", desc: "Dự kiến 2-4 ngày", done: false },
+  { icon: Leaf,    label: "Nhận hàng",  desc: "Kích hoạt thiết bị", done: false },
+];
+
+const MOCK_ITEMS = [
+  { id: 1, name: "Smart Pot v2 - Emerald", price: 1250000, qty: 1, icon: Cpu, color: "text-emerald-400" },
+  { id: 2, name: "Dinh dưỡng Bio-Grow", price: 350000, qty: 2, icon: FlaskConical, color: "text-teal-400" },
 ];
 
 export default function CheckoutSuccessPage() {
@@ -21,152 +25,127 @@ export default function CheckoutSuccessPage() {
   const [orderId, setOrderId] = useState("SG-202XMM-0000");
 
   useEffect(() => {
-    // Generate order ID on client to avoid hydration mismatch
     const year = new Date().getFullYear();
     const month = String(new Date().getMonth() + 1).padStart(2, "0");
     const random = String(Math.floor(Math.random() * 9000) + 1000);
     setOrderId(`SG-${year}${month}-${random}`);
-
     const t = setTimeout(() => setVisible(true), 100);
     return () => clearTimeout(t);
   }, []);
 
   return (
-    <main
-      className="flex min-h-dvh flex-col items-center justify-center px-4 py-16"
-      style={{ background: "var(--bg-base)", paddingTop: "88px" }}
-    >
-      {/* ── Success card ── */}
-      <div
-        className="w-full max-w-lg overflow-hidden rounded-3xl transition-all duration-700"
-        style={{
-          background: "var(--bg-elevated)",
-          border: "1px solid var(--border-subtle)",
-          opacity: visible ? 1 : 0,
-          transform: visible ? "translateY(0)" : "translateY(24px)",
-        }}
-      >
-        {/* Green top bar */}
-        <div
-          className="h-1.5 w-full"
-          style={{ background: "linear-gradient(90deg, var(--emerald-600), var(--emerald-400), #86EFAC)" }}
-        />
+    <main className="relative h-screen min-h-[600px] overflow-hidden flex flex-col items-center px-4 pt-32 pb-8">
+      <GalaxyBackground />
 
-        <div className="p-8">
-          {/* Check icon */}
-          <div className="flex justify-center">
-            <div
-              className="flex h-20 w-20 items-center justify-center rounded-full"
-              style={{
-                background: "rgba(34,197,94,0.10)",
-                border: "2px solid rgba(74,222,128,0.30)",
-                boxShadow: "0 0 40px rgba(34,197,94,0.20)",
-              }}
-            >
-              <CheckCircle size={40} style={{ color: "var(--emerald-400)" }} />
+      <div className="relative z-10 flex flex-col items-center w-full max-w-5xl mx-auto transform-gpu scale-[0.98] md:scale-95 origin-top">
+        {/* ── Header System ── */}
+        <div className={`mb-3 text-center transition-all duration-1000 ${visible ? "opacity-100 translate-y-0" : "opacity-0 -translate-y-2"}`}>
+          <div className="w-8 h-8 mx-auto bg-emerald-500/20 text-emerald-400 rounded-full flex items-center justify-center ring-4 ring-emerald-500/30 shadow-[0_0_20px_rgba(16,185,129,0.3)] mb-2.5">
+            <CheckCircle size={16} className="fill-emerald-400/10" />
+          </div>
+          <h1 className="text-base md:text-lg font-black tracking-tight uppercase leading-none">
+            <span className="text-white block md:inline">Thanh toán</span>
+            <span className="text-emerald-400 md:ml-2 block md:inline">Thành công!</span>
+          </h1>
+          <p className="text-emerald-100/20 text-[8px] font-bold uppercase tracking-[0.3em] mt-1">
+            Hệ thống Smart Garden đã xác nhận
+          </p>
+        </div>
+
+        {/* ── 2-Column Dashboard ── */}
+        <div className={`flex flex-col md:flex-row gap-4 w-full transition-all duration-1000 delay-200 ${visible ? "opacity-100 translate-y-0" : "opacity-0 translate-y-4"}`}>
+          
+          {/* LEFT COLUMN: Danh sách sản phẩm */}
+          <div className="flex-1 bg-white/[0.02] backdrop-blur-2xl border border-white/10 rounded-2xl p-4 flex flex-col shadow-[0_10px_40px_rgba(0,0,0,0.3)]">
+            <h2 className="text-white/30 text-[7px] font-bold uppercase tracking-[0.2em] text-center mb-3.5">Danh sách sản phẩm</h2>
+            <div className="flex-1 space-y-2 overflow-y-auto pr-1 custom-scrollbar max-h-[180px]">
+              {MOCK_ITEMS.map((item) => (
+                <div key={item.id} className="flex flex-col items-center bg-white/[0.02] border border-white/5 rounded-xl p-2 text-center transition-colors hover:bg-white/[0.04]">
+                  <div className={`w-7 h-7 rounded-lg bg-white/5 flex items-center justify-center mb-1 ${item.color}`}>
+                    <item.icon size={14} />
+                  </div>
+                  <h3 className="text-white/80 font-bold text-[8.5px] uppercase tracking-wide line-clamp-1">{item.name}</h3>
+                  <div className="flex items-center gap-2 mt-0.5">
+                    <span className="text-emerald-100/20 text-[7px]">Qty: {item.qty}</span>
+                    <span className="text-emerald-400/80 font-mono text-[8px] font-bold">{(item.price * item.qty).toLocaleString("vi-VN")}đ</span>
+                  </div>
+                </div>
+              ))}
+            </div>
+            <div className="mt-4 flex justify-between items-center bg-black/40 border border-white/5 rounded-lg px-3 py-1.5 backdrop-blur-md">
+              <span className="text-emerald-100/20 text-[7px] font-bold uppercase tracking-widest">Mã đơn</span>
+              <span className="font-mono text-white/60 text-[9px] font-bold tracking-wider">{orderId}</span>
             </div>
           </div>
 
-          {/* Title */}
-          <div className="mt-6 text-center">
-            <h1
-              className="text-2xl font-black"
-              style={{ color: "var(--text-primary)" }}
-            >
-              Thanh toán thành công!
-            </h1>
-            <p className="mt-2 text-sm" style={{ color: "var(--text-muted)" }}>
-              Cảm ơn bạn đã tin tưởng Smart Garden AIoT 🌿
-            </p>
-          </div>
-
-          {/* Order number */}
-          <div
-            className="mt-5 flex items-center justify-between rounded-xl px-4 py-3"
-            style={{ background: "var(--bg-overlay)", border: "1px solid var(--border-subtle)" }}
-          >
-            <span className="text-xs" style={{ color: "var(--text-muted)" }}>Mã đơn hàng</span>
-            <span
-              className="font-mono text-sm font-bold"
-              style={{ color: "var(--emerald-400)" }}
-            >
-              {orderId}
-            </span>
-          </div>
-
-          {/* Order tracking steps */}
-          <div className="mt-6 space-y-0">
-            {STEPS.map(({ icon: Icon, label, desc, done }, i) => (
-              <div key={label} className="flex gap-4">
-                {/* Connector */}
-                <div className="flex flex-col items-center">
-                  <div
-                    className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full"
-                    style={{
-                      background: done ? "rgba(34,197,94,0.15)" : "rgba(255,255,255,0.04)",
-                      border: `1px solid ${done ? "rgba(74,222,128,0.35)" : "var(--border-subtle)"}`,
-                    }}
-                  >
-                    <Icon size={14} style={{ color: done ? "var(--emerald-400)" : "var(--text-muted)" }} />
-                  </div>
-                  {i < STEPS.length - 1 && (
-                    <div
-                      className="my-1 w-px flex-1"
-                      style={{
-                        background: done ? "rgba(74,222,128,0.25)" : "var(--border-subtle)",
-                        minHeight: 20,
-                      }}
-                    />
-                  )}
-                </div>
-
-                {/* Text */}
-                <div className="pb-4 pt-1">
-                  <p
-                    className="text-xs font-semibold"
-                    style={{ color: done ? "var(--text-primary)" : "var(--text-muted)" }}
-                  >
-                    {label}
-                  </p>
-                  <p className="text-[10px]" style={{ color: "var(--text-muted)" }}>{desc}</p>
-                </div>
+          {/* RIGHT COLUMN: Tóm tắt & Timeline */}
+          <div className="flex-1 bg-white/[0.02] backdrop-blur-2xl border border-white/10 rounded-2xl p-4 flex flex-col shadow-[0_10px_40px_rgba(0,0,0,0.3)]">
+            <h2 className="text-white/30 text-[7px] font-bold uppercase tracking-[0.2em] text-center mb-3.5">Tóm tắt đơn hàng</h2>
+            
+            {/* Detailed Summary */}
+            <div className="space-y-1 mb-3.5">
+              <div className="flex justify-between text-[8px] text-emerald-100/20">
+                <span>Tạm tính</span>
+                <span className="font-mono">1.950.000đ</span>
               </div>
-            ))}
-          </div>
+              <div className="flex justify-between text-[8px] text-emerald-100/20">
+                <span>Vận chuyển</span>
+                <span className="text-emerald-400/60">Free</span>
+              </div>
+              <div className="pt-1.5 mt-1 border-t border-white/5 flex justify-between items-baseline">
+                <span className="text-[7.5px] font-bold text-white uppercase tracking-wider">Tổng cộng</span>
+                <span className="text-sm font-black text-emerald-400 font-mono">1.950.000đ</span>
+              </div>
+            </div>
 
-          {/* Info note */}
-          <div
-            className="mt-2 rounded-xl p-3"
-            style={{ background: "rgba(34,197,94,0.05)", border: "1px solid rgba(74,222,128,0.15)" }}
-          >
-            <p className="text-[11px] leading-relaxed" style={{ color: "var(--text-secondary)" }}>
-              Email xác nhận đã được gửi đến tài khoản của bạn. Sau khi nhận hàng,
-              sử dụng <span style={{ color: "var(--emerald-400)" }}>activation code</span> trong
-              hộp để liên kết Smart Pot với dashboard.
-            </p>
-          </div>
+            {/* Compressed Timeline */}
+            <div className="flex-1 px-1">
+              <div className="text-[7px] font-bold text-emerald-400/30 uppercase tracking-widest mb-2.5 px-1">Lộ trình</div>
+              <div className="space-y-1.5">
+                {STEPS.map(({ icon: Icon, label, desc, done }, i) => (
+                  <div key={label} className="flex gap-2 group">
+                    <div className="flex flex-col items-center">
+                      <div className={`flex h-4 w-4 shrink-0 items-center justify-center rounded-full transition-colors ${done ? "bg-emerald-500/20 text-emerald-400 border border-emerald-500/30" : "bg-white/5 text-white/10 border border-white/10"}`}>
+                        <Icon size={8} />
+                      </div>
+                      {i < STEPS.length - 1 && (
+                        <div className={`w-px h-1.5 mt-0.5 ${done ? "bg-emerald-500/30" : "bg-white/5"}`} />
+                      )}
+                    </div>
+                    <div className="pt-0">
+                      <p className={`text-[7.5px] font-bold uppercase tracking-wider leading-none ${done ? "text-emerald-400" : "text-white/10"}`}>{label}</p>
+                      <p className={`text-[6.5px] mt-0.5 ${done ? "text-emerald-100/20" : "text-white/5"}`}>{desc}</p>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </div>
 
-          {/* CTAs */}
-          <div className="mt-6 flex flex-col gap-3">
-            <Link href="/dashboard" className="btn-emerald w-full justify-center gap-2 py-3">
-              <LayoutDashboard size={15} />
-              Truy cập Dashboard
-            </Link>
-            <Link
-              href="/products"
-              className="flex w-full items-center justify-center gap-2 rounded-xl py-2.5 text-sm font-semibold"
-              style={{
-                background: "rgba(255,255,255,0.03)",
-                border: "1px solid var(--border-subtle)",
-                color: "var(--text-secondary)",
-              }}
-            >
-              <ShoppingBag size={14} />
-              Tiếp tục mua sắm
-            </Link>
+            {/* Compact Actions */}
+            <div className="mt-4 flex flex-col gap-1.5">
+              <Link href="/dashboard" className="w-full bg-emerald-500/90 hover:bg-emerald-500 text-white text-[8px] font-bold uppercase tracking-wider py-1.5 rounded-lg transition-all shadow-[0_0_15px_rgba(16,185,129,0.1)] hover:-translate-y-0.5 flex justify-center items-center gap-1.5 group">
+                <LayoutDashboard size={10} className="group-hover:rotate-6 transition-transform" />
+                Dashboard
+              </Link>
+              <Link href="/products" className="w-full bg-white/5 hover:bg-white/10 border border-white/5 text-white/60 text-[7.5px] font-medium py-1 rounded-lg transition-all flex justify-center items-center gap-1.5 group">
+                <ShoppingBag size={10} className="text-emerald-400/60 group-hover:scale-110 transition-transform" />
+                Mua sắm
+              </Link>
+            </div>
           </div>
         </div>
+
+        <p className={`mt-5 text-white/5 text-[7px] font-mono uppercase tracking-[0.8em] transition-opacity duration-1000 delay-700 ${visible ? "opacity-100" : "opacity-0"}`}>
+          Smart Garden AIoT © 2026
+        </p>
       </div>
+
+      <style jsx>{`
+        .custom-scrollbar::-webkit-scrollbar { width: 1.5px; }
+        .custom-scrollbar::-webkit-scrollbar-track { background: transparent; }
+        .custom-scrollbar::-webkit-scrollbar-thumb { background: rgba(255, 255, 255, 0.03); border-radius: 10px; }
+        .custom-scrollbar::-webkit-scrollbar-thumb:hover { background: rgba(16, 185, 129, 0.1); }
+      `}</style>
     </main>
   );
 }
