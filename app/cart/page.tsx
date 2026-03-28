@@ -6,8 +6,9 @@ import { useRouter } from "next/navigation";
 import {
   ShoppingCart, Trash2, Plus, Minus,
   ArrowLeft, ArrowRight, ShoppingBag, Tag,
-  Leaf, FlaskConical, Cpu,
+  Leaf, FlaskConical, Cpu, CreditCard,
 } from "lucide-react";
+import GalaxyBackground from "@/components/ui/GalaxyBackground";
 
 const CATEGORY_COLOR: Record<string, string> = {
   seeds:        "var(--emerald-400)",
@@ -40,72 +41,53 @@ export default function CartPage() {
   /* ── Empty state ── */
   if (items.length === 0) {
     return (
-      <main
-        className="flex min-h-dvh flex-col items-center justify-center gap-6 px-4"
-        style={{ background: "var(--bg-base)", paddingTop: "72px" }}
-      >
-        <div
-          className="flex h-20 w-20 items-center justify-center rounded-3xl"
-          style={{ background: "rgba(34,197,94,0.08)", border: "1px solid rgba(74,222,128,0.18)" }}
-        >
-          <ShoppingCart size={32} style={{ color: "var(--emerald-400)" }} />
+      <main className="relative flex min-h-dvh flex-col items-center justify-center gap-6 px-4 bg-transparent overflow-hidden">
+        <GalaxyBackground />
+        <div className="relative z-10 flex flex-col items-center gap-8 text-center max-w-sm">
+          <div className="flex h-24 w-24 items-center justify-center rounded-[2rem] bg-emerald-500/10 border border-emerald-500/20 text-emerald-400 shadow-[0_0_30px_rgba(16,185,129,0.15)] transition-transform hover:scale-110 duration-500">
+            <ShoppingCart size={40} />
+          </div>
+          <div>
+            <h2 className="text-3xl font-black uppercase tracking-tighter text-white">
+              GIỎ HÀNG <span className="text-emerald-400">TRỐNG</span>
+            </h2>
+            <p className="mt-4 text-slate-400 font-medium leading-relaxed">
+              Dường như bạn chưa chọn được sản phẩm ưng ý. Hãy tiếp tục khám phá khu vườn công nghệ của chúng tôi.
+            </p>
+          </div>
+          <Link href="/products" className="group relative px-8 py-4 bg-emerald-500 text-white font-black uppercase tracking-widest rounded-2xl overflow-hidden transition-all hover:bg-emerald-400 hover:-translate-y-1 shadow-[0_0_20px_rgba(16,185,129,0.3)] flex items-center gap-3">
+            <ShoppingBag size={20} />
+            KHÁM PHÁ SẢN PHẨM
+          </Link>
         </div>
-        <div className="text-center">
-          <h2 className="text-2xl font-black" style={{ color: "var(--text-primary)" }}>
-            Giỏ hàng trống
-          </h2>
-          <p className="mt-2 text-sm" style={{ color: "var(--text-muted)" }}>
-            Khám phá sản phẩm và thêm vào giỏ hàng của bạn.
-          </p>
-        </div>
-        <Link href="/products" className="btn-emerald gap-2 px-6 py-3">
-          <ShoppingBag size={15} />
-          Khám phá sản phẩm
-        </Link>
       </main>
     );
   }
 
   return (
-    <main
-      className="min-h-dvh"
-      style={{ background: "var(--bg-base)", paddingTop: "72px" }}
-    >
-      <div className="mx-auto w-full max-w-5xl px-4 py-10 md:px-8">
+    <main className="relative flex min-h-screen flex-col items-center bg-transparent overflow-hidden pt-24 pb-12 px-4">
+      <GalaxyBackground />
+      <div className="w-full max-w-6xl mx-auto relative z-10">
 
-        {/* Header */}
-        <div className="mb-8 flex items-center justify-between">
-          <div>
-            <p
-              className="mb-1 font-mono text-xs font-semibold uppercase tracking-[0.15em]"
-              style={{ color: "var(--emerald-500)" }}
-            >
-              // CART
-            </p>
-            <h1 className="text-3xl font-black" style={{ color: "var(--text-primary)" }}>
-              Giỏ hàng
-              <span
-                className="ml-3 rounded-full px-2.5 py-0.5 text-base font-bold"
-                style={{ background: "rgba(34,197,94,0.12)", color: "var(--emerald-400)" }}
-              >
-                {count}
-              </span>
+        {/* Header (Centered & Compact) */}
+        <div className="mb-16 text-center">
+          <p className="mb-4 font-mono text-[10px] font-black uppercase tracking-[0.3em] text-teal-400">
+            {"// SHOPPING CART"}
+          </p>
+          <div className="flex flex-col items-center gap-4">
+            <h1 className="text-2xl md:text-3xl font-black uppercase tracking-tighter flex items-center gap-3">
+              <span className="text-white">GIỎ</span> <span className="text-emerald-400">HÀNG</span>
             </h1>
+            <span className="px-3 py-1 text-[10px] font-black bg-white/10 border border-white/20 text-emerald-400 rounded-full shadow-[0_0_15px_rgba(16,185,129,0.1)] uppercase tracking-[0.1em]">
+              {count} SẢN PHẨM TRONG GIỎ
+            </span>
           </div>
-          <Link
-            href="/products"
-            className="flex items-center gap-2 text-sm font-semibold"
-            style={{ color: "var(--text-muted)" }}
-          >
-            <ArrowLeft size={14} />
-            Tiếp tục mua sắm
-          </Link>
         </div>
 
-        <div className="grid gap-6 lg:grid-cols-[1fr_340px]">
+        <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
 
           {/* ── Item list ── */}
-          <div className="space-y-3">
+          <div className="col-span-12 lg:col-span-8 space-y-4">
             {items.map((item) => {
               const color   = CATEGORY_COLOR[item.category] ?? "var(--emerald-400)";
               const Icon    = CATEGORY_ICON[item.category] ?? Leaf;
@@ -115,15 +97,11 @@ export default function CartPage() {
               return (
                 <div
                   key={item.slug}
-                  className="flex items-center gap-4 rounded-2xl p-4"
-                  style={{ background: "var(--bg-elevated)", border: "1px solid var(--border-subtle)" }}
+                  className="flex items-center gap-6 rounded-2xl p-5 bg-white/[0.02] backdrop-blur-md border border-white/10 transition-all hover:bg-white/[0.04] group/item shadow-xl overflow-hidden"
                 >
-                  {/* Icon */}
-                  <div
-                    className="flex h-14 w-14 shrink-0 items-center justify-center rounded-xl"
-                    style={{ background: `${color}18`, border: `1px solid ${color}33` }}
-                  >
-                    <Icon size={24} style={{ color }} />
+                  {/* Icon Frame (Reduced) */}
+                  <div className="flex h-16 w-16 shrink-0 items-center justify-center rounded-xl bg-emerald-500/10 border border-emerald-500/20 text-emerald-400 shadow-[0_0_15px_rgba(16,185,129,0.1)] transition-transform group-hover/item:scale-105">
+                    <Icon size={28} />
                   </div>
 
                   {/* Info */}
@@ -131,12 +109,12 @@ export default function CartPage() {
                     <p className="truncate text-sm font-bold" style={{ color: "var(--text-primary)" }}>
                       {item.name}
                     </p>
-                    <div className="mt-1 flex items-center gap-2">
-                      <span className="font-mono text-sm font-black" style={{ color }}>
+                    <div className="mt-1 flex items-center gap-3">
+                      <span className="font-bold text-base text-emerald-400">
                         {fmt(price)}
                       </span>
                       {hasDisc && (
-                        <span className="text-xs line-through" style={{ color: "var(--text-muted)" }}>
+                        <span className="text-xs line-through text-slate-500">
                           {fmt(item.price)}
                         </span>
                       )}
@@ -152,75 +130,56 @@ export default function CartPage() {
                     </div>
                   </div>
 
-                  {/* Qty controls */}
-                  <div
-                    className="flex items-center gap-1 rounded-xl p-1"
-                    style={{ background: "var(--bg-overlay)", border: "1px solid var(--border-subtle)" }}
-                  >
+                  {/* Qty controls (Refined Pill) */}
+                  <div className="flex items-center gap-4 bg-black/40 border border-white/10 rounded-full p-1 px-4 h-9 shadow-inner">
                     <button
                       onClick={() => setQty(item.slug, item.qty - 1)}
-                      className="flex h-7 w-7 items-center justify-center rounded-lg"
-                      style={{ color: "var(--text-muted)" }}
+                      className="text-slate-500 hover:text-emerald-400 transition-colors"
                     >
                       <Minus size={12} />
                     </button>
-                    <span
-                      className="w-7 text-center font-mono text-sm font-bold"
-                      style={{ color: "var(--text-primary)" }}
-                    >
+                    <span className="w-6 text-center font-bold text-sm text-white">
                       {item.qty}
                     </span>
                     <button
                       onClick={() => setQty(item.slug, item.qty + 1)}
-                      className="flex h-7 w-7 items-center justify-center rounded-lg"
-                      style={{ color: "var(--text-muted)" }}
+                      className="text-slate-500 hover:text-emerald-400 transition-colors"
                     >
                       <Plus size={12} />
                     </button>
                   </div>
 
-                  {/* Item total */}
-                  <p
-                    className="hidden w-28 text-right font-mono text-sm font-black sm:block"
-                    style={{ color: "var(--text-primary)" }}
-                  >
+                  {/* Item total (Reduced) */}
+                  <p className="hidden w-28 text-right font-bold text-white text-sm sm:block">
                     {fmt(price * item.qty)}
                   </p>
 
                   {/* Remove */}
                   <button
                     onClick={() => remove(item.slug)}
-                    className="flex h-8 w-8 shrink-0 items-center justify-center rounded-lg"
-                    style={{ color: "var(--text-muted)" }}
+                    className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl text-slate-500 hover:text-rose-400 hover:bg-white/5 transition-all"
                   >
-                    <Trash2 size={14} />
+                    <Trash2 size={16} />
                   </button>
                 </div>
               );
             })}
 
-            <div className="flex justify-end">
+            <div className="flex justify-end pt-4">
               <button
                 onClick={clear}
-                className="flex items-center gap-1.5 text-xs font-semibold"
-                style={{ color: "var(--text-muted)" }}
+                className="flex items-center gap-2 text-xs font-bold uppercase tracking-widest text-slate-500 hover:text-rose-400 transition-all px-4 py-2"
               >
-                <Trash2 size={11} />
-                Xoá tất cả
+                <Trash2 size={14} />
+                XOÁ TẤT CẢ GIỎ HÀNG
               </button>
             </div>
           </div>
 
-          {/* ── Order summary ── */}
-          <div
-            className="h-fit rounded-2xl p-5"
-            style={{ background: "var(--bg-elevated)", border: "1px solid var(--border-subtle)" }}
-          >
-            <p
-              className="mb-4 font-mono text-xs font-semibold uppercase tracking-wider"
-              style={{ color: "var(--text-muted)" }}
-            >
-              Tóm tắt đơn hàng
+          {/* ── Order summary block ── */}
+          <div className="col-span-12 lg:col-span-4 h-fit rounded-[2rem] bg-white/[0.03] backdrop-blur-xl border border-white/10 p-6 sticky top-24 shadow-[0_20px_40px_rgba(0,0,0,0.5)] transition-all hover:border-emerald-500/10">
+            <p className="mb-6 font-mono text-[9px] font-black uppercase tracking-[0.3em] text-teal-400 text-center">
+              ORDER SUMMARY
             </p>
 
             <div className="space-y-3">
@@ -244,42 +203,35 @@ export default function CartPage() {
               )}
             </div>
 
-            <div className="my-4" style={{ borderTop: "1px solid var(--border-subtle)" }} />
-
-            <div className="flex items-baseline justify-between">
-              <span className="font-bold" style={{ color: "var(--text-primary)" }}>Tổng cộng</span>
-              <span className="text-2xl font-black" style={{ color: "var(--emerald-400)" }}>
+            <div className="flex flex-col items-center gap-2 mt-8 border-t border-white/5 pt-6 text-center">
+              <span className="font-black text-[9px] uppercase tracking-[0.2em] text-slate-500">TOTAL AMOUNT</span>
+              <span className="text-2xl font-black text-white">
                 {fmt(grandTotal)}
               </span>
             </div>
 
             <button
               onClick={handleCheckout}
-              className="btn-emerald mt-5 w-full justify-center gap-2 py-3"
+              className="w-full bg-emerald-500 text-white font-black uppercase tracking-widest py-4 mt-8 rounded-xl hover:bg-emerald-400 transition-all duration-300 shadow-[0_0_30px_rgba(16,185,129,0.3)] hover:-translate-y-1 flex justify-center items-center gap-3 group text-xs"
             >
-              Thanh toán
-              <ArrowRight size={15} />
+              <CreditCard size={18} className="group-hover:scale-110 transition-transform" />
+              TIẾN HÀNH THANH TOÁN
             </button>
 
-            <Link
-              href="/products"
-              className="mt-3 flex w-full items-center justify-center gap-2 rounded-xl py-2.5 text-xs font-semibold"
-              style={{ color: "var(--text-muted)" }}
-            >
-              <ArrowLeft size={12} />
-              Tiếp tục mua sắm
-            </Link>
-
-            <div className="mt-5 space-y-2 pt-4" style={{ borderTop: "1px solid var(--border-subtle)" }}>
-              {["Bảo hành 12 tháng chính hãng", "Đổi trả trong 30 ngày", "Thanh toán an toàn · SSL"].map((t) => (
-                <p key={t} className="flex items-center gap-2 text-[10px]" style={{ color: "var(--text-muted)" }}>
-                  <span style={{ color: "var(--emerald-500)" }}>✓</span> {t}
+            <div className="mt-8 space-y-3 pt-6 border-t border-white/5">
+              {[
+                { label: "Bảo hành 12 tháng chính hãng", icon: "✓" },
+                { label: "Đổi trả trong 30 ngày", icon: "↺" },
+                { label: "Thanh toán an toàn · SSL", icon: "🔒" },
+              ].map(({ label, icon }) => (
+                <p key={label} className="flex items-center gap-3 text-[11px] font-medium text-slate-500">
+                  <span className="text-emerald-500 text-sm">{icon}</span> {label}
                 </p>
               ))}
             </div>
+            </div>
           </div>
         </div>
-      </div>
     </main>
   );
 }
