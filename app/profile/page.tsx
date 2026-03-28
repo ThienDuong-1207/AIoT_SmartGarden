@@ -103,8 +103,8 @@ export default function ProfilePage() {
               {/* Quick stats */}
               <div className="grid w-full grid-cols-2 gap-4">
                 {[
-                  { value: "0", label: "Đơn hàng" },
-                  { value: "0", label: "Thiết bị" },
+                  { value: "1", label: "Đơn hàng" },
+                  { value: "2", label: "Thiết bị" },
                 ].map(({ value, label }) => (
                   <div key={label} className="rounded-2xl py-4 bg-white/5 border border-white/10 group-hover:border-emerald-500/20 transition-all">
                     <p className="text-3xl font-black text-emerald-400 mb-0.5">
@@ -184,6 +184,94 @@ export default function ProfilePage() {
                   Dữ liệu được bảo vệ bởi <span className="text-emerald-400">OAuth 2.0</span>. Mọi thay đổi sẽ được đồng bộ trực tiếp từ nền tảng 
                   {" "}<a href="https://myaccount.google.com" target="_blank" rel="noopener noreferrer" className="text-emerald-400 underline underline-offset-4 hover:text-emerald-300">Google Cloud</a>.
                 </p>
+              </div>
+            </div>
+
+            {/* Recent Orders (Tracking UI) */}
+            <div className="overflow-hidden rounded-[2.5rem] bg-white/[0.02] backdrop-blur-xl border border-white/10 shadow-2xl transition-all duration-300 hover:bg-white/[0.04]">
+              <div className="px-8 py-6 border-b border-white/5 flex items-center justify-between">
+                <h2 className="text-xl font-black uppercase tracking-tight text-white">
+                  Đơn hàng gần đây
+                </h2>
+                <span className="flex items-center gap-1.5 px-3 py-1 rounded-full bg-emerald-500/10 border border-emerald-500/20 text-[10px] font-bold text-emerald-400 uppercase tracking-widest">
+                  <span className="relative flex h-2 w-2">
+                    <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span>
+                    <span className="relative inline-flex rounded-full h-2 w-2 bg-emerald-500 shadow-[0_0_8px_rgba(16,185,129,0.8)]"></span>
+                  </span>
+                  Đang giao hàng
+                </span>
+              </div>
+
+              <div className="p-8">
+                <div className="flex items-center justify-between mb-6">
+                  <div>
+                    <p className="text-[10px] font-black uppercase tracking-[0.2em] text-slate-500">
+                      MÃ VẬN ĐƠN: <span className="text-emerald-400">SG-88392-TC</span>
+                    </p>
+                    <h3 className="mt-1 text-lg font-black text-slate-200">
+                      Bộ phần cứng Smart Garden AIoT (v2.0)
+                    </h3>
+                  </div>
+                  <div className="text-right">
+                    <p className="text-[10px] font-black text-slate-500 uppercase tracking-widest">
+                      Dự kiến giao
+                    </p>
+                    <p className="mt-1 text-sm font-bold text-emerald-400 leading-none">
+                      Hôm nay, 14:00 - 16:00
+                    </p>
+                  </div>
+                </div>
+
+                {/* Shipping Animation Video */}
+                <div className="relative mt-2 rounded-2xl overflow-hidden border border-white/5 shadow-inner">
+                  <video 
+                    src="/videos/shipping.webm" 
+                    autoPlay 
+                    loop 
+                    muted 
+                    playsInline 
+                    className="w-full h-48 md:h-64 object-cover rounded-xl pointer-events-none"
+                  />
+                  {/* Subtle Video Overlay */}
+                  <div className="absolute inset-0 bg-gradient-to-t from-black/40 via-transparent to-transparent pointer-events-none" />
+                  
+                  {/* Scanning Overlay (HUD) */}
+                  <div className="absolute top-4 left-4">
+                    <div className="bg-black/60 backdrop-blur-md border border-white/10 rounded-lg p-2.5">
+                      <p className="text-[8px] font-black text-emerald-400/80 uppercase tracking-[0.15em] mb-1">
+                        GPS TRACKING
+                      </p>
+                      <p className="text-[10px] font-mono font-bold text-white tabular-nums">
+                        10.76262° N, 106.66017° E
+                      </p>
+                    </div>
+                  </div>
+                </div>
+
+                {/* Progress Bar (Eco-Tech Style) */}
+                <div className="mt-10">
+                  <div className="flex justify-between items-end mb-3">
+                    <p className="font-mono text-[10px] font-bold text-emerald-400 uppercase tracking-[0.2em]">
+                      {"// SHIPPING PROGRESS"}
+                    </p>
+                    <p className="font-mono text-[10px] font-black text-white px-2 py-0.5 rounded bg-white/10 uppercase">
+                      65%
+                    </p>
+                  </div>
+                  <div className="w-full h-2 bg-white/5 rounded-full overflow-hidden border border-white/5">
+                    <div 
+                      className="h-full bg-emerald-500 rounded-full transition-all duration-1000 relative shadow-[0_0_15px_rgba(16,185,129,0.5)]"
+                      style={{ width: "65%" }}
+                    >
+                      <div className="absolute top-0 right-0 h-full w-8 bg-gradient-to-r from-transparent to-white/30 animate-pulse" />
+                    </div>
+                  </div>
+                  <div className="flex justify-between mt-3 text-[9px] font-black text-slate-500 uppercase tracking-widest">
+                    <span>Kho phân loại</span>
+                    <span className="text-emerald-400">Đang giao hàng</span>
+                    <span>Hoàn tất</span>
+                  </div>
+                </div>
               </div>
             </div>
 

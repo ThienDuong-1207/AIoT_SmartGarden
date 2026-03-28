@@ -7,7 +7,7 @@ import {
   Package, Truck, Leaf,
 } from "lucide-react";
 
-const ORDER_NUM = `SG-${new Date().getFullYear()}${String(new Date().getMonth() + 1).padStart(2, "0")}-${String(Math.floor(Math.random() * 9000) + 1000)}`;
+
 
 const STEPS = [
   { icon: Package, label: "Xác nhận đơn",  desc: "Đơn hàng đã được ghi nhận",      done: true  },
@@ -18,8 +18,15 @@ const STEPS = [
 
 export default function CheckoutSuccessPage() {
   const [visible, setVisible] = useState(false);
+  const [orderId, setOrderId] = useState("SG-202XMM-0000");
 
   useEffect(() => {
+    // Generate order ID on client to avoid hydration mismatch
+    const year = new Date().getFullYear();
+    const month = String(new Date().getMonth() + 1).padStart(2, "0");
+    const random = String(Math.floor(Math.random() * 9000) + 1000);
+    setOrderId(`SG-${year}${month}-${random}`);
+
     const t = setTimeout(() => setVisible(true), 100);
     return () => clearTimeout(t);
   }, []);
@@ -83,7 +90,7 @@ export default function CheckoutSuccessPage() {
               className="font-mono text-sm font-bold"
               style={{ color: "var(--emerald-400)" }}
             >
-              {ORDER_NUM}
+              {orderId}
             </span>
           </div>
 
