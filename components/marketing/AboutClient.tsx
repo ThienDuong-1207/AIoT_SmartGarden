@@ -53,8 +53,8 @@ function SystemLoadTracker() {
   }, []);
 
   return (
-    <div className="fixed top-24 right-4 pointer-events-none z-50 mix-blend-screen opacity-40">
-      <p className="font-mono text-[8px] text-[var(--cyan-400)] tracking-widest text-right">
+    <div className="fixed top-24 right-4 pointer-events-none z-50 opacity-40">
+      <p className="font-mono text-[8px] text-teal-400 tracking-widest text-right">
         [ SYS_LOAD: {hex} ]<br/>
         [ NODE: ABOUT_US ]
       </p>
@@ -63,7 +63,7 @@ function SystemLoadTracker() {
 }
 
 function HudCorners() {
-  const c = "absolute w-2 h-2 border-[1.5px] border-[rgba(34,211,238,0.5)] pointer-events-none z-20";
+  const c = "absolute w-2 h-2 border-[1.5px] border-emerald-500/30 pointer-events-none z-20";
   return (
     <>
       <div className={`${c} top-[-1px] left-[-1px] border-r-0 border-b-0`} />
@@ -78,11 +78,11 @@ function HudCorners() {
 function RadarSkillChart() {
   return (
     <svg viewBox="0 0 100 100" className="absolute inset-0 w-full h-full opacity-0 group-hover:opacity-30 transition-opacity duration-700 pointer-events-none -z-10">
-      <polygon points="50,10 90,30 90,70 50,90 10,70 10,30" fill="rgba(34,211,238,0.05)" stroke="cyan" strokeWidth="0.5" />
-      <polygon points="50,25 75,40 75,60 50,75 25,60 25,40" fill="none" stroke="rgba(34,211,238,0.5)" strokeWidth="0.5" />
-      <line x1="50" y1="50" x2="50" y2="10" stroke="rgba(34,211,238,0.3)" strokeWidth="0.5" />
-      <line x1="50" y1="50" x2="90" y2="30" stroke="rgba(34,211,238,0.3)" strokeWidth="0.5" />
-      <line x1="50" y1="50" x2="10" y2="70" stroke="rgba(34,211,238,0.3)" strokeWidth="0.5" />
+      <polygon points="50,10 90,30 90,70 50,90 10,70 10,30" fill="rgba(16,185,129,0.05)" stroke="rgba(16,185,129,0.5)" strokeWidth="0.5" />
+      <polygon points="50,25 75,40 75,60 50,75 25,60 25,40" fill="none" stroke="rgba(16,185,129,0.3)" strokeWidth="0.5" />
+      <line x1="50" y1="50" x2="50" y2="10" stroke="rgba(16,185,129,0.2)" strokeWidth="0.5" />
+      <line x1="50" y1="50" x2="90" y2="30" stroke="rgba(16,185,129,0.2)" strokeWidth="0.5" />
+      <line x1="50" y1="50" x2="10" y2="70" stroke="rgba(16,185,129,0.2)" strokeWidth="0.5" />
     </svg>
   );
 }
@@ -124,10 +124,8 @@ function TeamCard({ member }: { member: any }) {
         ref={cardRef}
         onMouseMove={handleMouseMove}
         onMouseLeave={handleMouseLeave}
-        className="wireframe-card group-hover:animate-cyan-pulse relative flex flex-col items-center justify-center p-6 h-[260px] rounded-2xl overflow-hidden cursor-pointer"
+        className="relative flex flex-col items-center justify-center p-6 h-[260px] rounded-2xl overflow-hidden cursor-pointer bg-white/[0.02] border border-white/10 backdrop-blur-md transition-all duration-300 ease-out transform-gpu will-change-transform hover:-translate-y-1 hover:bg-white/[0.04] hover:border-emerald-500/30 hover:shadow-[0_8px_32px_rgba(16,185,129,0.1)]"
         style={{
-          background: "transparent",
-          border: "1px dashed rgba(34, 211, 238, 0.3)",
           transformStyle: "preserve-3d",
           transformOrigin: "center center"
         }}
@@ -142,15 +140,15 @@ function TeamCard({ member }: { member: any }) {
         >
           <div className="flex gap-0.5 h-6">
             {[2,1,3,1,2,1,1,2,4,1].map((w, j) => (
-              <div key={j} className="h-full bg-[var(--cyan-500)]" style={{ width: `${w}px` }} />
+              <div key={j} className="h-full bg-emerald-500" style={{ width: `${w}px` }} />
             ))}
           </div>
-          <p className="font-mono text-[8px] text-[var(--cyan-400)] mt-1">{member.id}·UX</p>
+          <p className="font-mono text-[8px] text-emerald-400 mt-1">{member.id}·UX</p>
         </div>
 
         {/* Avatar Hologram lift */}
         <div 
-          className="w-24 h-24 rounded-full overflow-hidden border border-[rgba(34,211,238,0.2)] bg-[rgba(0,0,0,0.4)] mb-5 transition-all duration-500 ease-out flex items-center justify-center group-hover:shadow-[0_0_25px_rgba(34,211,238,0.8)]"
+          className="w-24 h-24 rounded-full overflow-hidden border border-emerald-500/20 bg-black/40 mb-5 transition-all duration-500 ease-out flex items-center justify-center group-hover:shadow-[0_0_25px_rgba(16,185,129,0.4)]"
           style={{ transform: "translateZ(0px)" }}
         >
           <Image src={member.image} alt={member.name} width={96} height={96} className="object-cover opacity-80 group-hover:opacity-100 transition-opacity" />
@@ -159,13 +157,13 @@ function TeamCard({ member }: { member: any }) {
         {/* Info block */}
         <div className="text-center w-full transition-transform duration-500" style={{ transform: "translateZ(0px)" }}>
           <h3 className="text-base font-bold text-white uppercase tracking-wider">{member.name}</h3>
-          <p className="text-[10px] font-mono mt-1.5 px-2 py-0.5 rounded text-[var(--cyan-400)] bg-[rgba(34,211,238,0.08)] inline-block border border-[rgba(34,211,238,0.15)]">
+          <p className="text-[10px] font-mono mt-1.5 px-2 py-0.5 rounded text-emerald-400 bg-emerald-500/10 inline-block border border-emerald-500/20">
             {member.role}
           </p>
         </div>
 
         {/* Scanline on hover */}
-        <div className="absolute top-0 inset-x-0 h-px bg-[var(--cyan-400)] opacity-0 group-hover:opacity-100 group-hover:animate-scan transition-opacity pointer-events-none" style={{ boxShadow: "0 0 10px 2px var(--cyan-400)" }} />
+        <div className="absolute top-0 inset-x-0 h-px bg-emerald-400 opacity-0 group-hover:opacity-100 group-hover:animate-scan transition-opacity pointer-events-none" style={{ boxShadow: "0 0 10px 2px rgba(16,185,129,0.5)" }} />
       </div>
     </div>
   );
@@ -180,23 +178,16 @@ export default function AboutClient() {
     // 1. Initial Page Fade-in
     gsap.to(containerRef.current, { opacity: 1, duration: 1.2, ease: "power2.out" });
 
-    // 2. Wireframe-to-Glass Sequential Entry via Stagger/Batch
-    ScrollTrigger.batch(".wireframe-card", {
-      start: "top 80%",
-      onEnter: (elements) => {
-        gsap.fromTo(elements,
-          { background: "transparent", backdropFilter: "blur(0px)", borderColor: "rgba(34, 211, 238, 0.3)" },
-          { 
-            background: "rgba(255, 255, 255, 0.03)", 
-            backdropFilter: "blur(20px)", 
-            borderColor: "rgba(34, 211, 238, 0.15)", 
-            boxShadow: "0 0 20px rgba(34, 211, 238, 0.05)",
-            borderStyle: "solid",
-            duration: 0.8, 
-            stagger: 0.15, 
-            ease: "power2.out" 
-          }
-        );
+    // 2. Initial entry animations (Simple fade up for cards)
+    gsap.from(".perspective-1000, .bg-white\\/\\[0\\.02\\]", {
+      y: 30,
+      opacity: 0,
+      duration: 0.8,
+      stagger: 0.1,
+      ease: "power2.out",
+      scrollTrigger: {
+        trigger: containerRef.current,
+        start: "top 80%",
       }
     });
 
@@ -264,38 +255,32 @@ export default function AboutClient() {
           100% { transform: translateY(260px); }
         }
         .group-hover\\:animate-scan { animation: scan 2s linear infinite; }
-        @keyframes cyan-pulse {
-          0% { box-shadow: 0 0 10px rgba(34,211,238,0.2) inset, 0 0 10px rgba(34,211,238,0.2); border-color: rgba(34,211,238,0.4); }
-          50% { box-shadow: 0 0 20px rgba(34,211,238,0.6) inset, 0 0 30px rgba(34,211,238,0.5); border-color: rgba(34,211,238,0.8); }
-          100% { box-shadow: 0 0 10px rgba(34,211,238,0.2) inset, 0 0 10px rgba(34,211,238,0.2); border-color: rgba(34,211,238,0.4); }
-        }
-        .group-hover\\:animate-cyan-pulse { animation: cyan-pulse 2s infinite ease-in-out !important; }
       `}</style>
 
       {/* ── Ambient Light Orbs ── */}
       <div className="pointer-events-none fixed inset-0 z-[-1]">
-        <div className="absolute top-1/4 left-1/4 w-[500px] h-[500px] rounded-full blur-[100px] animate-soft-float" style={{ background: "rgba(34,211,238,0.03)" }} />
-        <div className="absolute bottom-10 right-1/4 w-[600px] h-[600px] rounded-full blur-[120px] animate-soft-float" style={{ background: "rgba(16,185,129,0.02)", animationDelay: "-3s" }} />
+        <div className="absolute top-1/4 left-1/4 w-[500px] h-[500px] rounded-full blur-[100px] animate-soft-float" style={{ background: "rgba(16,185,129,0.03)" }} />
+        <div className="absolute bottom-10 right-1/4 w-[600px] h-[600px] rounded-full blur-[120px] animate-soft-float" style={{ background: "rgba(20,184,166,0.02)", animationDelay: "-3s" }} />
       </div>
 
       {/* ── Hero section ── */}
-      <section className="relative pt-32 pb-16 border-b border-[rgba(34,211,238,0.1)]">
+      <section className="relative pt-32 pb-16 border-b border-emerald-500/10">
         <div className="container-app relative z-10 flex flex-col items-center text-center">
           <span
-            className="font-mono text-[10px] font-bold mb-4 px-3 py-1.5 rounded-full border border-[rgba(34,211,238,0.2)]"
-            style={{ color: "var(--cyan-400)", background: "rgba(34,211,238,0.05)", backdropFilter: "blur(8px)" }}
+            className="font-mono text-sm font-bold mb-4 px-3 py-1.5 rounded-full border border-teal-500/20 text-teal-400 tracking-widest uppercase"
+            style={{ background: "rgba(16,185,129,0.05)", backdropFilter: "blur(8px)" }}
           >
-            [ SYSTEM_INFO: ABOUT_US ]
+            // PROJECT_IDENTITY
           </span>
-          <h1 className="mt-4 text-4xl font-black md:text-5xl lg:text-6xl text-white uppercase tracking-tight">
-            Về Smart Garden <span className="text-gradient-cyan">AIoT</span>
+          <h1 className="mt-4 text-5xl md:text-7xl font-black text-white uppercase tracking-tighter">
+            Về Smart Garden <span className="text-emerald-400">AIoT</span>
           </h1>
           <p className="mt-6 max-w-2xl text-base leading-relaxed md:text-lg" style={{ color: "var(--text-secondary)" }}>
             Hệ sinh thái kết hợp hình thái nông nghiệp thủy canh cổ điển với công nghệ IoT và Thị giác máy tính (AI Vision), mang đến một không gian xanh tự động hóa cho kỹ sư và người yêu cây.
           </p>
           
           <div className="mt-12 flex items-center justify-center animate-bounce opacity-50">
-            <ChevronDown size={24} style={{ color: "var(--cyan-400)" }} />
+            <ChevronDown size={24} className="text-teal-400" />
           </div>
         </div>
       </section>
@@ -306,23 +291,21 @@ export default function AboutClient() {
           {/* Left: Tầm nhìn sứ mệnh */}
           <div className="flex flex-col gap-5">
             <div className="mb-2">
-              <span className="font-mono text-[11px] font-bold uppercase tracking-[0.2em] text-[var(--emerald-500)]">
+              <span className="font-mono text-sm font-bold uppercase tracking-widest text-teal-400">
                 // PLATFORM_CORE
               </span>
-              <h2 className="text-2xl font-bold mt-1 text-white">Nền tảng cốt lõi</h2>
+              <h2 className="text-3xl md:text-4xl font-extrabold mt-1 text-white tracking-tight">Nền tảng cốt lõi</h2>
             </div>
             
             <div className="flex flex-col gap-4">
               {PILLARS.map(({ icon: Icon, iconColor, iconBg, title, desc }) => (
                 <div
                   key={title}
-                  className="wireframe-card p-6 flex flex-col sm:flex-row items-start sm:items-center gap-5 relative transition-all rounded-2xl"
-                  style={{ background: "transparent", border: "1px dashed rgba(34, 211, 238, 0.3)" }}
+                  className="p-6 flex flex-col sm:flex-row items-start sm:items-center gap-5 relative transition-all rounded-2xl bg-white/[0.02] border border-white/10 backdrop-blur-md"
                 >
                   <HudCorners />
                   <div
-                    className="flex shrink-0 h-14 w-14 items-center justify-center rounded-xl"
-                    style={{ background: iconBg, color: iconColor, border: `1px solid ${iconColor}40` }}
+                    className="flex shrink-0 h-14 w-14 items-center justify-center rounded-xl bg-emerald-500/10 text-emerald-400 border border-emerald-400/20"
                   >
                     <Icon size={24} />
                   </div>
@@ -338,15 +321,14 @@ export default function AboutClient() {
           {/* Right: Tech Stack */}
           <div className="flex flex-col gap-5">
             <div className="mb-2">
-              <span className="font-mono text-[11px] font-bold uppercase tracking-[0.2em] text-[var(--cyan-500)]">
+              <span className="font-mono text-sm font-bold uppercase tracking-widest text-teal-400">
                 // SYSTEM_ARCHITECTURE
               </span>
-              <h2 className="text-2xl font-bold mt-1 text-white">Công nghệ tích hợp</h2>
+              <h2 className="text-3xl md:text-4xl font-extrabold mt-1 text-white tracking-tight">Công nghệ tích hợp</h2>
             </div>
 
             <div
-              className="wireframe-card flex flex-col h-full relative overflow-hidden rounded-2xl p-6 lg:p-8"
-              style={{ background: "transparent", border: "1px dashed rgba(34, 211, 238, 0.3)" }}
+              className="flex flex-col h-full relative overflow-hidden rounded-2xl p-6 lg:p-8 bg-white/[0.02] border border-white/10 backdrop-blur-md"
             >
               <HudCorners />
               <div className="mb-6 flex items-center justify-between pb-4 border-b border-[rgba(34,211,238,0.15)]">
@@ -388,10 +370,10 @@ export default function AboutClient() {
       {/* ── Journey Timeline ── */}
       <section className="container-app py-16 z-10 flex flex-col items-center relative">
         <div className="mb-14 text-center">
-          <span className="font-mono text-[11px] font-bold uppercase tracking-[0.2em] text-[var(--gold-400)]">
+          <span className="font-mono text-sm font-bold uppercase tracking-widest text-teal-400">
             // PROJECT_TIMELINE
           </span>
-          <h2 className="text-3xl font-bold mt-2 text-white">Tiến trình phát triển</h2>
+          <h2 className="text-3xl md:text-4xl font-extrabold mt-2 text-white tracking-tight">Tiến trình phát triển</h2>
         </div>
 
         <div ref={timelineContainerRef} className="w-full max-w-3xl flex flex-col gap-32 relative py-10">
@@ -399,35 +381,34 @@ export default function AboutClient() {
           {/* Vertical SVG Path for Scrub-to-Draw */}
           <svg className="absolute top-0 bottom-0 left-[23px] sm:left-1/2 sm:-ml-[2px] w-[4px] h-full z-[-1]" preserveAspectRatio="none">
             {/* Background thin dashed line */}
-            <line x1="2" y1="0" x2="2" y2="100%" stroke="rgba(34,211,238,0.1)" strokeWidth="1" strokeDasharray="4 4" />
+            <line x1="2" y1="0" x2="2" y2="100%" stroke="rgba(16,185,129,0.1)" strokeWidth="1" strokeDasharray="4 4" />
             {/* Foreground Solid Path animated via GSAP scaleY */}
             <line
               ref={pathRef as React.RefObject<SVGLineElement>}
               x1="2" y1="0" x2="2" y2="100%"
-              stroke="var(--cyan-400)"
+              stroke="rgba(16,185,129,0.6)"
               strokeWidth="2"
-              style={{ transformOrigin: "top", filter: "drop-shadow(0 0 6px cyan)" }}
+              style={{ transformOrigin: "top" }}
             />
           </svg>
 
           {JOURNEY.map((item, idx) => (
             <div key={idx} className={`timeline-event relative flex flex-col sm:flex-row items-start sm:items-center gap-6 ${idx % 2 === 0 ? "sm:flex-row-reverse" : ""}`}>
               {/* Center Dot */}
-              <div className="absolute left-[19px] sm:left-1/2 sm:-translate-x-1/2 w-4 h-4 rounded-full bg-[var(--bg-base)] border-[2px] border-[var(--cyan-400)] shadow-[0_0_12px_var(--cyan-500)] flex items-center justify-center z-10">
-                 <div className="w-1.5 h-1.5 bg-[var(--cyan-300)] rounded-full animate-pulse" />
+              <div className="absolute left-[19px] sm:left-1/2 sm:-translate-x-1/2 w-4 h-4 rounded-full bg-[#030303] border-[2px] border-emerald-400 flex items-center justify-center z-10">
+                 <div className="w-1.5 h-1.5 bg-emerald-400 rounded-full animate-pulse" />
               </div>
               
               <div className="w-12 sm:w-1/2" /> {/* Spacer */}
               
               <div className={`w-full sm:w-1/2 pl-14 sm:pl-0 ${idx % 2 === 0 ? "sm:pr-10 sm:text-right" : "sm:pl-10"}`}>
                 <div 
-                  className="wireframe-card p-6 rounded-2xl relative"
-                  style={{ background: "transparent", border: "1px dashed rgba(34, 211, 238, 0.3)" }}
+                  className="p-6 rounded-2xl relative bg-white/[0.02] border border-white/10 backdrop-blur-md"
                 >
                   <HudCorners />
-                  <span className="font-mono text-[11px] font-bold text-[var(--cyan-400)] tracking-widest">{item.year}</span>
+                  <span className="font-mono text-[11px] font-bold text-teal-400 tracking-widest">{item.year}</span>
                   <h3 className="text-xl font-bold text-white mt-2 uppercase tracking-wide">{item.title}</h3>
-                  <p className="text-sm text-[var(--text-secondary)] mt-3 leading-relaxed">{item.desc}</p>
+                  <p className="text-sm text-slate-300 mt-3 leading-relaxed">{item.desc}</p>
                 </div>
               </div>
             </div>
@@ -436,12 +417,12 @@ export default function AboutClient() {
       </section>
 
       {/* ── Core Team members ── */}
-      <section className="container-app py-16 z-10 pb-24 border-t border-[rgba(34,211,238,0.1)]">
+      <section className="container-app py-16 z-10 pb-24 border-t border-emerald-500/10">
         <div className="mb-14 text-center">
-          <span className="font-mono text-[11px] font-bold uppercase tracking-[0.2em] text-[var(--blue-400)]">
-            // GROUP_01_ARCHITECTS
+          <span className="font-mono text-sm font-bold uppercase tracking-widest text-teal-400">
+            // THE_ARCHITECTS
           </span>
-          <h2 className="text-3xl font-bold mt-2 text-white">The Architects</h2>
+          <h2 className="text-3xl md:text-4xl font-extrabold mt-2 text-white tracking-tight">The Architects</h2>
         </div>
 
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">

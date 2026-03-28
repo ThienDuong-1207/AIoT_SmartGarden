@@ -317,7 +317,7 @@ export default function BentoGrid() {
             // DATA_MATRIX_INITIALIZED
           </p>
           <h2
-            className="text-3xl md:text-5xl font-black leading-tight uppercase text-white"
+            className="text-4xl md:text-6xl font-black leading-none uppercase text-white tracking-tighter"
           >
             Mạng lưới phân tích <br/><span className="bg-gradient-to-r from-teal-400 to-emerald-400 bg-clip-text text-transparent">Thời gian thực</span>
           </h2>
@@ -325,11 +325,11 @@ export default function BentoGrid() {
 
         {/* ── Bento grid ── */}
         <div
-          className="grid auto-rows-[220px] grid-cols-1 gap-6 md:grid-cols-4 md:grid-rows-2"
+          className="grid auto-rows-[240px] grid-cols-1 gap-6 md:grid-cols-4 md:grid-rows-2"
         >
           {/* ══ Card 1: Vision AI (2×2) ══ */}
           <div
-            className="eco-card group relative col-span-1 overflow-hidden md:col-span-2 md:row-span-2 transform-gpu hover:bg-white/[0.06] hover:border-emerald-500/30 hover:shadow-[0_8px_32px_rgba(16,185,129,0.1)]"
+            className="eco-card group relative col-span-1 overflow-hidden md:col-span-2 md:row-span-2 transform-gpu hover:border-emerald-500/40 hover:shadow-[0_0_40px_rgba(16,185,129,0.15)]"
           >
             <div className="relative z-10 flex h-full flex-col justify-between p-8 w-[48%]">
               <div>
@@ -361,7 +361,7 @@ export default function BentoGrid() {
 
           {/* ══ Card 2: Telemetry (2×1) ══ */}
           <div
-            className="eco-card group relative col-span-1 flex flex-col justify-between p-8 md:col-span-2 transform-gpu hover:bg-white/[0.06] hover:border-emerald-500/30 hover:shadow-[0_8px_32px_rgba(16,185,129,0.1)]"
+            className="eco-card group relative col-span-1 flex flex-col justify-between p-8 md:col-span-2 transform-gpu hover:border-emerald-500/40 hover:shadow-[0_0_40px_rgba(16,185,129,0.15)]"
           >
             <div className="relative z-10 flex items-start justify-between">
               <span
@@ -384,7 +384,7 @@ export default function BentoGrid() {
 
           {/* ══ Card 3: ESP32 (1×1) ══ */}
           <div
-            className="eco-card group relative col-span-1 flex flex-col justify-between p-6 transform-gpu hover:bg-white/[0.06] hover:border-emerald-500/30 hover:shadow-[0_8px_32px_rgba(16,185,129,0.1)]"
+            className="eco-card group relative col-span-1 flex flex-col justify-between p-6 transform-gpu hover:border-emerald-500/40 hover:shadow-[0_0_40px_rgba(16,185,129,0.15)]"
           >
             <div className="flex items-start justify-between">
               <span
@@ -398,7 +398,7 @@ export default function BentoGrid() {
 
           {/* ══ Card 4: FCM Alerts (1×1) ══ */}
           <div
-            className="eco-card group relative col-span-1 flex flex-col justify-between p-6 transform-gpu hover:bg-white/[0.06] hover:border-emerald-500/30 hover:shadow-[0_8px_32px_rgba(16,185,129,0.1)]"
+            className="eco-card group relative col-span-1 flex flex-col justify-between p-6 transform-gpu hover:border-emerald-500/40 hover:shadow-[0_0_40px_rgba(16,185,129,0.15)]"
           >
             <div className="relative z-10 flex items-start justify-between">
               <span

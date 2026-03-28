@@ -2,13 +2,8 @@
 
 import { FormEvent, useState } from "react";
 import { signIn } from "next-auth/react";
-import { Leaf, ShieldCheck, Zap, Lock, UserCog, LogIn, Mail, KeyRound } from "lucide-react";
-
-const FEATURES = [
-  { icon: ShieldCheck, label: "Bảo mật OAuth 2.0" },
-  { icon: Zap,         label: "Truy cập dashboard ngay" },
-  { icon: Lock,        label: "Dữ liệu được mã hóa" },
-];
+import { Leaf, UserCog, LogIn, Mail, KeyRound, Globe, ChevronRight } from "lucide-react";
+import GalaxyBackground from "@/components/ui/GalaxyBackground";
 
 export default function LoginPage() {
   const [mode, setMode] = useState<"customer" | "admin">("customer");
@@ -34,7 +29,7 @@ export default function LoginPage() {
     setIsSubmitting(false);
 
     if (!result || result.error) {
-      setAdminError("Đăng nhập admin thất bại. Kiểm tra email/password trong database hoặc reset lại mật khẩu admin.");
+      setAdminError("Đăng nhập admin thất bại. Kiểm tra email/password.");
       return;
     }
 
@@ -42,224 +37,154 @@ export default function LoginPage() {
   }
 
   return (
-    <main
-      className="relative flex min-h-dvh w-full items-center justify-center overflow-hidden px-4 py-8"
-      style={{ background: "var(--bg-base)" }}
-    >
-      {/* ── Ambient glow blobs ── */}
-      <div
-        className="pointer-events-none absolute left-1/4 top-1/4 h-[480px] w-[480px] -translate-x-1/2 -translate-y-1/2 rounded-full blur-3xl"
-        style={{ background: "rgba(16,185,129,0.07)" }}
-      />
-      <div
-        className="pointer-events-none absolute bottom-0 right-1/4 h-[320px] w-[320px] translate-x-1/3 translate-y-1/3 rounded-full blur-3xl"
-        style={{ background: "rgba(59,130,246,0.05)" }}
-      />
+    <main className="relative min-h-screen w-full bg-[#030508] text-white overflow-hidden grid md:grid-cols-2">
+      <GalaxyBackground />
 
-      {/* ── Auth card ── */}
-      <div
-        className="animate-scale-in relative z-10 w-full max-w-md overflow-hidden rounded-2xl"
-        style={{
-          background: "var(--bg-elevated)",
-          border: "1px solid var(--border-normal)",
-          boxShadow: "var(--shadow-elevated), var(--glow-emerald)",
-        }}
-      >
-        {/* Top accent bar */}
-        <div
-          className="h-px w-full"
-          style={{
-            background:
-              "linear-gradient(90deg, transparent, var(--emerald-500), transparent)",
-          }}
-        />
+      {/* ── LEFT PANEL: Visual / Ecosystem Atmosphere ── */}
+      <div className="relative hidden md:flex flex-col justify-center p-12 lg:p-20 overflow-hidden border-r border-white/5 pb-32">
+        {/* Background Visual Layer */}
+        <div className="absolute inset-0 z-0">
+          <div className="absolute inset-0 bg-gradient-to-br from-emerald-900/20 via-black/40 to-black z-10" />
+          <div className="absolute inset-x-0 bottom-0 h-1/2 bg-gradient-to-t from-emerald-500/10 to-transparent blur-3xl opacity-30 animate-pulse" />
+          
+          {/* Decorative Plexus SVG */}
+          <svg className="absolute inset-0 w-full h-full opacity-20" viewBox="0 0 100 100" preserveAspectRatio="none">
+             <defs>
+               <radialGradient id="visualGlow" cx="50%" cy="50%" r="50%">
+                 <stop offset="0%" stopColor="rgba(16,185,129,0.3)" />
+                 <stop offset="100%" stopColor="transparent" />
+               </radialGradient>
+             </defs>
+             <circle cx="20" cy="30" r="15" fill="url(#visualGlow)" />
+             <circle cx="80" cy="70" r="20" fill="url(#visualGlow)" />
+          </svg>
+        </div>
 
-        <div className="p-8 md:p-10">
-          {/* Logo */}
-          <div className="mb-8 flex items-center gap-3">
-            <div
-              className="flex h-10 w-10 items-center justify-center rounded-xl"
-              style={{
-                background:
-                  "linear-gradient(135deg, var(--emerald-500), var(--emerald-600))",
-              }}
-            >
-              <Leaf size={18} color="#fff" />
-            </div>
-            <span
-              className="text-sm font-black uppercase tracking-[0.18em]"
-              style={{ color: "var(--text-primary)" }}
-            >
-              Smart Garden
-            </span>
+        {/* Content Layer */}
+        <div className="relative z-10">
+           <h2 className="text-6xl lg:text-7xl font-black uppercase tracking-tighter leading-[0.85]">
+             CÔNG NGHỆ<br/>
+             <span className="text-emerald-400">XANH</span> TRONG<br/>
+             TẦM TAY
+           </h2>
+           <p className="mt-12 text-slate-400 text-xl max-w-sm leading-relaxed font-medium">
+             Tự động hóa khu vườn của bạn với trí tuệ nhân tạo và hệ thống IoT thế hệ mới nhất.
+           </p>
+        </div>
+      </div>
+
+      {/* ── RIGHT PANEL: Integrated Login Form ── */}
+      <div className="relative flex items-center justify-center p-6 sm:p-12 lg:p-20 z-10">
+        <div className="w-full max-w-md animate-scale-in">
+          
+          {/* Integrated Glass Card */}
+          <div className="relative p-10 sm:p-12 rounded-3xl bg-white/[0.02] backdrop-blur-3xl border border-white/10 shadow-2xl overflow-hidden transform-gpu will-change-transform">
+             {/* Subtitle Tag */}
+             <div className="flex items-center gap-2 mb-6">
+               <span className="h-px w-8 bg-emerald-500/50" />
+               <p className="font-mono text-xs font-bold uppercase tracking-[0.25em] text-teal-400">
+                 // WELCOME BACK
+               </p>
+             </div>
+
+             <h1 className="text-4xl md:text-5xl font-black uppercase tracking-tighter mb-2">
+                <span className="text-white">ĐĂNG</span> <span className="text-emerald-400">NHẬP</span>
+             </h1>
+             <p className="text-slate-400 text-sm mb-10 leading-relaxed">
+               Tiếp tục hành trình xây dựng khu vườn thông minh của bạn.
+             </p>
+
+             {/* Mode Toggle Switch (Full Pill Style) */}
+             <div className="grid grid-cols-2 gap-1 rounded-full p-1 bg-black/40 border border-white/5 mb-10">
+               <button
+                 onClick={() => setMode("customer")}
+                 className={`py-2.5 rounded-full text-[10px] font-black uppercase tracking-widest transition-all duration-300 ${!isAdminMode ? "bg-emerald-500/20 text-emerald-400 border border-emerald-500/30 shadow-[0_0_15px_rgba(16,185,129,0.2)]" : "text-slate-500 hover:text-white"}`}
+               >
+                 TÀI KHOẢN
+               </button>
+               <button
+                 onClick={() => setMode("admin")}
+                 className={`py-2.5 rounded-full text-[10px] font-black uppercase tracking-widest transition-all duration-300 ${isAdminMode ? "bg-emerald-500/20 text-emerald-400 border border-emerald-500/30 shadow-[0_0_15px_rgba(16,185,129,0.2)]" : "text-slate-500 hover:text-white"}`}
+               >
+                 QUẢN TRỊ VIÊN
+               </button>
+             </div>
+
+             {!isAdminMode ? (
+               <div className="space-y-4">
+                 <button
+                   onClick={() => signIn("google", { callbackUrl: "/auth/redirect" })}
+                   className="w-full flex items-center justify-center gap-3 py-3 px-4 bg-white/[0.03] hover:bg-white/[0.08] border border-white/10 rounded-xl text-white font-medium transition-all duration-300 hover:-translate-y-0.5"
+                 >
+                    <svg className="w-5 h-5 shrink-0" viewBox="0 0 48 48">
+                      <path fill="#EA4335" d="M24 9.5c3.54 0 6.71 1.22 9.21 3.6l6.85-6.85C35.9 2.38 30.47 0 24 0 14.62 0 6.51 5.38 2.56 13.22l7.98 6.19C12.43 13.72 17.74 9.5 24 9.5z"/>
+                      <path fill="#4285F4" d="M46.98 24.55c0-1.57-.15-3.09-.38-4.55H24v9.02h12.94c-.58 2.96-2.26 5.48-4.78 7.18l7.73 6c4.51-4.18 7.09-10.36 7.09-17.65z"/>
+                      <path fill="#FBBC05" d="M10.53 28.59c-.48-1.45-.76-2.99-.76-4.59s.27-3.14.76-4.59l-7.98-6.19C.92 16.46 0 20.12 0 24c0 3.88.92 7.54 2.56 10.78l7.97-6.19z"/>
+                      <path fill="#34A853" d="M24 48c6.48 0 11.93-2.13 15.89-5.81l-7.73-6c-2.15 1.45-4.92 2.3-8.16 2.3-6.26 0-11.57-4.22-13.47-9.91l-7.98 6.19C6.51 42.62 14.62 48 24 48z"/>
+                      <path fill="none" d="M0 0h48v48H0z"/>
+                    </svg>
+                    <span className="text-xs uppercase tracking-widest font-bold">TIẾP TỤC VỚI GOOGLE</span>
+                 </button>
+                 
+                 <button
+                    onClick={() => signIn("google", { callbackUrl: "/auth/redirect" })}
+                    className="flex w-full items-center justify-center gap-2 py-4 rounded-2xl bg-emerald-500 text-white font-black text-xs uppercase tracking-[0.2em] shadow-[0_0_20px_rgba(16,185,129,0.3)] transition-all duration-300 hover:bg-emerald-400 hover:shadow-[0_0_30px_rgba(16,185,129,0.5)] hover:-translate-y-1"
+                 >
+                    ĐĂNG NHẬP NGAY
+                    <ChevronRight size={14} className="animate-pulse" />
+                 </button>
+               </div>
+             ) : (
+               <form onSubmit={handleAdminLogin} className="space-y-4">
+                 <div className="group relative">
+                    <div className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-500 group-focus-within:text-emerald-400 transition-colors">
+                      <Mail size={16} />
+                    </div>
+                    <input
+                      type="email"
+                      value={email}
+                      onChange={(e) => setEmail(e.target.value)}
+                      placeholder="admin@smartgarden.com"
+                      className="w-full pl-12 pr-6 py-4 rounded-2xl bg-white/[0.03] border border-white/10 text-sm font-medium focus:outline-none focus:border-emerald-500/50 focus:bg-white/[0.06] transition-all"
+                      required
+                    />
+                 </div>
+
+                 <div className="group relative">
+                    <div className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-500 group-focus-within:text-emerald-400 transition-colors">
+                      <KeyRound size={16} />
+                    </div>
+                    <input
+                      type="password"
+                      value={password}
+                      onChange={(e) => setPassword(e.target.value)}
+                      placeholder="Mật khẩu bảo mật"
+                      className="w-full pl-12 pr-6 py-4 rounded-2xl bg-white/[0.03] border border-white/10 text-sm font-medium focus:outline-none focus:border-emerald-500/50 focus:bg-white/[0.06] transition-all"
+                      required
+                    />
+                 </div>
+
+                 {adminError && (
+                   <p className="p-3 rounded-xl bg-red-500/10 border border-red-500/20 text-red-400 text-[11px] font-bold uppercase tracking-wider text-center">
+                     {adminError}
+                   </p>
+                 )}
+
+                 <button
+                    type="submit"
+                    disabled={isSubmitting}
+                    className="flex w-full items-center justify-center gap-2 py-4 rounded-2xl bg-emerald-500 disabled:bg-slate-700 text-white font-black text-xs uppercase tracking-[0.2em] shadow-[0_0_20px_rgba(16,185,129,0.3)] transition-all duration-300 hover:bg-emerald-400 hover:shadow-[0_0_30px_rgba(16,185,129,0.5)] hover:-translate-y-1"
+                 >
+                    {isSubmitting ? "ĐANG XỬ LÝ..." : "XÁC NHẬN ADMIN"}
+                 </button>
+               </form>
+             )}
+
+             <p className="mt-8 text-center text-[10px] text-slate-500 uppercase tracking-widest leading-relaxed">
+               Bằng cách đăng nhập, bạn đồng ý với <br/>
+               <span className="text-slate-300 hover:text-emerald-400 cursor-pointer transition-colors underline underline-offset-4">điều khoản sử dụng</span> của hệ thống.
+             </p>
           </div>
-
-          {/* Heading */}
-          <p
-            className="mb-1 font-mono text-xs font-semibold uppercase tracking-[0.15em]"
-            style={{ color: "var(--emerald-500)" }}
-          >
-            {"// WELCOME BACK"}
-          </p>
-          <h1
-            className="text-3xl font-bold"
-            style={{ color: "var(--text-primary)" }}
-          >
-            Đăng nhập
-          </h1>
-          <p className="mt-2 text-sm" style={{ color: "var(--text-secondary)" }}>
-            Customer dùng Google OAuth, admin có thể đăng nhập bằng tài khoản đã tạo trong database.
-          </p>
-
-          <div className="mt-6 grid grid-cols-2 gap-2 rounded-xl p-1" style={{ background: "var(--bg-overlay)" }}>
-            <button
-              type="button"
-              className="flex items-center justify-center gap-2 rounded-lg px-3 py-2 text-sm font-semibold transition-all"
-              style={{
-                background: !isAdminMode ? "rgba(16,185,129,0.20)" : "transparent",
-                color: !isAdminMode ? "var(--emerald-400)" : "var(--text-secondary)",
-                border: !isAdminMode ? "1px solid var(--border-emerald)" : "1px solid transparent",
-              }}
-              onClick={() => setMode("customer")}
-            >
-              <Leaf size={14} />
-              Customer
-            </button>
-            <button
-              type="button"
-              className="flex items-center justify-center gap-2 rounded-lg px-3 py-2 text-sm font-semibold transition-all"
-              style={{
-                background: isAdminMode ? "rgba(245,158,11,0.14)" : "transparent",
-                color: isAdminMode ? "var(--gold-400)" : "var(--text-secondary)",
-                border: isAdminMode ? "1px solid var(--border-gold)" : "1px solid transparent",
-              }}
-              onClick={() => setMode("admin")}
-            >
-              <UserCog size={14} />
-              Admin
-            </button>
-          </div>
-
-          {/* Feature pills */}
-          <div className="mt-6 flex flex-wrap gap-2">
-            {FEATURES.map(({ icon: Icon, label }) => (
-              <span
-                key={label}
-                className="inline-flex items-center gap-1.5 rounded-full px-3 py-1 text-xs font-medium"
-                style={{
-                  background: "rgba(255,255,255,0.04)",
-                  border: "1px solid var(--border-subtle)",
-                  color: "var(--text-secondary)",
-                }}
-              >
-                <Icon size={11} style={{ color: "var(--emerald-400)" }} />
-                {label}
-              </span>
-            ))}
-          </div>
-
-          {/* Divider */}
-          <div className="divider-glow my-7" />
-
-          {!isAdminMode ? (
-            <>
-              <button
-                type="button"
-                onClick={() => signIn("google", { callbackUrl: "/auth/redirect" })}
-                className="group flex w-full items-center justify-center gap-3 rounded-xl px-5 py-3.5 font-semibold transition-all duration-150"
-                style={{
-                  background: "var(--bg-overlay)",
-                  border: "1px solid var(--border-normal)",
-                  color: "var(--text-primary)",
-                }}
-                onMouseEnter={(e) => {
-                  (e.currentTarget as HTMLElement).style.borderColor =
-                    "var(--border-strong)";
-                  (e.currentTarget as HTMLElement).style.background =
-                    "rgba(255,255,255,0.05)";
-                }}
-                onMouseLeave={(e) => {
-                  (e.currentTarget as HTMLElement).style.borderColor =
-                    "var(--border-normal)";
-                  (e.currentTarget as HTMLElement).style.background =
-                    "var(--bg-overlay)";
-                }}
-              >
-                <svg viewBox="0 0 24 24" className="h-5 w-5 shrink-0" aria-hidden="true">
-                  <path d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z" fill="#4285F4" />
-                  <path d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z" fill="#34A853" />
-                  <path d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z" fill="#FBBC05" />
-                  <path d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z" fill="#EA4335" />
-                </svg>
-                <span className="text-sm">Tiếp tục với Google</span>
-              </button>
-
-              <button
-                type="button"
-                onClick={() => signIn("google", { callbackUrl: "/auth/redirect" })}
-                className="btn-emerald mt-3 w-full justify-center py-3.5 text-sm"
-              >
-                Đăng nhập ngay
-              </button>
-            </>
-          ) : (
-            <form onSubmit={handleAdminLogin} className="space-y-3">
-              <div
-                className="flex items-center gap-2 rounded-xl px-4 py-3"
-                style={{ background: "var(--bg-overlay)", border: "1px solid var(--border-normal)" }}
-              >
-                <Mail size={14} style={{ color: "var(--text-muted)" }} />
-                <input
-                  type="email"
-                  value={email}
-                  onChange={(e) => setEmail(e.target.value)}
-                  placeholder="admin@domain.com"
-                  className="w-full bg-transparent text-sm focus:outline-none"
-                  style={{ color: "var(--text-primary)" }}
-                  required
-                />
-              </div>
-
-              <div
-                className="flex items-center gap-2 rounded-xl px-4 py-3"
-                style={{ background: "var(--bg-overlay)", border: "1px solid var(--border-normal)" }}
-              >
-                <KeyRound size={14} style={{ color: "var(--text-muted)" }} />
-                <input
-                  type="password"
-                  value={password}
-                  onChange={(e) => setPassword(e.target.value)}
-                  placeholder="Mật khẩu admin"
-                  className="w-full bg-transparent text-sm focus:outline-none"
-                  style={{ color: "var(--text-primary)" }}
-                  required
-                />
-              </div>
-
-              {adminError && (
-                <p className="text-xs font-medium" style={{ color: "#f87171" }}>
-                  {adminError}
-                </p>
-              )}
-
-              <button type="submit" disabled={isSubmitting} className="btn-gold mt-1 w-full justify-center py-3.5 text-sm">
-                <LogIn size={14} />
-                {isSubmitting ? "Đang đăng nhập..." : "Đăng nhập Admin"}
-              </button>
-            </form>
-          )}
-
-          {/* Footer note */}
-          <p
-            className="mt-6 text-center text-xs"
-            style={{ color: "var(--text-muted)" }}
-          >
-            Bằng cách đăng nhập, bạn đồng ý với{" "}
-            <span style={{ color: "var(--text-secondary)" }}>
-              điều khoản sử dụng
-            </span>{" "}
-            của Smart Garden AIoT.
-          </p>
         </div>
       </div>
     </main>

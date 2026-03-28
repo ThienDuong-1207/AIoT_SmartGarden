@@ -173,7 +173,7 @@ export default function ProductCard({ product }: { product: Product }) {
   return (
     <div ref={containerRef} className="relative w-full h-full" style={{ perspective: "1000px" }}>
       <article
-        className="product-card-glass group relative flex flex-col overflow-hidden h-full bg-white/[0.02] border border-white/10 rounded-2xl p-6 backdrop-blur-md transition-all duration-300 ease-out transform-gpu will-change-transform hover:shadow-[0_8px_32px_rgba(16,185,129,0.1)]"
+        className="product-card-glass group relative flex flex-col overflow-hidden h-full bg-[#0a0a0a] border border-white/10 rounded-2xl p-6 transition-all duration-300 ease-out transform-gpu will-change-transform hover:shadow-[0_8px_32px_rgba(16,185,129,0.1)]"
         style={{
           transformStyle: "preserve-3d",
         }}
@@ -219,11 +219,10 @@ export default function ProductCard({ product }: { product: Product }) {
 
           {/* Phase 1 The Lift Wrapper */}
           <div
-            className="hologram-lift-wrapper relative z-10 flex h-20 w-20 items-center justify-center rounded-2xl"
+            className="hologram-lift-wrapper relative z-10 flex h-20 w-20 items-center justify-center rounded-2xl transform-gpu"
             style={{
               background: cfg.accentBg,
               border: `1px solid ${cfg.accentBorder}`,
-              backdropFilter: "blur(12px)",
               boxShadow: `0 0 32px ${cfg.glow}`,
               transform: "translateZ(20px)",
             }}
@@ -234,7 +233,7 @@ export default function ProductCard({ product }: { product: Product }) {
 
         {/* Floating category badge — top left */}
         <div
-          className="absolute left-3.5 top-3.5 flex items-center gap-1.5 rounded-full px-2.5 py-1 bg-slate-800/50 border border-slate-700 backdrop-blur-md"
+          className="absolute left-3.5 top-3.5 flex items-center gap-1.5 rounded-full px-2.5 py-1 bg-slate-900 border border-slate-700"
         >
           <span
             className="h-1.5 w-1.5 rounded-full bg-emerald-400"

@@ -91,39 +91,29 @@ export default function ProductsClient({ products }: { products: Product[] }) {
 
           {/* Category tabs */}
           <div className="flex items-center gap-1.5">
-            {CATEGORIES.map(({ value, label, icon: Icon, dot }) => {
+            {CATEGORIES.map(({ value, label, icon: Icon }) => {
               const active = value === activeCategory;
               return (
                 <button
                   key={value}
                   onClick={() => setActiveCategory(value)}
-                  className="flex shrink-0 items-center gap-2 rounded-full px-4 py-1.5 text-xs font-semibold transition-all duration-200"
-                  style={
-                    active
-                      ? {
-                          background: "rgba(6,182,212,0.12)",
-                          color: "var(--cyan-400)",
-                          border: "1px solid rgba(6,182,212,0.28)",
-                        }
-                      : {
-                          background: "transparent",
-                          color: "var(--text-secondary)",
-                          border: "1px solid var(--border-subtle)",
-                        }
-                  }
+                  className={`flex shrink-0 items-center gap-2 rounded-full px-4 py-1.5 text-xs font-semibold transition-all duration-300 border ${
+                    active 
+                      ? "bg-emerald-500/15 border-emerald-500/40 text-emerald-400" 
+                      : "bg-white/[0.03] border-white/10 text-slate-300 hover:text-emerald-400 hover:border-emerald-500/30"
+                  }`}
                 >
                   <span
-                    className="h-1.5 w-1.5 rounded-full"
-                    style={{ background: active ? dot : "var(--text-muted)", flexShrink: 0 }}
+                    className={`h-1.5 w-1.5 rounded-full transition-colors ${
+                      active ? "bg-emerald-400 shadow-[0_0_8px_rgba(52,211,153,0.5)]" : "bg-slate-600"
+                    }`}
                   />
-                  <Icon size={11} />
+                  <Icon size={12} className={active ? "text-emerald-400" : "text-slate-400"} />
                   {label}
                   <span
-                    className="rounded-full px-1.5 py-0.5 font-mono text-[10px]"
-                    style={{
-                      background: active ? "rgba(6,182,212,0.15)" : "rgba(255,255,255,0.06)",
-                      color: active ? "var(--cyan-400)" : "var(--text-muted)",
-                    }}
+                    className={`rounded-full px-1.5 py-0.5 font-mono text-[10px] transition-colors ${
+                      active ? "bg-emerald-500/20 text-emerald-400" : "bg-white/5 text-slate-500"
+                    }`}
                   >
                     {countOf(value)}
                   </span>
@@ -136,10 +126,10 @@ export default function ProductsClient({ products }: { products: Product[] }) {
           <div className="relative shrink-0">
             <button
               onClick={() => setSortOpen((o) => !o)}
-              className="flex items-center gap-2 rounded-xl px-4 py-1.5 text-xs font-semibold transition-colors"
+              className="flex items-center gap-2 rounded-xl px-4 py-1.5 text-xs font-semibold transition-all hover:border-emerald-500/30 hover:text-emerald-400"
               style={{
-                background: "rgba(255,255,255,0.04)",
-                border: "1px solid var(--border-subtle)",
+                background: "rgba(255,255,255,0.03)",
+                border: "1px solid rgba(255,255,255,0.1)",
                 color: "var(--text-secondary)",
               }}
             >
@@ -147,7 +137,8 @@ export default function ProductsClient({ products }: { products: Product[] }) {
               {activeSortLabel}
               <ChevronDown
                 size={11}
-                style={{ transform: sortOpen ? "rotate(180deg)" : "none", transition: "transform 0.2s" }}
+                className="transition-transform duration-200"
+                style={{ transform: sortOpen ? "rotate(180deg)" : "none" }}
               />
             </button>
 
@@ -167,14 +158,14 @@ export default function ProductsClient({ products }: { products: Product[] }) {
                     onClick={() => { setSortBy(value); setSortOpen(false); }}
                     className="flex w-full items-center gap-2 px-4 py-2.5 text-left text-xs transition-colors"
                     style={{
-                      color: sortBy === value ? "var(--cyan-400)" : "var(--text-secondary)",
-                      background: sortBy === value ? "rgba(6,182,212,0.08)" : "transparent",
+                      color: sortBy === value ? "var(--emerald-400)" : "var(--text-secondary)",
+                      background: sortBy === value ? "rgba(16,185,129,0.08)" : "transparent",
                     }}
                   >
                     {sortBy === value && (
                       <span
                         className="h-1.5 w-1.5 rounded-full"
-                        style={{ background: "var(--cyan-500)", flexShrink: 0 }}
+                        style={{ background: "var(--emerald-500)", flexShrink: 0 }}
                       />
                     )}
                     {sortBy !== value && <span className="h-1.5 w-1.5" />}
@@ -205,9 +196,9 @@ export default function ProductsClient({ products }: { products: Product[] }) {
               onClick={() => setActiveCategory("all")}
               className="flex items-center gap-1.5 rounded-full px-2.5 py-1 text-xs font-medium transition-colors"
               style={{
-                background: "rgba(6,182,212,0.08)",
-                border: "1px solid rgba(6,182,212,0.20)",
-                color: "var(--cyan-400)",
+                background: "rgba(16,185,129,0.08)",
+                border: "1px solid rgba(16,185,129,0.20)",
+                color: "var(--emerald-400)",
               }}
             >
               {CATEGORIES.find((c) => c.value === activeCategory)?.label}

@@ -85,18 +85,15 @@ export default async function ProductsPage() {
 
               {/* Title */}
               <h1
-                className="text-4xl font-black leading-tight tracking-tight md:text-5xl lg:text-6xl"
-                style={{ color: "var(--text-primary)" }}
+                className="flex flex-col gap-0 text-5xl font-black leading-[0.95] tracking-tighter sm:text-6xl lg:text-7xl uppercase"
               >
-                Trang bị cho{" "}
-                <span className="text-gradient-emerald">vườn thông minh</span>
-                <br />
-                của bạn.
+                <span className="text-white">Trang bị cho vườn</span>
+                <span className="text-emerald-400">Thông minh của bạn</span>
               </h1>
 
               {/* Description */}
               <p
-                className="mt-4 max-w-xl text-sm leading-relaxed md:text-base"
+                className="mt-6 max-w-xl text-sm leading-relaxed md:text-base"
                 style={{ color: "var(--text-secondary)" }}
               >
                 Hạt giống năng suất cao, dung dịch dinh dưỡng cân bằng và bộ Smart Pot
@@ -108,10 +105,10 @@ export default async function ProductsPage() {
             <div
               className="flex shrink-0 flex-col gap-px overflow-hidden rounded-2xl"
               style={{
-                background: "rgba(255, 255, 255, 0.03)",
+                background: "rgba(255, 255, 255, 0.02)",
                 backdropFilter: "blur(12px)",
-                border: "1px solid rgba(34, 211, 238, 0.1)",
-                minWidth: 220,
+                border: "1px solid rgba(255, 255, 255, 0.1)",
+                minWidth: 240,
               }}
             >
               {[
@@ -119,45 +116,38 @@ export default async function ProductsPage() {
                   icon: Package,
                   label: "Sản phẩm",
                   value: products.length,
-                  unit: "items",
-                  color: "var(--emerald-400)",
-                  bg: "rgba(16,185,129,0.08)",
+                  unit: "mẫu mã",
                 },
                 {
                   icon: Star,
                   label: "Đánh giá TB",
                   value: avgRating,
-                  unit: `/ 5 · ${totalReviews} reviews`,
-                  color: "var(--gold-400)",
-                  bg: "rgba(245,158,11,0.08)",
+                  unit: `/ 5 · ${totalReviews} lượt`,
                 },
                 {
                   icon: ShoppingBag,
                   label: "Còn hàng",
                   value: inStock,
-                  unit: "sản phẩm",
-                  color: "#60A5FA",
-                  bg: "rgba(59,130,246,0.08)",
+                  unit: "sẵn có",
                 },
-              ].map(({ icon: Icon, label, value, unit, color, bg }) => (
+              ].map(({ icon: Icon, label, value, unit }) => (
                 <div
                   key={label}
-                  className="flex items-center gap-4 px-5 py-3.5"
-                  style={{ borderBottom: "1px solid var(--border-subtle)" }}
+                  className="flex items-center gap-4 px-5 py-4"
+                  style={{ borderBottom: "1px solid rgba(255,255,255,0.05)" }}
                 >
                   <div
-                    className="flex h-8 w-8 shrink-0 items-center justify-center rounded-lg"
-                    style={{ background: bg }}
+                    className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-emerald-500/10 border border-emerald-500/20"
                   >
-                    <Icon size={14} style={{ color }} />
+                    <Icon size={16} className="text-emerald-400" />
                   </div>
                   <div className="min-w-0">
-                    <p className="text-[10px] uppercase tracking-wider" style={{ color: "var(--text-muted)" }}>
+                    <p className="text-[10px] font-bold uppercase tracking-[0.2em] text-slate-400">
                       {label}
                     </p>
-                    <p className="text-sm font-bold" style={{ color: "var(--text-primary)" }}>
+                    <p className="text-lg font-black text-emerald-400">
                       {value}{" "}
-                      <span className="text-xs font-normal" style={{ color: "var(--text-muted)" }}>
+                      <span className="text-xs font-normal text-slate-500 ml-1">
                         {unit}
                       </span>
                     </p>

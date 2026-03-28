@@ -73,7 +73,7 @@ export default function Home() {
   }, { dependencies: [loadingDone], scope: containerRef });
 
   return (
-    <main ref={containerRef} className="flex-1 relative bg-transparent min-h-screen text-white overflow-x-hidden">
+    <main ref={containerRef} className="flex-1 relative bg-transparent min-h-screen text-white">
       <GalaxyBackground />
       {!loadingDone ? <LoadingScreen onComplete={() => setLoadingDone(true)} /> : null}
 
@@ -90,14 +90,14 @@ export default function Home() {
       </section>
 
       {/* --- HARDWARE STORE SECTION --- */}
-      <section id="hardware" className="eco-section bg-transparent">
+      <section id="hardware" className="eco-section bg-transparent relative z-10">
         <div className="container-app">
           {/* Section header */}
           <div className="mb-16 flex flex-col items-center text-center">
-            <span className="font-mono text-[11px] font-bold uppercase tracking-[0.2em] text-slate-400 mb-3">
+            <span className="font-mono text-[11px] font-bold uppercase tracking-[0.2em] text-cyan-400/60 mb-3">
               // HARDWARE_CONEXUS
             </span>
-            <h2 className="text-4xl md:text-5xl font-black text-white uppercase tracking-tight">
+            <h2 className="text-4xl md:text-6xl font-black text-white uppercase tracking-tighter leading-none">
               Nâng cấp <span className="text-emerald-400">hệ thống</span>
             </h2>
             <p className="mt-4 max-w-2xl text-slate-300">
@@ -127,7 +127,7 @@ export default function Home() {
       </section>
 
       {/* --- TERMINAL CTA SECTION --- */}
-      <section id="community" className="eco-section bg-transparent">
+      <section id="community" className="eco-section bg-transparent relative z-10">
         <div className="container-app">
           <TerminalCta />
         </div>

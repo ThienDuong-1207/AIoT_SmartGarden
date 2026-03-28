@@ -7,8 +7,8 @@ export default function GalaxyBackground() {
 
   return (
     <div
-      className="fixed inset-0 z-[-1] overflow-hidden pointer-events-none transform-gpu"
-      style={{ backgroundColor: "#030508", willChange: "transform" }}
+      className="fixed inset-0 z-[-10] overflow-hidden pointer-events-none transform-gpu will-change-transform"
+      style={{ backgroundColor: "#030508" }}
       aria-hidden="true"
     >
       {/* Nền Gradient mờ ảo tập trung giữa màn hình */}
@@ -21,14 +21,14 @@ export default function GalaxyBackground() {
 
       {/* Lớp các vì sao (Emerald stars mờ) */}
       <div 
-        className="absolute inset-0 mix-blend-screen opacity-20"
+        className="absolute inset-0 mix-blend-screen opacity-20 transform-gpu"
         style={{
           backgroundImage: "radial-gradient(rgba(16, 185, 129, 0.3) 1px, transparent 1px)",
           backgroundSize: "48px 48px",
           backgroundPosition: "0 0, 24px 24px",
           transform: "translateZ(0) scale(1.5)",
           animation: "galaxy-drift 120s linear infinite",
-          willChange: "background-position"
+          willChange: "background-position, transform"
         }}
       />
 
