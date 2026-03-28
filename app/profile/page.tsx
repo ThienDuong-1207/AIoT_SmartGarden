@@ -13,6 +13,7 @@ import {
   BadgeCheck,
 } from "lucide-react";
 import SiteFooter from "@/components/marketing/SiteFooter";
+import GalaxyBackground from "@/components/ui/GalaxyBackground";
 
 export default function ProfilePage() {
   const { data: session, status } = useSession();
@@ -20,12 +21,10 @@ export default function ProfilePage() {
   /* ── Loading skeleton ── */
   if (status === "loading") {
     return (
-      <main
-        className="flex flex-col"
-        style={{ background: "var(--bg-base)", minHeight: "100dvh" }}
-      >
-        <div style={{ paddingTop: "6rem" }} className="container-app py-10">
-          <div className="grid gap-6 lg:grid-cols-[280px_1fr]">
+      <main className="relative flex flex-col bg-transparent min-h-dvh overflow-hidden">
+        <GalaxyBackground />
+        <div className="container-app py-24 relative z-10">
+          <div className="grid gap-8 lg:grid-cols-[300px_1fr]">
             <div className="skeleton h-64 rounded-2xl" />
             <div className="space-y-4">
               <div className="skeleton h-10 w-48 rounded-xl" />
@@ -46,118 +45,72 @@ export default function ProfilePage() {
   const roleClass = session.user?.role === "admin" ? "badge-gold" : "badge-emerald";
 
   return (
-    <main
-      className="flex flex-col"
-      style={{ background: "var(--bg-base)", minHeight: "100dvh" }}
-    >
+    <main className="relative flex flex-col bg-transparent min-h-dvh overflow-hidden">
+      <GalaxyBackground />
       {/* ── Page header ── */}
-      <div
-        style={{
-          paddingTop: "5rem",
-          borderBottom: "1px solid var(--border-subtle)",
-        }}
-      >
-        <div className="container-app py-6">
-          <p
-            className="mb-1 font-mono text-xs font-semibold uppercase tracking-[0.15em]"
-            style={{ color: "var(--emerald-500)" }}
-          >
-            // ACCOUNT
+      <div className="relative z-10 pt-24 pb-12">
+        <div className="container-app">
+          <p className="mb-4 font-mono text-sm font-bold uppercase tracking-[0.25em] text-teal-400">
+            {"// ACCOUNT"}
           </p>
-          <h1
-            className="text-2xl font-bold"
-            style={{ color: "var(--text-primary)" }}
-          >
-            Thông tin tài khoản
+          <h1 className="text-4xl md:text-5xl font-black uppercase tracking-tighter">
+            <span className="text-white">THÔNG TIN</span> <span className="text-emerald-400">TÀI KHOẢN</span>
           </h1>
         </div>
       </div>
 
       {/* ── Main content ── */}
-      <section className="container-app flex-1 py-8">
-        <div className="grid gap-6 lg:grid-cols-[280px_1fr]">
+      <section className="container-app relative z-10 flex-1 pb-24">
+        <div className="grid gap-8 lg:grid-cols-[300px_1fr]">
 
           {/* ── Left: Avatar card ── */}
-          <div className="space-y-4">
-            <div
-              className="flex flex-col items-center rounded-2xl p-7 text-center"
-              style={{
-                background: "var(--bg-elevated)",
-                border: "1px solid var(--border-subtle)",
-              }}
-            >
-              {/* Avatar */}
+          <div className="space-y-6">
+            <div className="flex flex-col items-center rounded-[2rem] bg-white/[0.02] backdrop-blur-xl border border-white/10 p-8 text-center transition-all duration-300 hover:bg-white/[0.04] hover:border-emerald-500/20 group">
+
               {session.user?.image ? (
                 <Image
                   src={session.user.image}
                   alt={session.user.name || "avatar"}
-                  width={80}
-                  height={80}
-                  className="rounded-full object-cover"
-                  style={{ border: "2px solid var(--border-emerald)" }}
+                  width={96}
+                  height={96}
+                  className="rounded-full object-cover ring-2 ring-emerald-500/30 ring-offset-4 ring-offset-black/50 shadow-[0_0_20px_rgba(16,185,129,0.2)]"
                 />
               ) : (
-                <div
-                  className="flex h-20 w-20 items-center justify-center rounded-full"
-                  style={{
-                    background: "rgba(16,185,129,0.10)",
-                    border: "2px solid var(--border-emerald)",
-                    color: "var(--emerald-400)",
-                  }}
-                >
-                  <User size={34} />
+                <div className="flex h-24 w-24 items-center justify-center rounded-full bg-emerald-500/10 border border-emerald-500/30 text-emerald-400 ring-4 ring-emerald-500/10">
+                  <User size={40} />
                 </div>
               )}
 
               {/* Name + email */}
-              <p
-                className="mt-4 text-lg font-bold"
-                style={{ color: "var(--text-primary)" }}
-              >
+              <h3 className="mt-6 text-2xl font-black uppercase tracking-tight text-white">
                 {session.user?.name}
-              </p>
-              <p
-                className="mt-0.5 truncate text-xs"
-                style={{
-                  color: "var(--text-muted)",
-                  fontFamily: "var(--font-mono)",
-                }}
-              >
+              </h3>
+              <p className="mt-1 font-mono text-xs text-slate-400">
                 {session.user?.email}
               </p>
 
               {/* Role badge */}
-              <div className="mt-4">
-                <span className={`badge ${roleClass} gap-1.5`}>
-                  <BadgeCheck size={11} />
+              <div className="mt-6">
+                <span className="inline-flex items-center gap-2 rounded-full px-4 py-1.5 text-[10px] font-bold uppercase tracking-wider bg-emerald-500/10 text-emerald-400 border border-emerald-500/20 shadow-[0_0_15px_rgba(16,185,129,0.1)]">
+                  <BadgeCheck size={12} />
                   {roleLabel}
                 </span>
               </div>
 
               {/* Divider */}
-              <div className="divider my-5 w-full" />
+              <div className="w-full h-px bg-white/5 my-8" />
 
               {/* Quick stats */}
-              <div className="grid w-full grid-cols-2 gap-3 text-center">
+              <div className="grid w-full grid-cols-2 gap-4">
                 {[
                   { value: "0", label: "Đơn hàng" },
                   { value: "0", label: "Thiết bị" },
                 ].map(({ value, label }) => (
-                  <div
-                    key={label}
-                    className="rounded-xl py-3"
-                    style={{
-                      background: "var(--bg-overlay)",
-                      border: "1px solid var(--border-subtle)",
-                    }}
-                  >
-                    <p
-                      className="text-xl font-black"
-                      style={{ color: "var(--text-primary)" }}
-                    >
+                  <div key={label} className="rounded-2xl py-4 bg-white/5 border border-white/10 group-hover:border-emerald-500/20 transition-all">
+                    <p className="text-3xl font-black text-emerald-400 mb-0.5">
                       {value}
                     </p>
-                    <p className="mt-0.5 text-xs" style={{ color: "var(--text-muted)" }}>
+                    <p className="text-[10px] font-bold uppercase tracking-widest text-slate-500">
                       {label}
                     </p>
                   </div>
@@ -166,144 +119,93 @@ export default function ProfilePage() {
             </div>
 
             {/* Account status */}
-            <div
-              className="flex items-center gap-3 rounded-2xl px-5 py-4"
-              style={{
-                background: "rgba(16,185,129,0.06)",
-                border: "1px solid rgba(16,185,129,0.16)",
-              }}
-            >
-              <ShieldCheck size={18} style={{ color: "var(--emerald-500)" }} />
+            <div className="flex items-center gap-4 rounded-3xl bg-white/[0.03] border border-white/10 p-5 backdrop-blur-sm transition-all hover:bg-white/[0.05]">
+              <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-emerald-500/10 text-emerald-400 border border-emerald-500/20">
+                <ShieldCheck size={20} />
+              </div>
               <div>
-                <p className="text-xs font-semibold" style={{ color: "var(--emerald-400)" }}>
-                  Tài khoản đang hoạt động
+                <p className="text-xs font-black uppercase tracking-wider text-emerald-400">
+                  Account Active
                 </p>
-                <p className="text-xs" style={{ color: "var(--text-muted)" }}>
-                  OAuth 2.0 · Google
+                <p className="text-[10px] font-medium text-slate-500 mt-0.5">
+                  OAuth 2.0 Identity Protocol
                 </p>
               </div>
             </div>
           </div>
 
           {/* ── Right: Info + actions ── */}
-          <div className="space-y-5">
+          <div className="space-y-6">
 
             {/* Info fields */}
-            <div
-              className="overflow-hidden rounded-2xl"
-              style={{
-                background: "var(--bg-elevated)",
-                border: "1px solid var(--border-subtle)",
-              }}
-            >
-              <div
-                className="px-6 py-4"
-                style={{ borderBottom: "1px solid var(--border-subtle)" }}
-              >
-                <h2 className="font-semibold" style={{ color: "var(--text-primary)" }}>
+            <div className="overflow-hidden rounded-[2.5rem] bg-white/[0.02] backdrop-blur-xl border border-white/10 shadow-2xl transition-all duration-300 hover:bg-white/[0.04]">
+              <div className="px-8 py-6 border-b border-white/5">
+                <h2 className="text-xl font-black uppercase tracking-tight text-white">
                   Thông tin cá nhân
                 </h2>
               </div>
 
-              <div className="divide-y" style={{ borderColor: "var(--border-subtle)" }}>
+              <div className="divide-y divide-white/5">
                 {[
                   {
                     icon: User,
-                    label: "Họ và tên",
+                    label: "HỌ VÀ TÊN",
                     value: session.user?.name || "—",
                   },
                   {
                     icon: Mail,
-                    label: "Email",
+                    label: "EMAIL",
                     value: session.user?.email || "—",
                   },
                 ].map(({ icon: Icon, label, value }) => (
-                  <div
-                    key={label}
-                    className="flex items-center gap-4 px-6 py-5"
-                    style={{ borderColor: "var(--border-subtle)" }}
-                  >
-                    <div
-                      className="flex h-9 w-9 shrink-0 items-center justify-center rounded-lg"
-                      style={{
-                        background: "rgba(16,185,129,0.08)",
-                        color: "var(--emerald-500)",
-                      }}
-                    >
-                      <Icon size={16} />
+                  <div key={label} className="flex items-center gap-6 px-8 py-6">
+                    <div className="flex h-11 w-11 shrink-0 items-center justify-center rounded-xl bg-emerald-500/10 text-emerald-400 border border-emerald-500/20">
+                      <Icon size={18} />
                     </div>
                     <div className="min-w-0 flex-1">
-                      <p
-                        className="text-xs font-semibold uppercase tracking-wider"
-                        style={{ color: "var(--text-muted)" }}
-                      >
+                      <p className="text-[10px] font-black uppercase tracking-[0.2em] text-slate-500">
                         {label}
                       </p>
-                      <p
-                        className="mt-0.5 truncate text-sm"
-                        style={{ color: "var(--text-primary)" }}
-                      >
+                      <p className="mt-1 truncate text-base font-bold text-slate-200">
                         {value}
                       </p>
                     </div>
-                    <span className="badge badge-slate shrink-0 text-xs">
-                      Google
+                    <span className="shrink-0 px-2 py-0.5 rounded-md bg-white/5 border border-white/10 text-slate-400 text-[10px] font-bold uppercase tracking-wider">
+                      Google Account
                     </span>
                   </div>
                 ))}
               </div>
 
               {/* Note */}
-              <div
-                className="px-6 py-4"
-                style={{ borderTop: "1px solid var(--border-subtle)" }}
-              >
-                <p
-                  className="font-mono text-xs"
-                  style={{ color: "var(--text-muted)" }}
-                >
+              <div className="px-8 py-6 bg-emerald-500/[0.01]">
+                <p className="font-mono text-[10px] text-slate-500 uppercase tracking-widest leading-relaxed">
                   {"> "}
-                  Thông tin được đồng bộ từ Google — chỉnh sửa tại{" "}
-                  <a
-                    href="https://myaccount.google.com"
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    style={{ color: "var(--emerald-400)" }}
-                  >
-                    myaccount.google.com
-                  </a>
+                  Dữ liệu được bảo vệ bởi <span className="text-emerald-400">OAuth 2.0</span>. Mọi thay đổi sẽ được đồng bộ trực tiếp từ nền tảng 
+                  {" "}<a href="https://myaccount.google.com" target="_blank" rel="noopener noreferrer" className="text-emerald-400 underline underline-offset-4 hover:text-emerald-300">Google Cloud</a>.
                 </p>
               </div>
             </div>
 
             {/* Actions */}
-            <div
-              className="rounded-2xl p-6"
-              style={{
-                background: "var(--bg-elevated)",
-                border: "1px solid var(--border-subtle)",
-              }}
-            >
-              <h2
-                className="mb-4 font-semibold"
-                style={{ color: "var(--text-primary)" }}
-              >
-                Thao tác
+            <div className="rounded-[2.5rem] bg-white/[0.02] backdrop-blur-xl border border-white/10 p-8 shadow-2xl transition-all duration-300 hover:border-emerald-500/10">
+              <h2 className="text-xl font-black uppercase tracking-tight text-white mb-8">
+                Thao tác hệ thống
               </h2>
-              <div className="flex flex-wrap gap-3">
+              <div className="flex flex-wrap gap-4">
                 <Link
                   href="/dashboard"
-                  className="btn-emerald flex-1 justify-center gap-2 sm:flex-none"
+                  className="flex-1 justify-center gap-3 py-4 rounded-2xl border border-emerald-500/40 text-emerald-400 hover:bg-emerald-500/10 transition-all font-black text-xs uppercase tracking-widest flex items-center lg:flex-none lg:px-10"
                 >
-                  <LayoutDashboard size={15} />
-                  Vào Dashboard
+                  <LayoutDashboard size={16} />
+                  VÀO DASHBOARD
                 </Link>
                 <button
                   onClick={() => signOut({ callbackUrl: "/" })}
-                  className="btn-danger flex-1 justify-center gap-2 sm:flex-none"
+                  className="flex-1 justify-center gap-3 py-4 rounded-2xl border border-rose-500/30 text-rose-400 hover:bg-rose-500/10 transition-all font-black text-xs uppercase tracking-widest flex items-center lg:flex-none lg:px-10"
                 >
-                  <LogOut size={15} />
-                  Đăng xuất
+                  <LogOut size={16} />
+                  ĐĂNG XUẤT
                 </button>
               </div>
             </div>
