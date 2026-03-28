@@ -8,7 +8,7 @@ export default function GalaxyBackground() {
   return (
     <div
       className="fixed inset-0 z-[-10] overflow-hidden pointer-events-none transform-gpu will-change-transform"
-      style={{ backgroundColor: "#030005" }}
+      style={{ backgroundColor: "#030508" }}
       aria-hidden="true"
     >
       {/* Nền Gradient mờ ảo tập trung giữa màn hình */}
