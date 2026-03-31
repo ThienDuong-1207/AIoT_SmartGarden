@@ -10,6 +10,10 @@ export async function middleware(req: NextRequest) {
     if (!token) {
       return NextResponse.redirect(new URL("/auth/login", req.url));
     }
+    // Admin đi vào /dashboard → tự redirect sang /admin
+    if (token.role === "admin") {
+      return NextResponse.redirect(new URL("/admin", req.url));
+    }
   }
 
   if (pathname.startsWith("/profile")) {

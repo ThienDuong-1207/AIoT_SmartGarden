@@ -31,7 +31,7 @@ export async function GET(req: NextRequest, { params }: Params) {
   }
 
   return NextResponse.json({
-    image:      snapshot.imageBase64,
+    image:      snapshot.imageUrl,
     capturedAt: snapshot.capturedAt,
   });
 }
@@ -56,10 +56,34 @@ export async function POST(req: NextRequest, { params }: Params) {
 
   await dbConnect();
 
+  // Upload ảnh lên Cloudinary
+  let imageUrl = "";
+  try {
+    const cloudName = process.env.CLOUDINARY_CLOUD_NAME!;
+    const formData = new FormData();
+    formData.append("file", body.imageBase64);
+    formData.append("upload_preset", process.env.CLOUDINARY_UPLOAD_PRESET ?? "AIoT_smartGarden");
+    formData.append("folder", `AIoT_smartGarden/snapshots/${deviceId}`);
+
+    const uploadRes = await fetch(
+      `https://api.cloudinary.com/v1_1/${cloudName}/image/upload`,
+      { method: "POST", body: formData }
+    );
+
+    if (uploadRes.ok) {
+      const uploadData = await uploadRes.json() as { secure_url: string };
+      imageUrl = uploadData.secure_url;
+    }
+  } catch {
+    // upload thất bại → vẫn lưu record với imageUrl rỗng
+  }
+
   await CameraCaptureModel.create({
     deviceId,
-    imageBase64: body.imageBase64,
+    userId:      auth.userId,
+    imageUrl,
     capturedAt:  body.capturedAt ? new Date(body.capturedAt) : new Date(),
+    triggeredBy: "manual",
   });
 
   // Chỉ giữ lại 10 snapshot gần nhất mỗi thiết bị

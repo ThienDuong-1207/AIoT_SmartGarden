@@ -135,17 +135,11 @@ export const authOptions: NextAuthOptions = {
       return session;
     },
     async redirect({ baseUrl, url }) {
-      if (url === "/" || url.includes("/admin")) {
-        return `${baseUrl}/admin`;
-      }
-
-      if (url.startsWith("/")) {
-        return `${baseUrl}${url}`;
-      }
-      if (url.startsWith(baseUrl)) {
-        return url;
-      }
-      return baseUrl;
+      // Cho phép redirect tới URL cụ thể trong cùng domain
+      if (url.startsWith("/")) return `${baseUrl}${url}`;
+      if (url.startsWith(baseUrl)) return url;
+      // Mặc định sau login → dashboard (middleware sẽ redirect admin sang /admin)
+      return `${baseUrl}/dashboard`;
     },
   },
 };
