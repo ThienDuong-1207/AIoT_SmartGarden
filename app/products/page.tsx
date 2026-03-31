@@ -8,13 +8,30 @@ import { sampleProducts } from "@/lib/mock-data";
 import ProductModel from "@/models/Product";
 import { dbConnect } from "@/lib/mongodb";
 
-async function getProducts() {
+export const dynamic = "force-dynamic";
+
+type ProductItem = {
+  _id: string;
+  slug: string;
+  name: string;
+  category: string;
+  price: number;
+  salePrice?: number | null;
+  images?: string[];
+  stock?: number;
+  rating?: number;
+  reviewCount?: number;
+};
+
+async function getProducts(): Promise<ProductItem[]> {
   try {
     await dbConnect();
     const products = await ProductModel.find({}).sort({ createdAt: -1 }).lean();
-    return products.length ? products : sampleProducts;
+    if (!products.length) return sampleProducts as unknown as ProductItem[];
+    // Serialize ObjectId → string để pass sang Client Component
+    return JSON.parse(JSON.stringify(products)) as ProductItem[];
   } catch {
-    return sampleProducts;
+    return sampleProducts as unknown as ProductItem[];
   }
 }
 
