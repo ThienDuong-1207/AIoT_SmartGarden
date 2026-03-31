@@ -51,14 +51,14 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
   }
 
   return (
-    <div className="flex min-h-dvh" style={{ background: "var(--bg-base)", paddingTop: "72px" }}>
+    <div className="flex min-h-dvh" style={{ paddingTop: "72px" }}>
 
       {/* ═══════════════════════════════════
           SIDEBAR
       ═══════════════════════════════════ */}
       <aside
         className="sticky top-[72px] hidden h-[calc(100dvh-72px)] w-56 shrink-0 flex-col overflow-y-auto md:flex"
-        style={{ background: "var(--bg-subtle)", borderRight: "1px solid var(--border-subtle)" }}
+        style={{ background: "rgba(13,17,23,0.75)", backdropFilter: "blur(12px)", borderRight: "1px solid var(--border-subtle)" }}
       >
         {/* Brand strip */}
         <div

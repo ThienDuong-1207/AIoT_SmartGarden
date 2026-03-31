@@ -153,11 +153,11 @@ export default function ProductCard({ product }: { product: Product }) {
         <div className="mt-4 pt-3" style={{ borderTop: "1px solid var(--border-subtle)" }}>
           <div className="mb-3 flex items-baseline gap-2">
             <span className="text-xl font-black" style={{ color: cfg.accent }}>
-              {displayedPrice.toLocaleString("vi-VN")}đ
+              ${displayedPrice.toLocaleString("en-US")}
             </span>
             {hasDiscount && (
               <span className="text-xs line-through" style={{ color: "var(--text-muted)" }}>
-                {product.price.toLocaleString("vi-VN")}đ
+                ${product.price.toLocaleString("en-US")}
               </span>
             )}
           </div>

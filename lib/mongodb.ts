@@ -31,7 +31,7 @@ export async function dbConnect() {
 
   if (!cache.promise) {
     cache.promise = mongoose.connect(MONGODB_URI_SAFE, {
-      dbName: process.env.MONGODB_DB_NAME || "smart_garden",
+      dbName: process.env.MONGODB_DB_NAME || "AIoT",
       bufferCommands: false,
     });
   }
