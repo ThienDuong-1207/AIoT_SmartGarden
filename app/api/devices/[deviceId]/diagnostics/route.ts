@@ -57,13 +57,41 @@ export async function POST(req: NextRequest, { params }: Params) {
     fusedDiagnosis, recommendation, aiModel, processingMs,
   } = body;
 
-  if (!imageBase64 || !status) {
-    return NextResponse.json({ error: "Thiếu imageBase64 hoặc status" }, { status: 400 });
+  if (!status) {
+    return NextResponse.json({ error: "Thiếu status" }, { status: 400 });
+  }
+
+  // Upload ảnh lên Cloudinary thay vì lưu base64 vào MongoDB
+  let imageUrl = "";
+  if (imageBase64) {
+    try {
+      const cloudName = process.env.CLOUDINARY_CLOUD_NAME!;
+      const apiKey    = process.env.CLOUDINARY_API_KEY!;
+      const apiSecret = process.env.CLOUDINARY_API_SECRET!;
+
+      const formData = new FormData();
+      formData.append("file", imageBase64);
+      formData.append("upload_preset", process.env.CLOUDINARY_UPLOAD_PRESET ?? "AIoT_smartGarden");
+      formData.append("folder", `AIoT_smartGarden/diagnostics/${deviceId}`);
+
+      const uploadRes = await fetch(
+        `https://api.cloudinary.com/v1_1/${cloudName}/image/upload`,
+        { method: "POST", body: formData }
+      );
+
+      if (uploadRes.ok) {
+        const uploadData = await uploadRes.json() as { secure_url: string };
+        imageUrl = uploadData.secure_url;
+      }
+    } catch {
+      // upload thất bại → vẫn lưu record, chỉ không có ảnh
+    }
   }
 
   const doc = await AIdiagnosticModel.create({
     deviceId,
-    imageBase64,
+    userId:        auth.userId,   // lấy từ session — liên kết trực tiếp với user
+    imageUrl,
     sensorContext: sensorContext ?? {},
     detections:    detections    ?? [],
     status,

@@ -2,8 +2,9 @@ import mongoose, { Schema, Document } from "mongoose";
 
 export interface IAIdiagnostic extends Document {
   deviceId: string;
+  userId: string;               // ref → users._id (để query trực tiếp không cần join)
   capturedAt: Date;
-  imageBase64: string;          // ảnh lưu thẳng MongoDB, không cần Cloudinary
+  imageUrl: string;             // Cloudinary URL (thay thế imageBase64)
   sensorContext: {
     tds: number | null;
     ph: number | null;
@@ -27,8 +28,9 @@ export interface IAIdiagnostic extends Document {
 const AIdiagnosticSchema = new Schema<IAIdiagnostic>(
   {
     deviceId:    { type: String, required: true, index: true },
+    userId:      { type: String, required: true, index: true },
     capturedAt:  { type: Date, default: Date.now, index: true },
-    imageBase64: { type: String, required: true },
+    imageUrl:    { type: String, default: "" },   // Cloudinary URL
     sensorContext: {
       tds:         { type: Number, default: null },
       ph:          { type: Number, default: null },
@@ -55,6 +57,7 @@ const AIdiagnosticSchema = new Schema<IAIdiagnostic>(
 
 AIdiagnosticSchema.index({ deviceId: 1, capturedAt: -1 });
 AIdiagnosticSchema.index({ deviceId: 1, status: 1 });
+AIdiagnosticSchema.index({ userId: 1, capturedAt: -1 });  // query lịch sử theo user
 
 const AIdiagnosticModel: mongoose.Model<IAIdiagnostic> =
   mongoose.models.AIdiagnostic ||

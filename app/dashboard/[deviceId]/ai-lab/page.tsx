@@ -15,7 +15,7 @@ type DiagRecord = {
   _id: string;
   deviceId: string;
   capturedAt: string;
-  imageBase64: string;
+  imageUrl: string;
   sensorContext: { tds: number | null; ph: number | null; temperature: number | null; humidity: number | null };
   detections: { class: string; confidence: number; bbox: number[] }[];
   status: "healthy" | "warning" | "danger";
@@ -27,7 +27,7 @@ type DiagRecord = {
   processingMs: number;
 };
 
-type DiagDetail = DiagRecord & { imageBase64: string };
+type DiagDetail = DiagRecord;
 
 const STATUS_CFG = {
   healthy: { icon: CheckCircle,   color: "var(--emerald-400)", bg: "rgba(16,185,129,0.08)", border: "rgba(16,185,129,0.20)", label: "Healthy"   },
@@ -95,9 +95,9 @@ function DetailModal({ id, deviceId, onClose }: { id: string; deviceId: string; 
         </div>
 
         <div className="p-5 space-y-4">
-          {detail.imageBase64 && (
+          {detail.imageUrl && (
             // eslint-disable-next-line @next/next/no-img-element
-            <img src={detail.imageBase64} alt="capture" className="w-full rounded-xl object-contain" style={{ maxHeight: 320, background: "#06080F" }} />
+            <img src={detail.imageUrl} alt="capture" className="w-full rounded-xl object-contain" style={{ maxHeight: 320, background: "#06080F" }} />
           )}
 
           <div className="grid grid-cols-4 gap-3">
@@ -375,9 +375,9 @@ export default function AILabPage() {
                   style={{ border: `1px solid ${cfg.border}`, height: 220 }}
                   onClick={() => setSelectedId(record._id)}
                 >
-                  {record.imageBase64 ? (
+                  {record.imageUrl ? (
                     // eslint-disable-next-line @next/next/no-img-element
-                    <img src={record.imageBase64} alt="capture" className="absolute inset-0 h-full w-full object-cover" />
+                    <img src={record.imageUrl} alt="capture" className="absolute inset-0 h-full w-full object-cover" />
                   ) : (
                     <div className="absolute inset-0 bg-[#06080F]" />
                   )}
