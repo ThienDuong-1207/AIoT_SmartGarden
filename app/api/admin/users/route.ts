@@ -19,9 +19,11 @@ export async function GET(req: Request) {
 
   const query: Record<string, unknown> = {};
   if (q) {
+    // Escape ký tự đặc biệt để tránh ReDoS
+    const escaped = q.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
     query.$or = [
-      { name: { $regex: q, $options: "i" } },
-      { email: { $regex: q, $options: "i" } },
+      { name: { $regex: escaped, $options: "i" } },
+      { email: { $regex: escaped, $options: "i" } },
     ];
   }
   if (role) query.role = role;

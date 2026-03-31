@@ -33,10 +33,8 @@ export async function GET(req: Request) {
       .lean();
 
     return NextResponse.json({ data: products });
-  } catch {
-    const filtered = sampleProducts
-      .filter((p) => !category || p.category === category)
-      .filter((p) => p.price >= minPrice && p.price <= maxPrice);
-    return NextResponse.json({ data: filtered });
+  } catch (err) {
+    console.error("[products] db error:", err);
+    return NextResponse.json({ error: "Không thể tải sản phẩm" }, { status: 500 });
   }
 }

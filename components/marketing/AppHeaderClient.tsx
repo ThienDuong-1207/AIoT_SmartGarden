@@ -5,6 +5,7 @@ import { useEffect, useState, useRef } from "react";
 import { useSession, signOut } from "next-auth/react";
 import { ShoppingCart, User, LogOut, LayoutDashboard, ChevronDown, Menu, X } from "lucide-react";
 import { usePathname } from "next/navigation";
+import ThemeToggle from "@/components/ui/ThemeToggle";
 
 const NAV_LINKS = [
   { href: "/",          label: "Trang chủ" },
@@ -59,17 +60,16 @@ export default function AppHeaderClient() {
           style={
             isScrolled
               ? {
-                  background: "rgba(9,9,11,0.92)",
-                  border: "1px solid rgba(255,255,255,0.08)",
-                  backdropFilter: "blur(24px)",
-                  WebkitBackdropFilter: "blur(24px)",
-                  boxShadow: "0 4px 24px rgba(0,0,0,0.5)",
+                  background: "var(--header-bg-scrolled)",
+                  border: "1px solid var(--header-border)",
+                  backdropFilter: "blur(20px)",
+                  WebkitBackdropFilter: "blur(20px)",
+                  boxShadow: "0 4px 24px rgba(0,0,0,0.15)",
                 }
               : {
-                  background: "rgba(9,9,11,0.30)",
-                  border: "1px solid rgba(255,255,255,0.06)",
-                  backdropFilter: "blur(12px)",
-                  WebkitBackdropFilter: "blur(12px)",
+                  background: "var(--header-bg-top)",
+                  border: "1px solid transparent",
+                  backdropFilter: "blur(0px)",
                 }
           }
         >
@@ -125,6 +125,9 @@ export default function AppHeaderClient() {
 
             {/* ── Right section ── */}
             <div className="flex items-center gap-2 md:gap-3">
+
+              {/* Theme toggle */}
+              <ThemeToggle />
 
               {/* Cart icon */}
               <Link
@@ -283,8 +286,9 @@ export default function AppHeaderClient() {
         <div
           className="fixed inset-x-0 top-0 z-40 pt-20 md:hidden animate-fade-in"
           style={{
-            background: "rgba(9,9,11,0.98)",
+            background: "var(--bg-overlay)",
             backdropFilter: "blur(24px)",
+            WebkitBackdropFilter: "blur(24px)",
             borderBottom: "1px solid var(--border-subtle)",
             minHeight: "100dvh",
           }}

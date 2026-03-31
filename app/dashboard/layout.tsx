@@ -2,181 +2,135 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import {
-  LayoutGrid, Bell, ShoppingBag, Settings2, Leaf, ChevronRight,
-} from "lucide-react";
+import { useEffect, useState } from "react";
+import { LayoutGrid, Bell, ShoppingBag, Settings2, Leaf } from "lucide-react";
 
 const NAV_GROUPS = [
   {
     label: "Quản lý",
     items: [
-      {
-        href: "/dashboard",
-        icon: LayoutGrid,
-        label: "Chậu cây",
-        desc: "Tất cả thiết bị",
-        exact: true,
-      },
-      {
-        href: "/dashboard/alerts",
-        icon: Bell,
-        label: "Cảnh báo",
-        desc: "Smart alerts · AI",
-        exact: false,
-      },
+      { href: "/dashboard",         icon: LayoutGrid, label: "Chậu cây",  desc: "Tất cả thiết bị", exact: true  },
+      { href: "/dashboard/alerts",  icon: Bell,       label: "Cảnh báo",  desc: "Smart alerts · AI", exact: false },
     ],
   },
   {
     label: "Tài khoản",
     items: [
-      {
-        href: "/products",
-        icon: ShoppingBag,
-        label: "Cửa hàng",
-        desc: "Hạt giống · Dinh dưỡng",
-        exact: false,
-      },
-      {
-        href: "/dashboard/settings",
-        icon: Settings2,
-        label: "Cài đặt",
-        desc: "Hồ sơ · Thông báo",
-        exact: false,
-      },
+      { href: "/products",            icon: ShoppingBag, label: "Cửa hàng", desc: "Hạt giống · Dinh dưỡng", exact: false },
+      { href: "/dashboard/settings",  icon: Settings2,   label: "Cài đặt",  desc: "Hồ sơ · Thông báo",     exact: false },
     ],
   },
 ];
 
-/* accent colours per route */
+/* Accent per route */
 const ACCENT: Record<string, { text: string; bg: string; border: string }> = {
-  "/dashboard":          { text: "var(--emerald-400)", bg: "rgba(34,197,94,0.10)",  border: "rgba(74,222,128,0.22)"   },
-  "/dashboard/alerts":   { text: "#FBBF24",            bg: "rgba(251,191,36,0.10)", border: "rgba(251,191,36,0.25)"   },
-  "/products":           { text: "#F97316",            bg: "rgba(249,115,22,0.10)", border: "rgba(249,115,22,0.25)"   },
-  "/dashboard/settings": { text: "#60A5FA",            bg: "rgba(96,165,250,0.10)", border: "rgba(96,165,250,0.25)"   },
+  "/dashboard":          { text: "var(--emerald-400)", bg: "rgba(16,185,129,0.10)", border: "var(--emerald-400)"  },
+  "/dashboard/alerts":   { text: "var(--gold-400)",    bg: "rgba(245,158,11,0.10)", border: "var(--gold-400)"    },
+  "/products":           { text: "#F97316",             bg: "rgba(249,115,22,0.10)", border: "#F97316"            },
+  "/dashboard/settings": { text: "var(--blue-400)",    bg: "rgba(96,165,250,0.10)", border: "var(--blue-400)"    },
 };
 
 export default function DashboardLayout({ children }: { children: React.ReactNode }) {
-  const pathname = usePathname();
+  const pathname       = usePathname();
+  const [alertCount, setAlertCount] = useState(0);
+
+  /* Fetch unread alert count */
+  useEffect(() => {
+    /* Tìm deviceId đầu tiên từ URL nếu đang ở device route */
+    const match = pathname.match(/\/dashboard\/([^/]+)\//);
+    if (!match) return;
+    const deviceId = match[1];
+    fetch(`/api/devices/${deviceId}/alerts?unread=true&limit=1`)
+      .then((r) => r.ok ? r.json() : null)
+      .then((json) => json?.count != null && setAlertCount(json.count))
+      .catch(() => {});
+  }, [pathname]);
 
   function isActive(href: string, exact: boolean) {
     return exact ? pathname === href : pathname.startsWith(href);
   }
 
   return (
-    <div
-      className="flex min-h-dvh"
-      style={{ background: "var(--bg-base)", paddingTop: "72px" }}
-    >
-      {/* ══════════════════════════════════
+    <div className="flex min-h-dvh" style={{ background: "var(--bg-base)", paddingTop: "72px" }}>
+
+      {/* ═══════════════════════════════════
           SIDEBAR
-      ══════════════════════════════════ */}
+      ═══════════════════════════════════ */}
       <aside
-        className="sticky top-[72px] hidden h-[calc(100dvh-72px)] w-64 shrink-0 flex-col overflow-y-auto md:flex"
-        style={{
-          background: "var(--bg-subtle)",
-          borderRight: "1px solid var(--border-subtle)",
-        }}
+        className="sticky top-[72px] hidden h-[calc(100dvh-72px)] w-56 shrink-0 flex-col overflow-y-auto md:flex"
+        style={{ background: "var(--bg-subtle)", borderRight: "1px solid var(--border-subtle)" }}
       >
         {/* Brand strip */}
         <div
-          className="flex items-center gap-3 px-5 py-5"
+          className="flex items-center gap-2.5 px-4 py-4"
           style={{ borderBottom: "1px solid var(--border-subtle)" }}
         >
           <div
-            className="flex h-8 w-8 shrink-0 items-center justify-center rounded-xl"
-            style={{
-              background: "linear-gradient(135deg, var(--emerald-500), var(--emerald-600))",
-              boxShadow: "0 0 16px rgba(34,197,94,0.30)",
-            }}
+            className="flex h-7 w-7 shrink-0 items-center justify-center rounded-lg"
+            style={{ background: "linear-gradient(135deg, var(--emerald-500), var(--emerald-600))" }}
           >
-            <Leaf size={15} color="#fff" />
+            <Leaf size={13} color="#fff" />
           </div>
           <div>
-            <p
-              className="text-xs font-black uppercase tracking-[0.15em]"
-              style={{ color: "var(--text-primary)" }}
-            >
+            <p className="text-xs font-bold tracking-tight" style={{ color: "var(--text-primary)" }}>
               Smart Garden
             </p>
-            <div className="mt-0.5 flex items-center gap-1.5">
+            <div className="mt-0.5 flex items-center gap-1">
               <span className="status-dot status-online" style={{ width: 5, height: 5 }} />
               <span className="font-mono text-[9px] font-semibold" style={{ color: "var(--emerald-400)" }}>
-                SYSTEM ONLINE
+                ONLINE
               </span>
             </div>
           </div>
         </div>
 
         {/* Nav groups */}
-        <nav className="flex flex-col gap-5 px-3 py-5">
+        <nav className="flex flex-col gap-4 px-2 py-4">
           {NAV_GROUPS.map(({ label, items }) => (
             <div key={label}>
-              {/* Group label */}
-              <p
-                className="mb-1.5 px-3 font-mono text-[9px] font-semibold uppercase tracking-[0.14em]"
-                style={{ color: "var(--text-muted)" }}
-              >
-                {label}
-              </p>
-
-              {/* Items */}
+              <p className="section-label mb-1 px-2">{label}</p>
               <div className="flex flex-col gap-0.5">
                 {items.map(({ href, icon: Icon, label: itemLabel, desc, exact }) => {
                   const active = isActive(href, exact);
                   const accent = ACCENT[href] ?? ACCENT["/dashboard/settings"];
+                  const isAlerts = href === "/dashboard/alerts";
 
                   return (
                     <Link
                       key={href}
                       href={href}
-                      className="group flex items-center gap-3 rounded-xl px-3 py-2.5 transition-all duration-150"
-                      style={
-                        active
-                          ? {
-                              background: accent.bg,
-                              border: `1px solid ${accent.border}`,
-                            }
-                          : {
-                              background: "transparent",
-                              border: "1px solid transparent",
-                            }
+                      className="sidebar-nav-link group flex items-center gap-2.5 rounded-lg px-2.5 py-2 transition-all duration-100"
+                      data-active={active ? "true" : undefined}
+                      style={active
+                        ? { background: accent.bg, borderLeft: `2px solid ${accent.border}`, paddingLeft: "calc(0.625rem - 2px)" }
+                        : { borderLeft: "2px solid transparent" }
                       }
                     >
-                      {/* Icon box */}
+                      {/* Icon */}
                       <div
-                        className="flex h-8 w-8 shrink-0 items-center justify-center rounded-lg transition-all duration-150"
-                        style={{
-                          background: active ? accent.bg : "rgba(255,255,255,0.04)",
-                          color: active ? accent.text : "var(--text-muted)",
-                        }}
+                        className="flex h-7 w-7 shrink-0 items-center justify-center rounded-md"
+                        style={{ background: active ? accent.bg : "var(--bg-elevated)", color: active ? accent.text : "var(--text-muted)" }}
                       >
-                        <Icon size={15} />
+                        <Icon size={14} />
                       </div>
 
                       {/* Labels */}
                       <div className="flex-1 min-w-0">
-                        <p
-                          className="text-xs font-semibold leading-tight"
-                          style={{ color: active ? accent.text : "var(--text-secondary)" }}
-                        >
+                        <p className="text-xs font-semibold leading-tight" style={{ color: active ? accent.text : "var(--text-secondary)" }}>
                           {itemLabel}
                         </p>
-                        <p
-                          className="mt-0.5 truncate text-[10px]"
-                          style={{ color: "var(--text-muted)" }}
-                        >
-                          {desc}
-                        </p>
+                        <p className="truncate text-[10px]" style={{ color: "var(--text-muted)" }}>{desc}</p>
                       </div>
 
-                      <ChevronRight
-                        size={11}
-                        className="shrink-0 transition-all duration-150"
-                        style={{
-                          color: active ? accent.text : "transparent",
-                          opacity: active ? 0.7 : 0,
-                        }}
-                      />
+                      {/* Alert badge */}
+                      {isAlerts && alertCount > 0 && (
+                        <span
+                          className="ml-auto flex h-4 min-w-4 items-center justify-center rounded-full px-1 font-mono text-[9px] font-bold"
+                          style={{ background: "var(--gold-500)", color: "#000" }}
+                        >
+                          {alertCount > 99 ? "99+" : alertCount}
+                        </span>
+                      )}
                     </Link>
                   );
                 })}
@@ -186,21 +140,16 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
         </nav>
 
         {/* Footer */}
-        <div
-          className="mt-auto p-5"
-          style={{ borderTop: "1px solid var(--border-subtle)" }}
-        >
-          <p className="font-mono text-[9px]" style={{ color: "var(--text-muted)" }}>
-            v2.0.0 · AIoT Platform
-          </p>
+        <div className="mt-auto px-4 py-4" style={{ borderTop: "1px solid var(--border-subtle)" }}>
+          <p className="font-mono text-[9px]" style={{ color: "var(--text-muted)" }}>v2.0.0 · AIoT Platform</p>
         </div>
       </aside>
 
-      {/* ══════════════════════════════════
+      {/* ═══════════════════════════════════
           MAIN CONTENT
-      ══════════════════════════════════ */}
-      <main className="flex-1 overflow-x-hidden">
-        <div className="mx-auto w-full max-w-6xl px-4 py-8 md:px-6">
+      ═══════════════════════════════════ */}
+      <main className="flex-1 min-w-0 overflow-x-hidden">
+        <div className="w-full px-4 py-6 md:px-6">
           {children}
         </div>
       </main>

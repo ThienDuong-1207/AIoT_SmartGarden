@@ -1,31 +1,39 @@
 @import "tailwindcss";
 
 /* ============================================================
-   DESIGN TOKENS — Dark Luxury Theme
+   DESIGN TOKENS — Soft Cyber Garden
    AIoT SmartGarden
+   Tham khảo: GitHub Dark, Linear, Vercel Dashboard
    ============================================================ */
 :root {
-  /* --- Background Hierarchy — Cyber Galaxy Black --- */
-  --bg-base:        #000000;   /* nền chính — absolute black */
-  --bg-elevated:    #030303;   /* card, panel level 1 */
-  --bg-overlay:     #050505;   /* dropdown, modal, level 2 */
-  --bg-subtle:      #020202;   /* sidebar, muted section */
+  /* --- Background Hierarchy — Deep Navy (có depth thực sự) --- */
+  --bg-base:        #0D1117;   /* GitHub dark base */
+  --bg-elevated:    #161B22;   /* card, panel level 1 */
+  --bg-overlay:     #1C2330;   /* dropdown, modal, level 2 */
+  --bg-subtle:      #0D1117;   /* sidebar = same as base */
 
-  /* --- Border — Cyber Cyan tint --- */
-  --border-subtle:  rgba(6, 182, 212, 0.07);
-  --border-normal:  rgba(6, 182, 212, 0.12);
-  --border-strong:  rgba(6, 182, 212, 0.22);
-  --border-cyan:    rgba(6, 182, 212, 0.35);
+  /* --- Border — Slate tint (không dùng cyan cho border thường) --- */
+  --border-subtle:  #21262D;
+  --border-normal:  #30363D;
+  --border-strong:  #484F58;
+  --border-emerald: rgba(16, 185, 129, 0.30);
+  --border-cyan:    rgba(6, 182, 212, 0.30);
   --border-gold:    rgba(245, 158, 11, 0.30);
 
-  /* --- Brand: Vibrant Cyber Cyan (Primary) --- */
+  /* --- Brand: Emerald (Primary — garden identity) --- */
+  --emerald-400:    #34D399;
+  --emerald-500:    #10B981;
+  --emerald-600:    #059669;
+  --emerald-glow:   rgba(16, 185, 129, 0.20);
+
+  /* --- Brand: Cyan (Secondary / Info) --- */
   --cyan-500:       #06B6D4;
   --cyan-400:       #22D3EE;
   --cyan-600:       #0891B2;
-  --cyan-glow:      rgba(6, 182, 212, 0.25);
-  --cyan-glow-sm:   rgba(6, 182, 212, 0.12);
+  --cyan-glow:      rgba(6, 182, 212, 0.20);
+  --cyan-glow-sm:   rgba(6, 182, 212, 0.10);
 
-  /* --- Brand: Gold / Amber (Premium Accent) --- */
+  /* --- Brand: Gold / Amber (Warning / CTA) --- */
   --gold-400:       #FBBF24;
   --gold-500:       #F59E0B;
   --gold-600:       #D97706;
@@ -36,39 +44,129 @@
   --blue-500:       #3B82F6;
   --blue-glow:      rgba(59, 130, 246, 0.15);
 
-  /* --- Text Hierarchy --- */
-  --text-primary:   #FFFFFF;   /* headings, main content */
-  --text-secondary: #D4D4D8;   /* sub-labels, descriptions */
-  --text-muted:     #71717A;   /* placeholders, disabled */
+  /* --- Text Hierarchy — slate scale --- */
+  --text-primary:   #E6EDF3;   /* headings, main content */
+  --text-secondary: #8B949E;   /* sub-labels, descriptions */
+  --text-muted:     #6E7681;   /* placeholders, disabled */
   --text-cyan:      #22D3EE;
   --text-gold:      #FBBF24;
 
   /* --- Semantic --- */
-  --success:        #06B6D4;   /* unified to cyan for aesthetic */
+  --success:        #10B981;
   --warning:        #F59E0B;
   --danger:         #EF4444;
-  --danger-glow:    rgba(239, 68, 68, 0.12);
+  --danger-glow:    rgba(239, 68, 68, 0.10);
   --info:           #3B82F6;
 
-  /* --- Shadow / Glow --- */
-  --shadow-card:    0 2px 8px rgba(0, 0, 0, 0.5), 0 0 0 1px rgba(6, 182, 212, 0.08); /* cyan */
-  --shadow-elevated:0 12px 40px rgba(0, 0, 0, 0.8);
-  --glow-cyan:      0 0 32px rgba(6, 182, 212, 0.2), 0 0 64px rgba(6, 182, 212, 0.1);
-  --glow-gold:      0 0 24px rgba(245, 158, 11, 0.15), 0 0 48px rgba(245, 158, 11, 0.06);
+  /* --- Shadow — realistic depth, không glow loạn --- */
+  --shadow-card:    0 1px 3px rgba(0,0,0,0.3), 0 0 0 1px #21262D;
+  --shadow-elevated:0 8px 32px rgba(0,0,0,0.5), 0 0 0 1px #30363D;
+  --glow-emerald:   0 0 24px rgba(16, 185, 129, 0.15);
+  --glow-cyan:      0 0 24px rgba(6, 182, 212, 0.15);
+  --glow-gold:      0 0 20px rgba(245, 158, 11, 0.12);
 
   /* --- Radius --- */
   --radius-sm:      6px;
-  --radius-md:      10px;
-  --radius-lg:      16px;
-  --radius-xl:      24px;
+  --radius-md:      8px;
+  --radius-lg:      12px;
+  --radius-xl:      16px;
 
   /* --- Font stacks --- */
   --font-sans:      var(--font-manrope), "Inter", "Segoe UI", sans-serif;
   --font-mono:      var(--font-geist-mono), "JetBrains Mono", "Fira Code", monospace;
 
+  /* --- Header theme vars --- */
+  --header-bg-scrolled: rgba(13, 17, 23, 0.94);
+  --header-bg-top:      transparent;
+  --header-border:      rgba(33, 38, 45, 0.8);
+
   /* Legacy compat */
   --background:     var(--bg-base);
   --foreground:     var(--text-primary);
+}
+
+/* ============================================================
+   LIGHT MODE VARIABLES
+   Tham khảo: GitHub Light, Linear, Raycast
+   ============================================================ */
+[data-theme="light"] {
+  /* Backgrounds — GitHub light inspired */
+  --bg-base:        #F6F8FA;
+  --bg-elevated:    #FFFFFF;
+  --bg-overlay:     #FFFFFF;
+  --bg-subtle:      #F6F8FA;
+
+  /* Borders — solid slate, không rgba (dễ nhìn hơn trong light mode) */
+  --border-subtle:  #D0D7DE;
+  --border-normal:  #B1BAC4;
+  --border-strong:  #8C959F;
+  --border-emerald: rgba(16, 185, 129, 0.35);
+  --border-cyan:    rgba(2, 132, 199, 0.30);
+  --border-gold:    rgba(180, 83, 9, 0.30);
+
+  /* Text — slate hierarchy */
+  --text-primary:   #1F2328;
+  --text-secondary: #636C76;
+  --text-muted:     #9198A1;
+  --text-cyan:      #0369A1;
+  --text-gold:      #9A3412;
+
+  /* Brand — darker shades để readable trên nền sáng */
+  --emerald-400:    #059669;
+  --emerald-500:    #047857;
+  --emerald-600:    #065F46;
+  --emerald-glow:   rgba(5, 150, 105, 0.12);
+
+  --cyan-400:       #0284C7;
+  --cyan-500:       #0369A1;
+  --cyan-600:       #075985;
+
+  --gold-400:       #B45309;
+  --gold-500:       #92400E;
+  --gold-600:       #78350F;
+
+  --blue-400:       #2563EB;
+  --blue-500:       #1D4ED8;
+
+  /* Shadows — soft elevation */
+  --shadow-card:    0 1px 3px rgba(0,0,0,0.08), 0 0 0 1px #D0D7DE;
+  --shadow-elevated:0 4px 20px rgba(0,0,0,0.10), 0 1px 4px rgba(0,0,0,0.05);
+  --glow-emerald:   0 0 0 transparent;
+  --glow-cyan:      0 0 0 transparent;
+  --glow-gold:      0 0 0 transparent;
+
+  /* Semantic */
+  --danger:         #CF222E;
+  --danger-glow:    rgba(207, 34, 46, 0.08);
+
+  /* Header vars cho light mode */
+  --header-bg-scrolled: rgba(246, 248, 250, 0.94);
+  --header-bg-top:      transparent;
+  --header-border:      rgba(208, 215, 222, 0.8);
+}
+
+/* Light mode: tắt GalaxyBackground */
+[data-theme="light"] #galaxy-bg {
+  display: none;
+}
+
+/* Light mode: scrollbar */
+[data-theme="light"] ::-webkit-scrollbar-track { background: #F6F8FA; }
+[data-theme="light"] ::-webkit-scrollbar-thumb { background: #B1BAC4; }
+[data-theme="light"] ::-webkit-scrollbar-thumb:hover { background: #8C959F; }
+
+/* Light mode: skeleton */
+[data-theme="light"] .skeleton {
+  background: linear-gradient(
+    90deg,
+    #EFF2F5 25%, #E0E5EB 50%, #EFF2F5 75%
+  );
+  background-size: 200% 100%;
+}
+
+/* Light mode: nav-item hover override */
+[data-theme="light"] .nav-item-inactive:hover {
+  background: rgba(31, 35, 40, 0.06);
 }
 
 /* ============================================================
@@ -107,19 +205,44 @@ body {
 }
 
 /* ============================================================
-   TYPOGRAPHY
+   TYPOGRAPHY — Consistent scale
    ============================================================ */
 h1, h2, h3, h4, h5, h6 {
   font-family: var(--font-sans);
-  font-weight: 700;
-  letter-spacing: -0.025em;
+  font-weight: 600;
+  letter-spacing: -0.02em;
   color: var(--text-primary);
-  line-height: 1.2;
+  line-height: 1.25;
 }
 
-h1 { font-size: clamp(2rem, 5vw, 3.5rem); }
-h2 { font-size: clamp(1.5rem, 3vw, 2.25rem); }
-h3 { font-size: clamp(1.125rem, 2vw, 1.5rem); }
+h1 { font-size: clamp(1.75rem, 4vw, 2.75rem); font-weight: 700; }
+h2 { font-size: clamp(1.375rem, 2.5vw, 1.875rem); }
+h3 { font-size: clamp(1rem, 1.8vw, 1.25rem); }
+
+/* Page title (dashboard section headers) */
+.page-title {
+  font-size: 1.25rem;
+  font-weight: 600;
+  color: var(--text-primary);
+  letter-spacing: -0.02em;
+}
+
+/* Section label */
+.section-label {
+  font-size: 0.6875rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: var(--text-muted);
+}
+
+/* Metric value */
+.metric-value {
+  font-size: 1.875rem;
+  font-weight: 800;
+  line-height: 1;
+  letter-spacing: -0.03em;
+}
 
 p {
   color: var(--text-secondary);
@@ -165,71 +288,71 @@ code, pre, kbd {
    UTILITY: CARDS & PANELS
    ============================================================ */
 
-/* Card cơ bản — HUD crystal clear glass */
+/* Card cơ bản — clean surface, không glass/blur/animation */
 .dark-card {
-  background: rgba(0, 0, 0, 0.2);
-  backdrop-filter: blur(10px);
-  -webkit-backdrop-filter: blur(10px);
-  border: 1px solid rgba(34, 211, 238, 0.2);
-  border-radius: var(--radius-xl);
-  transition: all 0.3s ease;
-  animation: border-breathe 4s ease-in-out infinite;
+  background: var(--bg-elevated);
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-lg);
+  transition: border-color 0.15s ease, box-shadow 0.15s ease;
   position: relative;
 }
 
 .dark-card:hover {
-  border-color: rgba(6, 182, 212, 0.4);
-  box-shadow: 0 0 24px rgba(6, 182, 212, 0.15);
-  transform: translateY(-3px);
-  background: rgba(0, 0, 0, 0.3);
-  backdrop-filter: blur(10px);
-  -webkit-backdrop-filter: blur(10px);
-  border: 1px solid rgba(34, 211, 238, 0.3);
+  border-color: var(--border-normal);
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.3);
 }
 
-/* Card nâng cao (overlay level) */
+/* Light mode override */
+[data-theme="light"] .dark-card {
+  background: #FFFFFF;
+  border-color: #D0D7DE;
+  box-shadow: 0 1px 3px rgba(0,0,0,0.06);
+}
+[data-theme="light"] .dark-card:hover {
+  border-color: #B1BAC4;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+}
+
+/* Card overlay level (modal, dropdown) */
 .dark-card-overlay {
-  background: rgba(0, 0, 0, 0.5);
-  backdrop-filter: blur(10px);
-  -webkit-backdrop-filter: blur(10px);
-  border: 1px solid rgba(6, 182, 212, 0.15);
+  background: var(--bg-overlay);
+  border: 1px solid var(--border-normal);
   border-radius: var(--radius-lg);
   box-shadow: var(--shadow-elevated);
-  animation: border-breathe 4s ease-in-out infinite;
 }
 
-/* Glass panel */
+/* Glass panel — giữ blur chỉ cho marketing/hero sections */
 .glass-panel {
-  background: rgba(0, 0, 0, 0.2);
-  border: 1px solid rgba(6, 182, 212, 0.1);
-  backdrop-filter: blur(10px);
-  -webkit-backdrop-filter: blur(10px);
+  background: rgba(22, 27, 34, 0.7);
+  border: 1px solid var(--border-normal);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  border-radius: var(--radius-lg);
 }
 
-/* Luxury panel (now Cyber transparent panel) */
+[data-theme="light"] .glass-panel {
+  background: rgba(255, 255, 255, 0.80);
+  border-color: #D0D7DE;
+}
+
+/* Luxury panel — dùng cho sidebar brand, hero sections */
 .lux-panel {
-  background: rgba(6, 182, 212, 0.015);
-  backdrop-filter: blur(10px);
-  -webkit-backdrop-filter: blur(10px);
-  border: 1px solid rgba(6, 182, 212, 0.2);
+  background: var(--bg-elevated);
+  border: 1px solid var(--border-subtle);
   border-radius: var(--radius-xl);
-  box-shadow: var(--glow-cyan), var(--shadow-elevated);
-  animation: border-breathe 4s ease-in-out infinite;
+  box-shadow: var(--shadow-card);
+  transition: border-color 0.15s ease, box-shadow 0.15s ease;
 }
 
 .lux-panel:hover {
-  border-color: rgba(6, 182, 212, 0.5);
-  box-shadow: 0 0 28px rgba(6, 182, 212, 0.25);
-  background: rgba(6, 182, 212, 0.04);
+  border-color: var(--border-emerald);
+  box-shadow: var(--shadow-card), var(--glow-emerald);
 }
 
-@keyframes border-breathe {
-  0%, 100% { border-color: rgba(6, 182, 212, 0.12); }
-  50% { border-color: rgba(6, 182, 212, 0.30); box-shadow: 0 0 12px rgba(6, 182, 212, 0.1); }
-  100% {
-    box-shadow: 0 0 10px rgba(6, 182, 212, 0.4);
-    border-color: rgba(6, 182, 212, 0.15);
-  }
+[data-theme="light"] .lux-panel {
+  background: #FFFFFF;
+  border-color: #D0D7DE;
+  box-shadow: 0 1px 4px rgba(0,0,0,0.07);
 }
 
 @keyframes glitch-materialize {
@@ -262,23 +385,25 @@ code, pre, kbd {
 
 /* Stat card — metric numbers */
 .stat-card {
-  background: rgba(255, 255, 255, 0.01);
-  backdrop-filter: blur(10px);
-  -webkit-backdrop-filter: blur(10px);
-  border: 1px solid rgba(6, 182, 212, 0.15);
+  background: var(--bg-elevated);
+  border: 1px solid var(--border-subtle);
   border-radius: var(--radius-lg);
   padding: 1.25rem 1.5rem;
-  transition: all 0.3s ease;
+  transition: border-color 0.15s ease, box-shadow 0.15s ease;
 }
 
 .stat-card:hover {
-  border-color: rgba(6, 182, 212, 0.35);
-  box-shadow: 0 0 16px rgba(6, 182, 212, 0.1);
+  border-color: var(--border-normal);
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.25);
 }
 
-@keyframes border-breathe {
-  0%, 100% { border-color: rgba(6, 182, 212, 0.12); }
-  50% { border-color: rgba(6, 182, 212, 0.30); box-shadow: 0 0 12px rgba(6, 182, 212, 0.1); }
+[data-theme="light"] .stat-card {
+  background: #FFFFFF;
+  border-color: #D0D7DE;
+}
+[data-theme="light"] .stat-card:hover {
+  border-color: #B1BAC4;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.07);
 }
 
 /* ============================================================
@@ -331,8 +456,8 @@ code, pre, kbd {
 }
 
 .btn-ghost:hover {
-  background: rgba(255, 255, 255, 0.04);
-  border-color: var(--border-strong);
+  background: var(--bg-elevated);
+  border-color: var(--border-normal);
 }
 
 .btn-ghost:active {
@@ -409,8 +534,27 @@ code, pre, kbd {
 
 .btn-icon:hover {
   color: var(--text-primary);
-  background: rgba(255, 255, 255, 0.04);
+  background: var(--bg-elevated);
   border-color: var(--border-normal);
+}
+
+[data-theme="light"] .btn-icon {
+  color: var(--text-secondary);
+  border-color: #D0D7DE;
+}
+[data-theme="light"] .btn-icon:hover {
+  background: #F6F8FA;
+  border-color: #B1BAC4;
+  color: var(--text-primary);
+}
+
+[data-theme="light"] .btn-ghost {
+  color: var(--text-primary);
+  border-color: #D0D7DE;
+}
+[data-theme="light"] .btn-ghost:hover {
+  background: #F6F8FA;
+  border-color: #B1BAC4;
 }
 
 /* ============================================================
@@ -419,7 +563,7 @@ code, pre, kbd {
 .dark-input {
   width: 100%;
   padding: 0.625rem 0.875rem;
-  background: rgba(255, 255, 255, 0.03);
+  background: var(--bg-base);
   color: var(--text-primary);
   font-size: 0.875rem;
   border: 1px solid var(--border-subtle);
@@ -466,7 +610,7 @@ code, pre, kbd {
 .dark-select {
   width: 100%;
   padding: 0.625rem 2rem 0.625rem 0.875rem;
-  background: rgba(255, 255, 255, 0.03);
+  background: var(--bg-base);
   color: var(--text-primary);
   font-size: 0.875rem;
   border: 1px solid var(--border-subtle);
@@ -480,6 +624,46 @@ code, pre, kbd {
 .dark-select:focus {
   border-color: rgba(16, 185, 129, 0.50);
   box-shadow: 0 0 0 3px rgba(16, 185, 129, 0.10);
+}
+
+/* Light mode: inputs */
+[data-theme="light"] .dark-input {
+  background: #FFFFFF;
+  border-color: #D0D7DE;
+  color: var(--text-primary);
+}
+[data-theme="light"] .dark-input:focus {
+  border-color: var(--emerald-500);
+  box-shadow: 0 0 0 3px rgba(5, 150, 105, 0.12);
+}
+[data-theme="light"] .dark-select {
+  background: #FFFFFF;
+  border-color: #D0D7DE;
+  color: var(--text-primary);
+}
+
+/* ============================================================
+   UTILITY: NAV ITEMS (Sidebar — CSS-only hover, không JS inline)
+   ============================================================ */
+.nav-item {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  padding: 0.5rem 0.75rem;
+  border-radius: var(--radius-md);
+  border-left: 2px solid transparent;
+  transition: background 0.12s ease, border-color 0.12s ease, color 0.12s ease;
+  text-decoration: none;
+}
+
+.nav-item-inactive {
+  color: var(--text-secondary);
+  background: transparent;
+}
+
+.nav-item-inactive:hover {
+  background: rgba(255, 255, 255, 0.05);
+  color: var(--text-primary);
 }
 
 /* ============================================================
@@ -707,6 +891,33 @@ code, pre, kbd {
 }
 .link-muted-emerald:hover { color: var(--emerald-400); }
 
+/* Device tabs nav — underline style */
+.device-tabs-nav { gap: 0; }
+
+.device-tab {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.625rem 1rem;
+  font-size: 0.75rem;
+  font-weight: 600;
+  color: var(--text-muted);
+  border-bottom: 2px solid transparent;
+  transition: color 0.15s ease, border-color 0.15s ease;
+  white-space: nowrap;
+  flex-shrink: 0;
+}
+.device-tab:hover { color: var(--text-secondary); }
+.device-tab--active {
+  color: var(--emerald-400);
+  border-bottom-color: var(--emerald-400);
+}
+
+/* Sidebar nav link — hover state (pure CSS, no JS handlers) */
+.sidebar-nav-link:not([data-active="true"]):hover {
+  background: var(--bg-elevated);
+}
+
 /* Card hover — border + glow (pure CSS, không cần JS) */
 .card-hover {
   transition: border-color 0.2s ease, box-shadow 0.2s ease, transform 0.15s ease;
@@ -787,34 +998,6 @@ code, pre, kbd {
     opacity: 1;
     transform: scale(1);
   }
-}
-
-/* ============================================================
-   UTILITY: ECO-GLASSMORPHISM (New Theme)
-   ============================================================ */
-.eco-section {
-  position: relative;
-  width: 100%;
-  padding-top: 5rem;
-  padding-bottom: 5rem;
-}
-
-.eco-card {
-  will-change: transform, opacity;
-  background: rgba(255, 255, 255, 0.03);
-  backdrop-filter: blur(24px);
-  -webkit-backdrop-filter: blur(24px);
-  border: 1px solid rgba(255, 255, 255, 0.1);
-  border-radius: 1.5rem;
-  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
-  transition: all 0.5s cubic-bezier(0.23, 1, 0.32, 1);
-}
-
-.eco-card:hover {
-  background: rgba(255, 255, 255, 0.06);
-  transform: translateY(-4px);
-  box-shadow: 0 8px 32px rgba(16, 185, 129, 0.1);
-  border-color: rgba(16, 185, 129, 0.3);
 }
 
 /* Animation utility classes */

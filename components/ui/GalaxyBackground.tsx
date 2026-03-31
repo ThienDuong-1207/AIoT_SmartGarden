@@ -7,8 +7,9 @@ export default function GalaxyBackground() {
 
   return (
     <div
-      className="fixed inset-0 z-[-10] overflow-hidden pointer-events-none transform-gpu will-change-transform"
-      style={{ backgroundColor: "#030508" }}
+      id="galaxy-bg"
+      className="fixed inset-0 z-[-1] overflow-hidden pointer-events-none"
+      style={{ backgroundColor: "#000000" }}
       aria-hidden="true"
     >
       {/* Nền Gradient mờ ảo tập trung giữa màn hình */}
@@ -19,16 +20,15 @@ export default function GalaxyBackground() {
         }}
       />
 
-      {/* Lớp các vì sao (Emerald stars mờ) */}
+      {/* Lớp các vì sao (Cyan/Blue stars mờ) */}
       <div 
-        className="absolute inset-0 mix-blend-screen opacity-20 transform-gpu"
+        className="absolute inset-0 mix-blend-screen opacity-40"
         style={{
-          backgroundImage: "radial-gradient(rgba(16, 185, 129, 0.3) 1px, transparent 1px)",
+          backgroundImage: "radial-gradient(rgba(34, 211, 238, 0.45) 1px, transparent 1px)",
           backgroundSize: "48px 48px",
           backgroundPosition: "0 0, 24px 24px",
           transform: "translateZ(0) scale(1.5)",
-          animation: "galaxy-drift 120s linear infinite",
-          willChange: "background-position, transform"
+          animation: "galaxy-drift 120s linear infinite"
         }}
       />
 
@@ -41,11 +41,11 @@ export default function GalaxyBackground() {
         >
           <defs>
             <radialGradient id={`globalNodeGlow-${filterId}`} cx="50%" cy="50%" r="60%">
-              <stop offset="0%" stopColor="rgba(52, 211, 153, 0.8)" />
-              <stop offset="100%" stopColor="rgba(52, 211, 153, 0.02)" />
+              <stop offset="0%" stopColor="rgba(34,211,238,0.98)" />
+              <stop offset="100%" stopColor="rgba(34,211,238,0.06)" />
             </radialGradient>
           </defs>
-          <g stroke="rgba(16, 185, 129, 0.15)" strokeWidth="0.8">
+          <g stroke="rgba(34,211,238,0.22)" strokeWidth="0.8">
             <line x1="10%" y1="20%" x2="30%" y2="15%" />
             <line x1="30%" y1="15%" x2="50%" y2="25%" />
             <line x1="50%" y1="25%" x2="70%" y2="10%" />

@@ -1,25 +1,32 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useCallback } from "react";
+import { useParams } from "next/navigation";
 import {
   Camera, Droplets, FlaskConical, Zap, Lightbulb,
   Timer, RotateCcw, SlidersHorizontal, CheckCircle,
-  WifiOff, Power,
+  WifiOff, Power, Loader2, ChevronDown,
 } from "lucide-react";
 
 /* ── Toggle switch ── */
 function Toggle({
-  on, onChange, color = "var(--emerald-500)",
+  on, onChange, color = "var(--emerald-500)", disabled,
 }: {
   on: boolean;
   onChange: (v: boolean) => void;
   color?: string;
+  disabled?: boolean;
 }) {
   return (
     <button
-      onClick={() => onChange(!on)}
+      onClick={() => !disabled && onChange(!on)}
+      disabled={disabled}
       className="relative h-5 w-9 rounded-full transition-colors duration-200"
-      style={{ background: on ? color : "rgba(255,255,255,0.10)" }}
+      style={{
+        background: on ? color : "rgba(255,255,255,0.10)",
+        opacity: disabled ? 0.5 : 1,
+        cursor: disabled ? "not-allowed" : "pointer",
+      }}
     >
       <span
         className="absolute top-0.5 h-4 w-4 rounded-full bg-white shadow transition-transform duration-200"
@@ -32,17 +39,10 @@ function Toggle({
 /* ── Threshold slider ── */
 function ThresholdRow({
   label, icon: Icon, color,
-  min, max, minVal, maxVal,
-  unit,
+  min, max, minVal, maxVal, unit,
 }: {
-  label: string;
-  icon: React.ElementType;
-  color: string;
-  min: number;
-  max: number;
-  minVal: number;
-  maxVal: number;
-  unit: string;
+  label: string; icon: React.ElementType; color: string;
+  min: number; max: number; minVal: number; maxVal: number; unit: string;
 }) {
   const [lo, setLo] = useState(minVal);
   const [hi, setHi] = useState(maxVal);
@@ -50,228 +50,264 @@ function ThresholdRow({
   const pctHi = ((hi - min) / (max - min)) * 100;
 
   return (
-    <div
-      className="rounded-xl p-4"
-      style={{ background: "var(--bg-elevated)", border: "1px solid var(--border-subtle)" }}
-    >
-      <div className="mb-3 flex items-center justify-between">
+    <div>
+      <div className="mb-2 flex items-center justify-between">
         <div className="flex items-center gap-2">
-          <Icon size={13} style={{ color }} />
+          <Icon size={12} style={{ color }} />
           <span className="text-xs font-semibold" style={{ color: "var(--text-primary)" }}>{label}</span>
         </div>
-        <span className="font-mono text-xs" style={{ color: "var(--text-muted)" }}>
-          {lo}{unit} — {hi}{unit}
+        <span className="font-mono text-[10px]" style={{ color }}>
+          {lo}{unit} – {hi}{unit}
         </span>
       </div>
-
-      {/* Track */}
       <div className="relative h-1.5 rounded-full" style={{ background: "rgba(255,255,255,0.08)" }}>
-        <div
-          className="absolute h-full rounded-full"
-          style={{
-            left: `${pctLo}%`,
-            width: `${pctHi - pctLo}%`,
-            background: color,
-          }}
-        />
+        <div className="absolute h-full rounded-full" style={{ left: `${pctLo}%`, width: `${pctHi - pctLo}%`, background: color }} />
       </div>
-
-      {/* Range inputs */}
       <div className="relative mt-1">
-        <input
-          type="range" min={min} max={max} value={lo}
+        <input type="range" min={min} max={max} value={lo}
           onChange={(e) => setLo(Math.min(Number(e.target.value), hi - 1))}
           className="absolute w-full appearance-none bg-transparent"
-          style={{ height: 16, opacity: 0, cursor: "pointer" }}
-        />
-        <input
-          type="range" min={min} max={max} value={hi}
+          style={{ height: 16, opacity: 0, cursor: "pointer" }} />
+        <input type="range" min={min} max={max} value={hi}
           onChange={(e) => setHi(Math.max(Number(e.target.value), lo + 1))}
           className="absolute w-full appearance-none bg-transparent"
-          style={{ height: 16, opacity: 0, cursor: "pointer" }}
-        />
+          style={{ height: 16, opacity: 0, cursor: "pointer" }} />
       </div>
-      <div className="mt-3 flex justify-between text-[10px]" style={{ color: "var(--text-muted)" }}>
+      <div className="mt-2 flex justify-between text-[10px]" style={{ color: "var(--text-muted)" }}>
         <span>{min}{unit}</span>
-        <span className="font-mono" style={{ color }}>Ngưỡng cảnh báo</span>
         <span>{max}{unit}</span>
       </div>
     </div>
   );
 }
 
-export default function SensorsPage() {
-  const [pump, setPump]   = useState(false);
-  const [light, setLight] = useState(true);
-  const [capturing, setCapturing] = useState(false);
+/* ── Calibration Accordion ── */
+function CalibrationAccordion() {
+  const [open, setOpen] = useState(false);
 
-  function handleCapture() {
+  return (
+    <div className="overflow-hidden rounded-2xl" style={{ background: "var(--bg-elevated)", border: "1px solid var(--border-subtle)" }}>
+      <button
+        onClick={() => setOpen((v) => !v)}
+        className="flex w-full items-center justify-between gap-2 px-5 py-4 text-left transition-colors duration-100"
+        style={{ borderBottom: open ? "1px solid var(--border-subtle)" : "none" }}
+        onMouseEnter={(e) => { (e.currentTarget as HTMLElement).style.background = "var(--bg-base)"; }}
+        onMouseLeave={(e) => { (e.currentTarget as HTMLElement).style.background = "transparent"; }}
+      >
+        <div className="flex items-center gap-2">
+          <RotateCcw size={13} style={{ color: "var(--text-muted)" }} />
+          <span className="text-sm font-semibold" style={{ color: "var(--text-primary)" }}>Hiệu Chuẩn Sensor</span>
+          <span className="rounded-full px-2 py-0.5 text-[10px]" style={{ background: "var(--bg-base)", color: "var(--text-muted)", border: "1px solid var(--border-subtle)" }}>
+            Tuỳ chọn
+          </span>
+        </div>
+        <ChevronDown size={13} style={{ color: "var(--text-muted)", transform: open ? "rotate(180deg)" : "none", transition: "transform 0.2s ease" }} />
+      </button>
+
+      {open && (
+        <div className="p-4 space-y-3">
+          {[
+            { label: "pH Sensor",  icon: FlaskConical, color: "var(--emerald-400)", current: "6.2",  hint: "Dùng dung dịch chuẩn pH 7.0 & 4.0" },
+            { label: "TDS Sensor", icon: Droplets,     color: "var(--blue-400)",    current: "1150", hint: "Dùng dung dịch chuẩn 1000 ppm" },
+          ].map(({ label, icon: Icon, color, current, hint }) => (
+            <div key={label} className="rounded-xl p-3.5" style={{ background: "var(--bg-base)", border: "1px solid var(--border-subtle)" }}>
+              <div className="mb-2.5 flex items-center gap-2">
+                <Icon size={12} style={{ color }} />
+                <span className="text-xs font-semibold" style={{ color: "var(--text-primary)" }}>{label}</span>
+                <span className="font-mono text-xs font-bold ml-auto" style={{ color }}>{current}</span>
+              </div>
+              <input type="number" placeholder="Nhập giá trị hiệu chuẩn..." className="dark-input w-full text-xs" />
+              <p className="mt-1.5 text-[10px]" style={{ color: "var(--text-muted)" }}>{hint}</p>
+              <button className="btn-ghost mt-2.5 w-full justify-center gap-2 text-xs">
+                <RotateCcw size={11} />
+                Hiệu chuẩn
+              </button>
+            </div>
+          ))}
+
+          <div className="flex items-start gap-2 rounded-xl px-3 py-2.5" style={{ background: "rgba(245,158,11,0.06)", border: "1px solid rgba(245,158,11,0.15)" }}>
+            <WifiOff size={11} style={{ color: "var(--gold-400)", marginTop: 1, flexShrink: 0 }} />
+            <p className="text-[10px]" style={{ color: "var(--gold-400)" }}>Kết nối thiết bị trực tiếp để hiệu chuẩn chính xác hơn.</p>
+          </div>
+        </div>
+      )}
+    </div>
+  );
+}
+
+/* ── Main ── */
+export default function SensorsPage() {
+  const params   = useParams();
+  const deviceId = params.deviceId as string;
+
+  const [pump, setPump]               = useState(false);
+  const [light, setLight]             = useState(true);
+  const [capturing, setCapturing]     = useState(false);
+  const [pumpLoading, setPumpLoading] = useState(false);
+  const [lightLoading, setLightLoading] = useState(false);
+  const [lastCmd, setLastCmd]         = useState<string | null>(null);
+
+  const sendCommand = useCallback(async (command: string) => {
+    try {
+      const res = await fetch(`/api/devices/${deviceId}/command`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ command }),
+      });
+      const json = await res.json();
+      if (json.ok) setLastCmd(`${command} · ${new Date().toLocaleTimeString("vi-VN")}`);
+      return json.ok;
+    } catch { return false; }
+  }, [deviceId]);
+
+  async function handlePump(val: boolean) {
+    setPumpLoading(true);
+    const ok = await sendCommand(val ? "pump_on" : "pump_off");
+    if (ok) setPump(val);
+    setPumpLoading(false);
+  }
+
+  async function handleLight(val: boolean) {
+    setLightLoading(true);
+    const ok = await sendCommand(val ? "light_on" : "light_off");
+    if (ok) setLight(val);
+    setLightLoading(false);
+  }
+
+  async function handleCapture() {
     setCapturing(true);
+    await sendCommand("capture_now");
     setTimeout(() => setCapturing(false), 3000);
   }
 
   return (
     <div className="animate-fade-up space-y-5">
 
-      {/* ── 3-col: Camera | Actuators | Calibration ── */}
-      <div className="grid gap-5 lg:grid-cols-3">
+      {/* ── Row 1: Camera + Actuators (2-col) ── */}
+      <div className="grid gap-5 md:grid-cols-2">
 
         {/* Camera Control */}
-        <div
-          className="overflow-hidden rounded-2xl"
-          style={{ background: "var(--bg-elevated)", border: "1px solid var(--border-subtle)" }}
-        >
-          <div
-            className="flex items-center gap-2 px-5 py-4"
-            style={{ borderBottom: "1px solid var(--border-subtle)" }}
-          >
-            <Camera size={14} style={{ color: "var(--blue-400)" }} />
+        <div className="overflow-hidden rounded-2xl" style={{ background: "var(--bg-elevated)", border: "1px solid var(--border-subtle)" }}>
+          <div className="flex items-center gap-2 px-5 py-3.5" style={{ borderBottom: "1px solid var(--border-subtle)" }}>
+            <Camera size={13} style={{ color: "#60A5FA" }} />
             <span className="text-sm font-semibold" style={{ color: "var(--text-primary)" }}>Camera Control</span>
+            <span className="ml-auto font-mono text-[10px]" style={{ color: "var(--text-muted)" }}>OV2640</span>
           </div>
-          <div className="p-5 space-y-4">
-            {/* Camera preview placeholder */}
+          <div className="p-4 space-y-4">
+            {/* Preview */}
             <div
               className="relative flex items-center justify-center overflow-hidden rounded-xl"
-              style={{ height: 140, background: "#06080F", border: "1px solid rgba(59,130,246,0.15)" }}
+              style={{ height: 160, background: "var(--bg-base)", border: "1px solid var(--border-subtle)" }}
             >
-              <div
-                className="pointer-events-none absolute inset-0 opacity-20"
-                style={{
-                  backgroundImage: "radial-gradient(circle, rgba(59,130,246,0.4) 1px, transparent 1px)",
-                  backgroundSize: "18px 18px",
-                }}
-              />
               {capturing ? (
                 <div className="z-10 text-center">
-                  <div className="mx-auto mb-2 h-8 w-8 animate-spin rounded-full border-2 border-blue-400 border-t-transparent" />
+                  <div className="mx-auto mb-2 h-7 w-7 animate-spin rounded-full border-2 border-blue-400 border-t-transparent" />
                   <p className="font-mono text-[10px]" style={{ color: "#60A5FA" }}>Đang chụp...</p>
                 </div>
               ) : (
                 <div className="z-10 text-center">
-                  <Camera size={24} style={{ color: "rgba(255,255,255,0.15)", margin: "0 auto" }} />
-                  <p className="mt-2 font-mono text-[10px]" style={{ color: "var(--text-muted)" }}>OV2640 · Ready</p>
+                  <Camera size={22} style={{ color: "var(--border-normal)", margin: "0 auto" }} />
+                  <p className="mt-2 font-mono text-[10px]" style={{ color: "var(--text-muted)" }}>Standby</p>
                 </div>
               )}
-              <div className="absolute inset-x-0 bottom-0 flex items-center justify-between px-3 py-1.5"
-                style={{ background: "rgba(0,0,0,0.6)" }}>
+              <div className="absolute inset-x-0 bottom-0 flex items-center justify-between px-3 py-1.5" style={{ background: "var(--bg-elevated)" }}>
                 <span className="font-mono text-[9px]" style={{ color: "#60A5FA" }}>CAM_01</span>
-                <span className="font-mono text-[9px]" style={{ color: "var(--emerald-400)" }}>
-                  {capturing ? "CAPTURING" : "STANDBY"}
+                <span className="font-mono text-[9px]" style={{ color: capturing ? "var(--gold-400)" : "var(--emerald-400)" }}>
+                  {capturing ? "CAPTURING" : "READY"}
                 </span>
               </div>
             </div>
 
-            <button
-              onClick={handleCapture}
-              disabled={capturing}
-              className="btn-gold w-full gap-2 justify-center text-xs"
-            >
-              <Camera size={13} />
+            <button onClick={handleCapture} disabled={capturing} className="btn-gold w-full gap-2 justify-center text-xs">
+              <Camera size={12} />
               {capturing ? "Đang xử lý..." : "Chụp & Phân tích AI"}
             </button>
 
-            <div className="space-y-2">
-              <p className="text-[10px] font-semibold uppercase tracking-wider" style={{ color: "var(--text-muted)" }}>
-                Lịch chụp tự động
-              </p>
-              {["6 tiếng", "12 tiếng", "24 tiếng"].map((opt) => (
-                <label
-                  key={opt}
-                  className="flex cursor-pointer items-center justify-between rounded-lg px-3 py-2"
-                  style={{ background: opt === "6 tiếng" ? "rgba(16,185,129,0.07)" : "rgba(255,255,255,0.02)",
-                    border: `1px solid ${opt === "6 tiếng" ? "rgba(16,185,129,0.20)" : "var(--border-subtle)"}` }}
-                >
-                  <span className="text-xs" style={{ color: opt === "6 tiếng" ? "var(--emerald-400)" : "var(--text-secondary)" }}>
-                    Mỗi {opt}
-                  </span>
-                  <input type="radio" name="schedule" defaultChecked={opt === "6 tiếng"}
-                    className="accent-emerald-500" />
-                </label>
-              ))}
+            {/* Auto schedule */}
+            <div>
+              <p className="mb-2 text-[10px] font-semibold uppercase tracking-wider" style={{ color: "var(--text-muted)" }}>Lịch chụp tự động</p>
+              <div className="grid grid-cols-3 gap-2">
+                {["6 tiếng", "12 tiếng", "24 tiếng"].map((opt) => (
+                  <label
+                    key={opt}
+                    className="flex cursor-pointer items-center justify-between rounded-lg px-2.5 py-2"
+                    style={{
+                      background: opt === "6 tiếng" ? "rgba(16,185,129,0.07)" : "var(--bg-base)",
+                      border: `1px solid ${opt === "6 tiếng" ? "rgba(16,185,129,0.20)" : "var(--border-subtle)"}`,
+                    }}
+                  >
+                    <span className="text-[11px]" style={{ color: opt === "6 tiếng" ? "var(--emerald-400)" : "var(--text-muted)" }}>
+                      {opt}
+                    </span>
+                    <input type="radio" name="schedule" defaultChecked={opt === "6 tiếng"} className="accent-emerald-500" />
+                  </label>
+                ))}
+              </div>
             </div>
           </div>
         </div>
 
         {/* Actuator Controls */}
-        <div
-          className="overflow-hidden rounded-2xl"
-          style={{ background: "var(--bg-elevated)", border: "1px solid var(--border-subtle)" }}
-        >
-          <div
-            className="flex items-center gap-2 px-5 py-4"
-            style={{ borderBottom: "1px solid var(--border-subtle)" }}
-          >
-            <Power size={14} style={{ color: "var(--gold-400)" }} />
+        <div className="overflow-hidden rounded-2xl" style={{ background: "var(--bg-elevated)", border: "1px solid var(--border-subtle)" }}>
+          <div className="flex items-center gap-2 px-5 py-3.5" style={{ borderBottom: "1px solid var(--border-subtle)" }}>
+            <Power size={13} style={{ color: "var(--gold-400)" }} />
             <span className="text-sm font-semibold" style={{ color: "var(--text-primary)" }}>Actuator Controls</span>
           </div>
-          <div className="p-5 space-y-4">
-
-            {/* Pump toggle */}
+          <div className="p-4 space-y-3">
+            {/* Pump */}
             <div
               className="flex items-center justify-between rounded-xl p-4"
-              style={{
-                background: pump ? "rgba(16,185,129,0.06)" : "rgba(255,255,255,0.02)",
-                border: `1px solid ${pump ? "rgba(16,185,129,0.18)" : "var(--border-subtle)"}`,
-              }}
+              style={{ background: pump ? "rgba(16,185,129,0.06)" : "var(--bg-base)", border: `1px solid ${pump ? "rgba(16,185,129,0.20)" : "var(--border-subtle)"}` }}
             >
               <div className="flex items-center gap-3">
-                <div
-                  className="flex h-9 w-9 items-center justify-center rounded-lg"
-                  style={{ background: pump ? "rgba(16,185,129,0.12)" : "rgba(255,255,255,0.05)" }}
-                >
-                  <Droplets size={16} style={{ color: pump ? "var(--emerald-400)" : "var(--text-muted)" }} />
+                <div className="flex h-9 w-9 items-center justify-center rounded-lg" style={{ background: pump ? "rgba(16,185,129,0.12)" : "rgba(255,255,255,0.04)" }}>
+                  {pumpLoading
+                    ? <Loader2 size={15} className="animate-spin" style={{ color: "var(--emerald-400)" }} />
+                    : <Droplets size={15} style={{ color: pump ? "var(--emerald-400)" : "var(--text-muted)" }} />
+                  }
                 </div>
                 <div>
                   <p className="text-sm font-semibold" style={{ color: "var(--text-primary)" }}>Bơm nước</p>
                   <p className="text-[10px]" style={{ color: pump ? "var(--emerald-400)" : "var(--text-muted)" }}>
-                    {pump ? "● Đang chạy" : "○ Tắt"}
+                    {pumpLoading ? "Đang gửi lệnh..." : pump ? "● Đang chạy" : "○ Tắt"}
                   </p>
                 </div>
               </div>
-              <Toggle on={pump} onChange={setPump} />
+              <Toggle on={pump} onChange={handlePump} disabled={pumpLoading} />
             </div>
 
-            {/* Light toggle */}
+            {/* Light */}
             <div
               className="flex items-center justify-between rounded-xl p-4"
-              style={{
-                background: light ? "rgba(245,158,11,0.06)" : "rgba(255,255,255,0.02)",
-                border: `1px solid ${light ? "rgba(245,158,11,0.18)" : "var(--border-subtle)"}`,
-              }}
+              style={{ background: light ? "rgba(245,158,11,0.06)" : "var(--bg-base)", border: `1px solid ${light ? "rgba(245,158,11,0.20)" : "var(--border-subtle)"}` }}
             >
               <div className="flex items-center gap-3">
-                <div
-                  className="flex h-9 w-9 items-center justify-center rounded-lg"
-                  style={{ background: light ? "rgba(245,158,11,0.12)" : "rgba(255,255,255,0.05)" }}
-                >
-                  <Lightbulb size={16} style={{ color: light ? "var(--gold-400)" : "var(--text-muted)" }} />
+                <div className="flex h-9 w-9 items-center justify-center rounded-lg" style={{ background: light ? "rgba(245,158,11,0.12)" : "rgba(255,255,255,0.04)" }}>
+                  {lightLoading
+                    ? <Loader2 size={15} className="animate-spin" style={{ color: "var(--gold-400)" }} />
+                    : <Lightbulb size={15} style={{ color: light ? "var(--gold-400)" : "var(--text-muted)" }} />
+                  }
                 </div>
                 <div>
                   <p className="text-sm font-semibold" style={{ color: "var(--text-primary)" }}>Đèn grow light</p>
                   <p className="text-[10px]" style={{ color: light ? "var(--gold-400)" : "var(--text-muted)" }}>
-                    {light ? "● LED 20W · Bật" : "○ Tắt"}
+                    {lightLoading ? "Đang gửi lệnh..." : light ? "● LED 20W · Bật" : "○ Tắt"}
                   </p>
                 </div>
               </div>
-              <Toggle on={light} onChange={setLight} color="var(--gold-400)" />
+              <Toggle on={light} onChange={handleLight} color="var(--gold-400)" disabled={lightLoading} />
             </div>
 
             {/* Schedule watering */}
-            <div
-              className="rounded-xl p-4"
-              style={{ background: "rgba(255,255,255,0.02)", border: "1px solid var(--border-subtle)" }}
-            >
+            <div className="rounded-xl p-4" style={{ background: "var(--bg-base)", border: "1px solid var(--border-subtle)" }}>
               <div className="flex items-center gap-2 mb-3">
-                <Timer size={13} style={{ color: "var(--blue-400)" }} />
+                <Timer size={12} style={{ color: "#60A5FA" }} />
                 <p className="text-xs font-semibold" style={{ color: "var(--text-primary)" }}>Hẹn giờ tưới</p>
               </div>
               <div className="grid grid-cols-2 gap-2">
                 <div>
                   <label className="text-[10px]" style={{ color: "var(--text-muted)" }}>Giờ bắt đầu</label>
-                  <input
-                    type="time" defaultValue="06:00"
-                    className="dark-input mt-1 w-full text-xs"
-                  />
+                  <input type="time" defaultValue="06:00" className="dark-input mt-1 w-full text-xs" />
                 </div>
                 <div>
                   <label className="text-[10px]" style={{ color: "var(--text-muted)" }}>Thời lượng</label>
@@ -283,7 +319,7 @@ export default function SensorsPage() {
                 </div>
               </div>
               <button className="btn-emerald mt-3 w-full justify-center gap-2 text-xs">
-                <CheckCircle size={12} />
+                <CheckCircle size={11} />
                 Lưu lịch tưới
               </button>
             </div>
@@ -291,107 +327,31 @@ export default function SensorsPage() {
             {/* MQTT status */}
             <div
               className="flex items-center gap-2 rounded-xl px-3 py-2.5"
-              style={{ background: "rgba(255,255,255,0.02)", border: "1px solid var(--border-subtle)" }}
+              style={{ background: "var(--bg-base)", border: "1px solid var(--border-subtle)" }}
             >
-              <Zap size={11} style={{ color: "var(--emerald-500)" }} />
+              <Zap size={10} style={{ color: "var(--emerald-500)" }} />
               <span className="font-mono text-[10px]" style={{ color: "var(--text-muted)" }}>
-                MQTT: garden/{"{deviceId}"}/commands
+                {lastCmd ? `Lệnh cuối: ${lastCmd}` : `garden/${deviceId}/commands`}
               </span>
-            </div>
-          </div>
-        </div>
-
-        {/* Sensor Calibration */}
-        <div
-          className="overflow-hidden rounded-2xl"
-          style={{ background: "var(--bg-elevated)", border: "1px solid var(--border-subtle)" }}
-        >
-          <div
-            className="flex items-center gap-2 px-5 py-4"
-            style={{ borderBottom: "1px solid var(--border-subtle)" }}
-          >
-            <RotateCcw size={14} style={{ color: "var(--text-muted)" }} />
-            <span className="text-sm font-semibold" style={{ color: "var(--text-primary)" }}>Hiệu Chuẩn Sensor</span>
-          </div>
-          <div className="p-5 space-y-4">
-            {[
-              {
-                label: "pH Sensor", icon: FlaskConical,
-                color: "var(--emerald-400)",
-                current: "6.2",
-                hint: "Dung dịch chuẩn pH 7.0 & 4.0",
-              },
-              {
-                label: "TDS Sensor", icon: Droplets,
-                color: "var(--blue-400)",
-                current: "1150",
-                hint: "Dung dịch chuẩn 1000 ppm",
-              },
-            ].map(({ label, icon: Icon, color, current, hint }) => (
-              <div
-                key={label}
-                className="rounded-xl p-4"
-                style={{ background: "rgba(255,255,255,0.02)", border: "1px solid var(--border-subtle)" }}
-              >
-                <div className="mb-3 flex items-center gap-2">
-                  <Icon size={13} style={{ color }} />
-                  <span className="text-xs font-semibold" style={{ color: "var(--text-primary)" }}>{label}</span>
-                </div>
-                <div className="mb-2 flex items-center gap-2">
-                  <span className="text-[10px]" style={{ color: "var(--text-muted)" }}>Giá trị hiện tại:</span>
-                  <span className="font-mono text-xs font-bold" style={{ color }}>{current}</span>
-                </div>
-                <input
-                  type="number"
-                  placeholder="Nhập giá trị hiệu chuẩn..."
-                  className="dark-input w-full text-xs"
-                />
-                <p className="mt-1.5 text-[10px]" style={{ color: "var(--text-muted)" }}>{hint}</p>
-                <button className="btn-ghost mt-2 w-full justify-center gap-2 text-xs">
-                  <RotateCcw size={11} />
-                  Hiệu chuẩn
-                </button>
-              </div>
-            ))}
-
-            <div
-              className="flex items-start gap-2 rounded-xl px-3 py-2.5"
-              style={{ background: "rgba(245,158,11,0.06)", border: "1px solid rgba(245,158,11,0.18)" }}
-            >
-              <WifiOff size={11} style={{ color: "var(--gold-400)", marginTop: 1, flexShrink: 0 }} />
-              <p className="text-[10px]" style={{ color: "var(--gold-400)" }}>
-                Kết nối thiết bị trực tiếp để hiệu chuẩn chính xác hơn.
-              </p>
             </div>
           </div>
         </div>
       </div>
 
-      {/* ── Alert Thresholds ── */}
-      <div
-        className="overflow-hidden rounded-2xl"
-        style={{ background: "var(--bg-elevated)", border: "1px solid var(--border-subtle)" }}
-      >
-        <div
-          className="flex items-center gap-2 px-5 py-4"
-          style={{ borderBottom: "1px solid var(--border-subtle)" }}
-        >
-          <SlidersHorizontal size={14} style={{ color: "var(--text-muted)" }} />
-          <span className="text-sm font-semibold" style={{ color: "var(--text-primary)" }}>
-            Ngưỡng Cảnh Báo
-          </span>
-          <span
-            className="ml-auto rounded-full px-2.5 py-0.5 font-mono text-[10px]"
-            style={{ background: "rgba(16,185,129,0.10)", color: "var(--emerald-400)" }}
-          >
-            Tự động gửi FCM Push
+      {/* ── Row 2: Alert Thresholds ── */}
+      <div className="overflow-hidden rounded-2xl" style={{ background: "var(--bg-elevated)", border: "1px solid var(--border-subtle)" }}>
+        <div className="flex items-center gap-2 px-5 py-3.5" style={{ borderBottom: "1px solid var(--border-subtle)" }}>
+          <SlidersHorizontal size={13} style={{ color: "var(--text-muted)" }} />
+          <span className="text-sm font-semibold" style={{ color: "var(--text-primary)" }}>Ngưỡng Cảnh Báo</span>
+          <span className="ml-auto rounded-full px-2.5 py-0.5 font-mono text-[10px]" style={{ background: "rgba(16,185,129,0.10)", color: "var(--emerald-400)" }}>
+            FCM Push Notification
           </span>
         </div>
-        <div className="grid gap-4 p-5 md:grid-cols-2 lg:grid-cols-4">
-          <ThresholdRow label="TDS"       icon={Droplets}    color="var(--blue-400)"    min={0}  max={3000} minVal={800}  maxVal={1800} unit=" ppm" />
-          <ThresholdRow label="pH"        icon={FlaskConical} color="var(--emerald-400)" min={0}  max={14}   minVal={5.5}  maxVal={7.0}  unit=""    />
-          <ThresholdRow label="Nhiệt độ" icon={Droplets}    color="var(--gold-400)"    min={0}  max={50}   minVal={18}   maxVal={32}   unit="°C"  />
-          <ThresholdRow label="Mực nước" icon={Droplets}    color="#60A5FA"            min={0}  max={100}  minVal={20}   maxVal={100}  unit="%"   />
+        <div className="grid gap-6 p-5 sm:grid-cols-2 lg:grid-cols-4">
+          <ThresholdRow label="TDS"       icon={Droplets}     color="var(--blue-400)"    min={0}  max={3000} minVal={800}  maxVal={1800} unit=" ppm" />
+          <ThresholdRow label="pH"        icon={FlaskConical}  color="var(--emerald-400)" min={0}  max={14}   minVal={5.5}  maxVal={7.0}  unit=""    />
+          <ThresholdRow label="Nhiệt độ" icon={Droplets}     color="var(--gold-400)"    min={0}  max={50}   minVal={18}   maxVal={32}   unit="°C"  />
+          <ThresholdRow label="Mực nước" icon={Droplets}     color="#60A5FA"            min={0}  max={100}  minVal={20}   maxVal={100}  unit="%"   />
         </div>
         <div className="flex justify-end px-5 pb-5">
           <button className="btn-emerald gap-2 text-xs">
@@ -400,6 +360,9 @@ export default function SensorsPage() {
           </button>
         </div>
       </div>
+
+      {/* ── Row 3: Calibration (accordion) ── */}
+      <CalibrationAccordion />
     </div>
   );
 }

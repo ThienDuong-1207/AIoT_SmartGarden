@@ -3,7 +3,7 @@ import { authOptions } from "@/lib/auth";
 import DeviceModel from "@/models/Device";
 import { dbConnect } from "@/lib/mongodb";
 import DeviceCard from "@/components/dashboard/DeviceCard";
-import { Cpu, Wifi, WifiOff, Plus, Activity } from "lucide-react";
+import { Cpu, Wifi, WifiOff, Plus, Activity, Leaf } from "lucide-react";
 
 type DeviceView = {
   _id: string;
@@ -37,141 +37,115 @@ async function getDevices(userId: string): Promise<DeviceView[]> {
   }
 }
 
+function getGreeting() {
+  const hour = new Date().getHours();
+  if (hour < 12) return "Chào buổi sáng";
+  if (hour < 18) return "Chào buổi chiều";
+  return "Chào buổi tối";
+}
+
 export default async function DashboardPage() {
   const session = await getServerSession(authOptions);
   const userId  = session?.user?.id;
-  const devices = userId ? await getDevices(userId) : [];
+  const devices = userId ? await getDevices(userId) : MOCK_DEVICES;
+  const firstName = session?.user?.name?.split(" ").at(-1) ?? "bạn";
 
   const onlineCount  = devices.filter((d) => d.isOnline).length;
   const offlineCount = devices.length - onlineCount;
+  const uptimePct    = devices.length > 0 ? Math.round((onlineCount / devices.length) * 100) : 0;
 
   return (
-    <section className="animate-fade-up space-y-8">
+    <section className="animate-fade-up space-y-6">
 
-      {/* ── Page heading ── */}
-      <div className="flex flex-col gap-4 sm:flex-row sm:items-end sm:justify-between">
+      {/* ── Greeting header ── */}
+      <div className="flex items-end justify-between gap-4">
         <div>
-          <p
-            className="mb-1.5 font-mono text-xs font-semibold uppercase tracking-[0.15em]"
-            style={{ color: "var(--emerald-500)" }}
-          >
-            // DEVICE GRID
-          </p>
-          <h1
-            className="text-3xl font-bold"
-            style={{ color: "var(--text-primary)" }}
-          >
-            Chậu cây của bạn
+          <div className="flex items-center gap-2 mb-1">
+            <div
+              className="flex h-7 w-7 items-center justify-center rounded-lg"
+              style={{ background: "linear-gradient(135deg, var(--emerald-500), var(--emerald-600))" }}
+            >
+              <Leaf size={13} color="#fff" />
+            </div>
+            <p className="text-sm font-medium" style={{ color: "var(--text-muted)" }}>
+              {getGreeting()},&nbsp;
+              <span style={{ color: "var(--text-primary)" }}>{firstName}</span>
+            </p>
+          </div>
+          <h1 className="text-2xl font-black" style={{ color: "var(--text-primary)" }}>
+            Vườn của bạn
           </h1>
-          <p className="mt-1 text-sm" style={{ color: "var(--text-secondary)" }}>
-            Chọn thiết bị để theo dõi metrics, camera và cảnh báo AI.
+          <p className="mt-1 text-sm" style={{ color: "var(--text-muted)" }}>
+            {onlineCount}/{devices.length} thiết bị đang hoạt động
           </p>
         </div>
 
-        {/* Add device button */}
         <button
           className="btn-ghost shrink-0 gap-2 text-sm"
           title="Thêm thiết bị bằng activation code"
         >
-          <Plus size={15} />
+          <Plus size={14} />
           Thêm thiết bị
         </button>
       </div>
 
-      {/* ── Summary stats bar ── */}
+      {/* ── Stats row ── */}
       {devices.length > 0 && (
         <div className="grid grid-cols-2 gap-3 sm:grid-cols-4">
           {[
-            {
-              icon: Cpu,
-              label: "Tổng thiết bị",
-              value: devices.length,
-              color: "var(--text-primary)",
-              iconColor: "var(--text-secondary)",
-            },
-            {
-              icon: Wifi,
-              label: "Đang online",
-              value: onlineCount,
-              color: "var(--emerald-400)",
-              iconColor: "var(--emerald-500)",
-            },
-            {
-              icon: WifiOff,
-              label: "Offline",
-              value: offlineCount,
-              color: offlineCount > 0 ? "#F87171" : "var(--text-muted)",
-              iconColor: offlineCount > 0 ? "#EF4444" : "var(--text-muted)",
-            },
-            {
-              icon: Activity,
-              label: "Uptime",
-              value: devices.length > 0 ? `${Math.round((onlineCount / devices.length) * 100)}%` : "—",
-              color: "var(--gold-400)",
-              iconColor: "var(--gold-500)",
-            },
-          ].map(({ icon: Icon, label, value, color, iconColor }) => (
-            <div key={label} className="stat-card flex items-center gap-3">
-              <div
-                className="flex h-9 w-9 shrink-0 items-center justify-center rounded-lg"
-                style={{ background: "rgba(255,255,255,0.04)", color: iconColor }}
-              >
-                <Icon size={16} />
+            { icon: Cpu,     label: "Tổng thiết bị", value: devices.length, color: "var(--text-primary)",  iconBg: "rgba(255,255,255,0.06)" },
+            { icon: Wifi,    label: "Online",          value: onlineCount,    color: "var(--emerald-400)",   iconBg: "rgba(16,185,129,0.10)"  },
+            { icon: WifiOff, label: "Offline",          value: offlineCount,   color: offlineCount > 0 ? "#F87171" : "var(--text-muted)", iconBg: offlineCount > 0 ? "rgba(239,68,68,0.10)" : "rgba(255,255,255,0.04)" },
+            { icon: Activity, label: "Uptime",          value: `${uptimePct}%`, color: "var(--gold-400)",   iconBg: "rgba(245,158,11,0.10)"  },
+          ].map(({ icon: Icon, label, value, color, iconBg }) => (
+            <div
+              key={label}
+              className="flex items-center gap-3 rounded-xl p-4"
+              style={{ background: "var(--bg-elevated)", border: "1px solid var(--border-subtle)" }}
+            >
+              <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-lg" style={{ background: iconBg }}>
+                <Icon size={15} style={{ color }} />
               </div>
               <div>
-                <p className="text-xl font-black" style={{ color }}>
-                  {value}
-                </p>
-                <p className="text-xs" style={{ color: "var(--text-muted)" }}>
-                  {label}
-                </p>
+                <p className="text-xl font-black leading-tight" style={{ color }}>{value}</p>
+                <p className="text-[11px]" style={{ color: "var(--text-muted)" }}>{label}</p>
               </div>
             </div>
           ))}
         </div>
       )}
 
-      {/* ── Device cards grid ── */}
-      <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+      {/* ── Device grid ── */}
+      <div>
+        <p className="mb-3 text-xs font-semibold uppercase tracking-wider" style={{ color: "var(--text-muted)" }}>
+          Thiết bị · {devices.length}
+        </p>
+
         {devices.length === 0 ? (
-          /* Empty state */
           <div
-            className="col-span-full flex flex-col items-center justify-center rounded-2xl py-20 text-center"
-            style={{
-              background: "var(--bg-elevated)",
-              border: "1px dashed var(--border-normal)",
-            }}
+            className="flex flex-col items-center justify-center rounded-2xl py-20 text-center"
+            style={{ background: "var(--bg-elevated)", border: "1px dashed var(--border-normal)" }}
           >
-            <div
-              className="mb-5 flex h-16 w-16 items-center justify-center rounded-2xl"
-              style={{ background: "rgba(16,185,129,0.08)", color: "var(--emerald-400)" }}
-            >
-              <Cpu size={28} />
+            <div className="mb-5 flex h-14 w-14 items-center justify-center rounded-2xl" style={{ background: "rgba(16,185,129,0.08)" }}>
+              <Cpu size={24} style={{ color: "var(--emerald-400)" }} />
             </div>
-            <p className="font-semibold" style={{ color: "var(--text-primary)" }}>
-              Chưa có thiết bị nào
-            </p>
-            <p
-              className="mt-2 max-w-xs text-sm"
-              style={{ color: "var(--text-muted)" }}
-            >
+            <p className="font-semibold" style={{ color: "var(--text-primary)" }}>Chưa có thiết bị nào</p>
+            <p className="mt-2 max-w-xs text-sm" style={{ color: "var(--text-muted)" }}>
               Dùng activation code để liên kết Smart Pot với tài khoản của bạn.
             </p>
             <p
               className="mt-4 rounded-lg px-4 py-2 font-mono text-xs"
-              style={{
-                background: "var(--bg-overlay)",
-                border: "1px solid var(--border-subtle)",
-                color: "var(--text-muted)",
-              }}
+              style={{ background: "var(--bg-base)", border: "1px solid var(--border-subtle)", color: "var(--text-muted)" }}
             >
               {">"} POST /api/devices · {"{"} activationCode {"}"}
             </p>
           </div>
         ) : (
-          devices.map((device, i) => (
-            <DeviceCard key={device._id} device={device} index={i} />
-          ))
+          <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+            {devices.map((device, i) => (
+              <DeviceCard key={device._id} device={device} index={i} />
+            ))}
+          </div>
         )}
       </div>
     </section>
