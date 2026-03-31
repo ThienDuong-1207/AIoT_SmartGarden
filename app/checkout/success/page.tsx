@@ -10,10 +10,10 @@ import {
 const ORDER_NUM = `SG-${new Date().getFullYear()}${String(new Date().getMonth() + 1).padStart(2, "0")}-${String(Math.floor(Math.random() * 9000) + 1000)}`;
 
 const STEPS = [
-  { icon: Package, label: "Xác nhận đơn",  desc: "Đơn hàng đã được ghi nhận",      done: true  },
-  { icon: Truck,   label: "Đang chuẩn bị", desc: "Kho đang đóng gói sản phẩm",     done: true  },
-  { icon: Truck,   label: "Vận chuyển",    desc: "Dự kiến 2–4 ngày làm việc",       done: false },
-  { icon: Leaf,    label: "Đã nhận hàng",  desc: "Kích hoạt thiết bị trong 30 ngày", done: false },
+  { icon: Package, label: "Order Confirmed", desc: "Your order has been received",       done: true  },
+  { icon: Truck,   label: "Preparing",       desc: "Warehouse is packing your items",    done: true  },
+  { icon: Truck,   label: "Shipping",        desc: "Estimated 2–4 business days",        done: false },
+  { icon: Leaf,    label: "Delivered",       desc: "Activate your device within 30 days", done: false },
 ];
 
 export default function CheckoutSuccessPage() {
@@ -66,10 +66,10 @@ export default function CheckoutSuccessPage() {
               className="text-2xl font-black"
               style={{ color: "var(--text-primary)" }}
             >
-              Thanh toán thành công!
+              Payment Successful!
             </h1>
             <p className="mt-2 text-sm" style={{ color: "var(--text-muted)" }}>
-              Cảm ơn bạn đã tin tưởng Smart Garden AIoT 🌿
+              Thank you for trusting Smart Garden AIoT 🌿
             </p>
           </div>
 
@@ -78,7 +78,7 @@ export default function CheckoutSuccessPage() {
             className="mt-5 flex items-center justify-between rounded-xl px-4 py-3"
             style={{ background: "var(--bg-overlay)", border: "1px solid var(--border-subtle)" }}
           >
-            <span className="text-xs" style={{ color: "var(--text-muted)" }}>Mã đơn hàng</span>
+            <span className="text-xs" style={{ color: "var(--text-muted)" }}>Order ID</span>
             <span
               className="font-mono text-sm font-bold"
               style={{ color: "var(--emerald-400)" }}
@@ -133,9 +133,9 @@ export default function CheckoutSuccessPage() {
             style={{ background: "rgba(34,197,94,0.05)", border: "1px solid rgba(74,222,128,0.15)" }}
           >
             <p className="text-[11px] leading-relaxed" style={{ color: "var(--text-secondary)" }}>
-              Email xác nhận đã được gửi đến tài khoản của bạn. Sau khi nhận hàng,
-              sử dụng <span style={{ color: "var(--emerald-400)" }}>activation code</span> trong
-              hộp để liên kết Smart Pot với dashboard.
+              A confirmation email has been sent to your account. Once you receive your order,
+              use the <span style={{ color: "var(--emerald-400)" }}>activation code</span> inside
+              the box to link your Smart Pot to the dashboard.
             </p>
           </div>
 
@@ -143,7 +143,7 @@ export default function CheckoutSuccessPage() {
           <div className="mt-6 flex flex-col gap-3">
             <Link href="/dashboard" className="btn-emerald w-full justify-center gap-2 py-3">
               <LayoutDashboard size={15} />
-              Truy cập Dashboard
+              Go to Dashboard
             </Link>
             <Link
               href="/products"
@@ -155,7 +155,7 @@ export default function CheckoutSuccessPage() {
               }}
             >
               <ShoppingBag size={14} />
-              Tiếp tục mua sắm
+              Continue Shopping
             </Link>
           </div>
         </div>

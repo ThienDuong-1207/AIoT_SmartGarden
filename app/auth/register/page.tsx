@@ -40,7 +40,7 @@ export default function RegisterPage() {
             // REDIRECTING
           </p>
           <p className="mt-2 text-sm" style={{ color: "var(--text-secondary)" }}>
-            Đang chuyển hướng đến Google OAuth để tạo tài khoản an toàn...
+            Redirecting to Google OAuth to securely create your account...
           </p>
         </div>
 

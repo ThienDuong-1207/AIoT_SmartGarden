@@ -83,10 +83,10 @@ export default async function ProductsPage() {
           <nav className="mb-6 flex items-center gap-1.5 text-xs" style={{ color: "var(--text-muted)" }}>
             <Link href="/" className="link-muted-emerald flex items-center gap-1">
               <Home size={11} />
-              Trang chủ
+              Home
             </Link>
             <ChevronRight size={11} />
-            <span style={{ color: "var(--text-secondary)" }}>Sản phẩm</span>
+            <span style={{ color: "var(--text-secondary)" }}>Products</span>
           </nav>
 
           {/* Main content — 2 col */}
@@ -104,8 +104,8 @@ export default async function ProductsPage() {
               <h1
                 className="flex flex-col gap-0 text-5xl font-black leading-[0.95] tracking-tighter sm:text-6xl lg:text-7xl uppercase"
               >
-                <span className="text-white">Trang bị cho vườn</span>
-                <span className="text-emerald-400">Thông minh của bạn</span>
+                <span className="text-white">Equip Your</span>
+                <span className="text-emerald-400">Smart Garden</span>
               </h1>
 
               {/* Description */}
@@ -113,8 +113,8 @@ export default async function ProductsPage() {
                 className="mt-6 max-w-xl text-sm leading-relaxed md:text-base"
                 style={{ color: "var(--text-secondary)" }}
               >
-                Hạt giống năng suất cao, dung dịch dinh dưỡng cân bằng và bộ Smart Pot
-                tích hợp cảm biến IoT — tất cả trong một hệ sinh thái.
+                High-yield seeds, balanced nutrient solutions, and IoT-integrated Smart Pots —
+                all in one seamless ecosystem.
               </p>
             </div>
 
@@ -131,21 +131,21 @@ export default async function ProductsPage() {
               {[
                 {
                   icon: Package,
-                  label: "Sản phẩm",
+                  label: "Products",
                   value: products.length,
-                  unit: "mẫu mã",
+                  unit: "items",
                 },
                 {
                   icon: Star,
-                  label: "Đánh giá TB",
+                  label: "Avg Rating",
                   value: avgRating,
-                  unit: `/ 5 · ${totalReviews} lượt`,
+                  unit: `/ 5 · ${totalReviews} reviews`,
                 },
                 {
                   icon: ShoppingBag,
-                  label: "Còn hàng",
+                  label: "In Stock",
                   value: inStock,
-                  unit: "sẵn có",
+                  unit: "available",
                 },
               ].map(({ icon: Icon, label, value, unit }) => (
                 <div
@@ -318,17 +318,17 @@ export default async function ProductsPage() {
                 <span className="text-gradient-emerald">Pot</span>
                 <br />
                 <span className="text-3xl md:text-4xl" style={{ color: "var(--text-secondary)" }}>
-                  Chậu cây thông minh
+                  Intelligent Plant Pot
                 </span>
               </h2>
 
               {/* Price */}
               <div className="mt-4 flex items-baseline gap-3">
                 <span className="text-3xl font-black" style={{ color: "var(--emerald-400)" }}>
-                  1.290.000 ₫
+                  $51.99
                 </span>
                 <span className="text-base line-through" style={{ color: "var(--text-muted)" }}>
-                  1.690.000 ₫
+                  $67.99
                 </span>
                 <span
                   className="rounded-full px-2.5 py-0.5 text-xs font-bold"
@@ -343,19 +343,19 @@ export default async function ProductsPage() {
                 className="mt-5 text-sm leading-relaxed"
                 style={{ color: "var(--text-secondary)" }}
               >
-                Chậu thủy canh thế hệ mới tích hợp vi điều khiển <strong style={{ color: "var(--text-primary)" }}>ESP32-S3</strong>,
-                camera AI và bộ cảm biến đầy đủ — giám sát cây trồng 24/7 từ điện thoại.
-                Kết nối dashboard thông minh, nhận cảnh báo tức thì qua Firebase và phân tích
-                sức khoẻ cây bằng mô hình <strong style={{ color: "var(--text-primary)" }}>YOLOv8</strong>.
+                Next-gen hydroponic pot powered by <strong style={{ color: "var(--text-primary)" }}>ESP32-S3</strong>,
+                with AI camera and full sensor suite — monitor your plants 24/7 from your phone.
+                Smart dashboard alerts via Firebase and plant health analysis using{" "}
+                <strong style={{ color: "var(--text-primary)" }}>YOLOv8</strong>.
               </p>
 
               {/* Specs list */}
               <div className="mt-6 grid grid-cols-2 gap-2">
                 {[
-                  { icon: Cpu,         label: "MCU",        value: "ESP32-S3"          },
-                  { icon: Droplets,    label: "Cảm biến",   value: "TDS · pH · Nhiệt" },
-                  { icon: Wifi,        label: "Kết nối",    value: "WiFi · MQTT"       },
-                  { icon: Thermometer, label: "Camera",     value: "OV2640 2MP AI"    },
+                  { icon: Cpu,         label: "MCU",          value: "ESP32-S3"       },
+                  { icon: Droplets,    label: "Sensors",      value: "TDS · pH · Temp" },
+                  { icon: Wifi,        label: "Connectivity", value: "WiFi · MQTT"    },
+                  { icon: Thermometer, label: "Camera",       value: "OV2640 2MP AI"  },
                 ].map(({ icon: Icon, label, value }) => (
                   <div
                     key={label}
@@ -376,28 +376,28 @@ export default async function ProductsPage() {
                 <AddToCartButton
                   item={{
                     slug: "chau-thong-minh-esp32",
-                    name: "Chậu Thông Minh Smart Garden Pot",
+                    name: "ESP32 Smart Garden Pot",
                     category: "smart-pots",
-                    price: 1690000,
-                    salePrice: 1290000,
+                    price: 67.99,
+                    salePrice: 51.99,
                   }}
                 />
                 <AddToCartButton
                   item={{
                     slug: "chau-thong-minh-esp32",
-                    name: "Chậu Thông Minh Smart Garden Pot",
+                    name: "ESP32 Smart Garden Pot",
                     category: "smart-pots",
-                    price: 1690000,
-                    salePrice: 1290000,
+                    price: 67.99,
+                    salePrice: 51.99,
                   }}
                   buyNow
                   className="btn-ghost gap-2 px-6 py-3"
                 />
                 <Link
-                  href="/products/smart-pot"
+                  href="/products/chau-thong-minh-esp32"
                   className="btn-ghost gap-2 px-6 py-3"
                 >
-                  Xem chi tiết
+                  View Details
                   <ArrowRight size={14} />
                 </Link>
               </div>
@@ -408,9 +408,9 @@ export default async function ProductsPage() {
                 style={{ borderTop: "1px solid var(--border-subtle)" }}
               >
                 {[
-                  { icon: CheckCircle, text: "Bảo hành 12 tháng"   },
-                  { icon: CheckCircle, text: "Miễn phí vận chuyển"  },
-                  { icon: CheckCircle, text: "Đổi trả trong 30 ngày" },
+                  { icon: CheckCircle, text: "12-month warranty"   },
+                  { icon: CheckCircle, text: "Free shipping"        },
+                  { icon: CheckCircle, text: "30-day returns"       },
                 ].map(({ icon: Icon, text }) => (
                   <div key={text} className="flex items-center gap-1.5">
                     <Icon size={12} style={{ color: "var(--emerald-500)" }} />

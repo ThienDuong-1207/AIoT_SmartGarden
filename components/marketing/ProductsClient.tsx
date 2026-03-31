@@ -26,18 +26,18 @@ type Product = {
 
 /* ── Category config ── */
 const CATEGORIES = [
-  { value: "all",        label: "Tất cả",     icon: LayoutGrid,   dot: "rgba(255,255,255,0.4)" },
-  { value: "seeds",      label: "Hạt Giống",  icon: Leaf,         dot: "var(--cyan-500)"    },
-  { value: "nutrients",  label: "Dinh Dưỡng", icon: FlaskConical, dot: "var(--cyan-400)"    },
-  { value: "smart-pots", label: "Smart Pot",  icon: Cpu,          dot: "var(--cyan-600)"    },
+  { value: "all",        label: "All",       icon: LayoutGrid,   dot: "rgba(255,255,255,0.4)" },
+  { value: "seeds",      label: "Seeds",     icon: Leaf,         dot: "var(--cyan-500)"    },
+  { value: "nutrients",  label: "Nutrients", icon: FlaskConical, dot: "var(--cyan-400)"    },
+  { value: "smart-pots", label: "Smart Pot", icon: Cpu,          dot: "var(--cyan-600)"    },
 ];
 
 const SORT_OPTIONS = [
-  { value: "default",    label: "Mặc định"     },
-  { value: "price-asc",  label: "Giá tăng dần" },
-  { value: "price-desc", label: "Giá giảm dần" },
-  { value: "rating",     label: "Đánh giá cao" },
-  { value: "sale",       label: "Đang giảm giá"},
+  { value: "default",    label: "Default"           },
+  { value: "price-asc",  label: "Price: Low to High" },
+  { value: "price-desc", label: "Price: High to Low" },
+  { value: "rating",     label: "Top Rated"          },
+  { value: "sale",       label: "On Sale"             },
 ];
 
 export default function ProductsClient({ products }: { products: Product[] }) {
@@ -188,7 +188,7 @@ export default function ProductsClient({ products }: { products: Product[] }) {
             <span className="font-bold" style={{ color: "var(--text-primary)" }}>
               {displayed.length}
             </span>{" "}
-            sản phẩm
+            products
           </span>
 
           {/* Active filter chips */}
@@ -255,16 +255,16 @@ export default function ProductsClient({ products }: { products: Product[] }) {
               <Package size={28} style={{ color: "var(--text-muted)" }} />
             </div>
             <p className="text-base font-semibold" style={{ color: "var(--text-primary)" }}>
-              Không tìm thấy sản phẩm
+              No products found
             </p>
             <p className="mt-1.5 text-sm" style={{ color: "var(--text-muted)" }}>
-              Thử chọn danh mục khác hoặc xoá bộ lọc.
+              Try selecting a different category or clearing your filters.
             </p>
             <button
               onClick={() => { setActiveCategory("all"); setSortBy("default"); }}
               className="btn-cyan mt-6 gap-2 text-xs"
             >
-              Xoá bộ lọc
+              Clear filters
             </button>
           </div>
         )}

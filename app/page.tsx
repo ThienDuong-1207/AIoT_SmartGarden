@@ -20,7 +20,7 @@ if (typeof window !== "undefined") {
 }
 
 const TRUST_ITEMS = [
-  "500+ vườn đang hoạt động",
+  "500+ Active Gardens",
   "YOLOv8 Vision AI",
   "MQTT Realtime < 200ms",
   "MongoDB Atlas Time-Series",
@@ -98,10 +98,10 @@ export default function Home() {
               // HARDWARE_CONEXUS
             </span>
             <h2 className="text-4xl md:text-6xl font-black text-white uppercase tracking-tighter leading-none">
-              Nâng cấp <span className="text-emerald-400">hệ thống</span>
+              Upgrade Your <span className="text-emerald-400">System</span>
             </h2>
             <p className="mt-4 max-w-2xl text-slate-300">
-              Các module phần cứng được tinh chỉnh tối ưu cho việc vận hành vườn thông minh AIoT.
+              Hardware modules fine-tuned for running your AIoT Smart Garden ecosystem.
             </p>
           </div>
 
@@ -119,7 +119,7 @@ export default function Home() {
               href="/products"
               className="group flex items-center gap-2 rounded-full bg-white/5 border border-white/10 backdrop-blur-md px-8 py-4 text-sm font-bold uppercase tracking-widest text-emerald-400 transition-all hover:bg-emerald-500/10 hover:border-emerald-500/30 hover:shadow-xl active:scale-95"
             >
-              Xem tất cả sản phẩm
+              View All Products
               <ArrowRight size={16} className="transition-transform group-hover:translate-x-1" />
             </Link>
           </div>

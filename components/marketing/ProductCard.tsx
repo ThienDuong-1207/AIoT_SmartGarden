@@ -21,14 +21,14 @@ const CATEGORY_CONFIG: Record<
   { label: string; icon: React.ElementType; accent: string; accentBg: string; accentBorder: string }
 > = {
   seeds: {
-    label: "Hạt Giống",
+    label: "Seeds",
     icon: Leaf,
     accent: "var(--emerald-400)",
     accentBg: "rgba(16,185,129,0.08)",
     accentBorder: "rgba(16,185,129,0.20)",
   },
   nutrients: {
-    label: "Dinh Dưỡng",
+    label: "Nutrients",
     icon: FlaskConical,
     accent: "#60A5FA",
     accentBg: "rgba(96,165,250,0.08)",
@@ -165,11 +165,11 @@ export default function ProductCard({ product }: { product: Product }) {
         <div className="mt-4 pt-3" style={{ borderTop: "1px solid var(--border-subtle)" }}>
           <div className="mb-3 flex items-baseline gap-2">
             <span className="text-xl font-black" style={{ color: cfg.accent }}>
-              {displayedPrice.toLocaleString("vi-VN")}₫
+              ${displayedPrice.toLocaleString("en-US", { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
             </span>
             {hasDiscount && (
               <span className="text-xs line-through" style={{ color: "var(--text-muted)" }}>
-                {product.price.toLocaleString("vi-VN")}₫
+                ${product.price.toLocaleString("en-US", { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
               </span>
             )}
           </div>
@@ -185,7 +185,7 @@ export default function ProductCard({ product }: { product: Product }) {
               }}
             >
               {added ? <Check size={12} /> : <ShoppingCart size={12} />}
-              {added ? "Đã thêm!" : "Thêm vào giỏ"}
+              {added ? "Added!" : "Add to Cart"}
             </button>
 
             <Link

@@ -94,7 +94,7 @@ export default async function ProductDetailPage({ params }: { params: Params }) 
             className="link-muted-emerald inline-flex items-center gap-2 text-sm"
           >
             <ArrowLeft size={14} />
-            Danh mục sản phẩm
+            All Products
           </Link>
         </div>
       </div>
@@ -167,7 +167,7 @@ export default async function ProductDetailPage({ params }: { params: Params }) 
                 style={{ borderBottom: "1px solid var(--border-subtle)" }}
               >
                 <h2 className="text-lg font-bold" style={{ color: "var(--text-primary)" }}>
-                  Thông số kỹ thuật
+                  Specifications
                 </h2>
               </div>
 
@@ -195,7 +195,7 @@ export default async function ProductDetailPage({ params }: { params: Params }) 
                 ))
               ) : (
                 <div className="px-6 py-8 text-center text-sm" style={{ color: "var(--text-muted)" }}>
-                  Chưa có thông số kỹ thuật chi tiết.
+                  No specifications available yet.
                 </div>
               )}
 
@@ -247,7 +247,7 @@ export default async function ProductDetailPage({ params }: { params: Params }) 
                     className="text-xs font-semibold"
                     style={{ color: "var(--emerald-400)" }}
                   >
-                    Mở Dashboard →
+                    Open Dashboard →
                   </Link>
                 </div>
                 <div className="grid grid-cols-2 gap-3 p-5">
@@ -274,7 +274,7 @@ export default async function ProductDetailPage({ params }: { params: Params }) 
                   className="px-5 pb-4 text-xs"
                   style={{ color: "var(--text-muted)", fontFamily: "var(--font-mono)" }}
                 >
-                  // Dữ liệu demo mô phỏng realtime trong 24 giờ gần nhất.
+                  // Simulated realtime data from the last 24 hours.
                 </p>
               </div>
             )}
@@ -306,7 +306,7 @@ export default async function ProductDetailPage({ params }: { params: Params }) 
                 className="mt-3 text-sm leading-relaxed"
                 style={{ color: "var(--text-secondary)" }}
               >
-                {product.description || "Sản phẩm chất lượng cao cho hệ Smart Garden."}
+                {product.description || "High-quality product for your Smart Garden system."}
               </p>
 
               {/* Rating + stock row */}
@@ -320,12 +320,12 @@ export default async function ProductDetailPage({ params }: { params: Params }) 
                     {Number(product.rating || 0).toFixed(1)}
                   </span>
                   <span style={{ color: "var(--text-muted)" }}>
-                    ({product.reviewCount || reviews.length} đánh giá)
+                    ({product.reviewCount || reviews.length} reviews)
                   </span>
                 </span>
                 <span className="flex items-center gap-1.5">
                   <CheckCircle size={13} style={{ color: "var(--emerald-500)" }} />
-                  Tồn kho:{" "}
+                  In stock:{" "}
                   <span className="font-semibold" style={{ color: "var(--emerald-400)" }}>
                     {product.stock || 0}
                   </span>
@@ -342,14 +342,14 @@ export default async function ProductDetailPage({ params }: { params: Params }) 
                 }}
               >
                 <p className="text-xs font-semibold uppercase tracking-wider" style={{ color: "var(--text-muted)" }}>
-                  Giá ưu đãi
+                  Sale Price
                 </p>
                 <p className="mt-2 text-3xl font-black" style={{ color: "var(--gold-400)" }}>
-                  {activePrice.toLocaleString("vi-VN")}đ
+                  ${activePrice.toLocaleString("en-US", { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
                 </p>
                 {hasDiscount && (
                   <p className="mt-1 text-sm line-through" style={{ color: "var(--text-muted)" }}>
-                    {Number(product.price).toLocaleString("vi-VN")}đ
+                    ${Number(product.price).toLocaleString("en-US", { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
                   </p>
                 )}
               </div>
@@ -358,11 +358,11 @@ export default async function ProductDetailPage({ params }: { params: Params }) 
               <div className="mt-5 flex flex-col gap-3 sm:flex-row">
                 <button className="btn-gold flex flex-1 items-center justify-center gap-2 py-3">
                   <ShoppingCart size={16} />
-                  Thêm vào giỏ
+                  Add to Cart
                 </button>
                 <button className="btn-emerald flex flex-1 items-center justify-center gap-2 py-3">
                   <Zap size={16} />
-                  Mua ngay
+                  Buy Now
                 </button>
               </div>
             </div>
@@ -377,9 +377,9 @@ export default async function ProductDetailPage({ params }: { params: Params }) 
           style={{ borderBottom: "1px solid var(--border-subtle)", paddingBottom: "1.25rem" }}
         >
           <h2 className="text-2xl font-bold" style={{ color: "var(--text-primary)" }}>
-            Đánh giá
+            Reviews
           </h2>
-          <span className="badge badge-slate">{reviews.length} nhận xét</span>
+          <span className="badge badge-slate">{reviews.length} {reviews.length === 1 ? "review" : "reviews"}</span>
         </div>
 
         <div className="grid gap-4 md:grid-cols-2">
@@ -395,7 +395,7 @@ export default async function ProductDetailPage({ params }: { params: Params }) 
                       {review.author}
                     </p>
                     <p className="mt-0.5 text-xs" style={{ color: "var(--text-muted)" }}>
-                      {new Date(review.createdAt).toLocaleDateString("vi-VN")}
+                      {new Date(review.createdAt).toLocaleDateString("en-US", { year: "numeric", month: "short", day: "numeric" })}
                     </p>
                   </div>
                   <p className="text-sm" style={{ color: "var(--gold-400)" }}>
@@ -411,7 +411,7 @@ export default async function ProductDetailPage({ params }: { params: Params }) 
                 {review.verified && (
                   <span className="badge badge-emerald mt-3">
                     <CheckCircle size={10} />
-                    Đã mua hàng
+                    Verified Purchase
                   </span>
                 )}
               </div>
@@ -426,7 +426,7 @@ export default async function ProductDetailPage({ params }: { params: Params }) 
                 color: "var(--text-muted)",
               }}
             >
-              Chưa có đánh giá — hãy là người đầu tiên nhận xét sản phẩm này.
+              No reviews yet — be the first to review this product.
             </div>
           )}
         </div>
@@ -440,14 +440,14 @@ export default async function ProductDetailPage({ params }: { params: Params }) 
         >
           <div className="mb-6 flex items-center justify-between">
             <h2 className="text-2xl font-bold" style={{ color: "var(--text-primary)" }}>
-              Mua kèm gợi ý
+              You May Also Like
             </h2>
             <Link
               href="/products"
               className="text-sm font-semibold"
               style={{ color: "var(--emerald-400)" }}
             >
-              Xem tất cả →
+              View all →
             </Link>
           </div>
 
@@ -477,7 +477,7 @@ export default async function ProductDetailPage({ params }: { params: Params }) 
                   {item.name}
                 </p>
                 <p className="mt-1 text-sm font-bold" style={{ color: "var(--gold-400)" }}>
-                  {Number(item.salePrice || item.price).toLocaleString("vi-VN")}đ
+                  ${Number(item.salePrice || item.price).toLocaleString("en-US", { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
                 </p>
               </Link>
             ))}

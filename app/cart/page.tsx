@@ -22,14 +22,14 @@ const CATEGORY_ICON: Record<string, React.ElementType> = {
 };
 
 function fmt(n: number) {
-  return n.toLocaleString("vi-VN") + "đ";
+  return "$" + n.toLocaleString("en-US", { minimumFractionDigits: 2, maximumFractionDigits: 2 });
 }
 
 export default function CartPage() {
   const { items, count, total, setQty, remove, clear } = useCart();
   const router = useRouter();
 
-  const shipping   = total >= 500000 ? 0 : 35000;
+  const shipping   = total >= 50 ? 0 : 4.99;
   const grandTotal = total + shipping;
 
   function handleCheckout() {
@@ -52,15 +52,15 @@ export default function CartPage() {
         </div>
         <div className="text-center">
           <h2 className="text-2xl font-black" style={{ color: "var(--text-primary)" }}>
-            Giỏ hàng trống
+            Your Cart is Empty
           </h2>
           <p className="mt-2 text-sm" style={{ color: "var(--text-muted)" }}>
-            Khám phá sản phẩm và thêm vào giỏ hàng của bạn.
+            Explore our products and add items to your cart.
           </p>
         </div>
         <Link href="/products" className="btn-emerald gap-2 px-6 py-3">
           <ShoppingBag size={15} />
-          Khám phá sản phẩm
+          Browse Products
         </Link>
       </main>
     );
@@ -83,7 +83,7 @@ export default function CartPage() {
               // CART
             </p>
             <h1 className="text-3xl font-black" style={{ color: "var(--text-primary)" }}>
-              Giỏ hàng
+              Shopping Cart
               <span
                 className="ml-3 rounded-full px-2.5 py-0.5 text-base font-bold"
                 style={{ background: "rgba(34,197,94,0.12)", color: "var(--emerald-400)" }}
@@ -98,7 +98,7 @@ export default function CartPage() {
             style={{ color: "var(--text-muted)" }}
           >
             <ArrowLeft size={14} />
-            Tiếp tục mua sắm
+            Continue Shopping
           </Link>
         </div>
 
@@ -206,7 +206,7 @@ export default function CartPage() {
                 style={{ color: "var(--text-muted)" }}
               >
                 <Trash2 size={11} />
-                Xoá tất cả
+                Clear all
               </button>
             </div>
           </div>
@@ -220,26 +220,26 @@ export default function CartPage() {
               className="mb-4 font-mono text-xs font-semibold uppercase tracking-wider"
               style={{ color: "var(--text-muted)" }}
             >
-              Tóm tắt đơn hàng
+              Order Summary
             </p>
 
             <div className="space-y-3">
               <div className="flex justify-between text-sm">
                 <span style={{ color: "var(--text-secondary)" }}>
-                  Tạm tính ({count} sản phẩm)
+                  Subtotal ({count} {count === 1 ? "item" : "items"})
                 </span>
                 <span style={{ color: "var(--text-primary)" }}>{fmt(total)}</span>
               </div>
               <div className="flex justify-between text-sm">
-                <span style={{ color: "var(--text-secondary)" }}>Phí vận chuyển</span>
+                <span style={{ color: "var(--text-secondary)" }}>Shipping</span>
                 {shipping === 0
-                  ? <span style={{ color: "var(--emerald-400)" }}>Miễn phí</span>
+                  ? <span style={{ color: "var(--emerald-400)" }}>Free</span>
                   : <span style={{ color: "var(--text-primary)" }}>{fmt(shipping)}</span>
                 }
               </div>
               {shipping > 0 && (
                 <p className="text-[10px]" style={{ color: "var(--text-muted)" }}>
-                  Mua thêm {fmt(500000 - total)} để được miễn phí vận chuyển
+                  Add {fmt(50 - total)} more for free shipping
                 </p>
               )}
             </div>
@@ -247,7 +247,7 @@ export default function CartPage() {
             <div className="my-4" style={{ borderTop: "1px solid var(--border-subtle)" }} />
 
             <div className="flex items-baseline justify-between">
-              <span className="font-bold" style={{ color: "var(--text-primary)" }}>Tổng cộng</span>
+              <span className="font-bold" style={{ color: "var(--text-primary)" }}>Total</span>
               <span className="text-2xl font-black" style={{ color: "var(--emerald-400)" }}>
                 {fmt(grandTotal)}
               </span>
@@ -257,7 +257,7 @@ export default function CartPage() {
               onClick={handleCheckout}
               className="btn-emerald mt-5 w-full justify-center gap-2 py-3"
             >
-              Thanh toán
+              Checkout
               <ArrowRight size={15} />
             </button>
 
@@ -267,11 +267,11 @@ export default function CartPage() {
               style={{ color: "var(--text-muted)" }}
             >
               <ArrowLeft size={12} />
-              Tiếp tục mua sắm
+              Continue Shopping
             </Link>
 
             <div className="mt-5 space-y-2 pt-4" style={{ borderTop: "1px solid var(--border-subtle)" }}>
-              {["Bảo hành 12 tháng chính hãng", "Đổi trả trong 30 ngày", "Thanh toán an toàn · SSL"].map((t) => (
+              {["12-month official warranty", "30-day returns", "Secure payment · SSL"].map((t) => (
                 <p key={t} className="flex items-center gap-2 text-[10px]" style={{ color: "var(--text-muted)" }}>
                   <span style={{ color: "var(--emerald-500)" }}>✓</span> {t}
                 </p>
