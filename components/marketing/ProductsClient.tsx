@@ -21,6 +21,7 @@ type Product = {
   salePrice?: number | null;
   rating?: number;
   stock?: number;
+  images?: string[];
 };
 
 /* ── Category config ── */

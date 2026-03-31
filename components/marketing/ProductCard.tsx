@@ -1,6 +1,7 @@
 "use client";
 
 import Link from "next/link";
+import Image from "next/image";
 import { ArrowRight, Star, Leaf, FlaskConical, Cpu, Tag, ShoppingCart, Check } from "lucide-react";
 import { useState } from "react";
 import { useCart } from "@/components/providers/CartProvider";
@@ -12,6 +13,7 @@ type Product = {
   price: number;
   salePrice?: number | null;
   rating?: number;
+  images?: string[];
 };
 
 const CATEGORY_CONFIG: Record<
@@ -87,7 +89,7 @@ export default function ProductCard({ product }: { product: Product }) {
       >
         {/* Category badge */}
         <div
-          className="absolute left-3 top-3 flex items-center gap-1.5 rounded-full px-2.5 py-1"
+          className="absolute left-3 top-3 z-10 flex items-center gap-1.5 rounded-full px-2.5 py-1"
           style={{
             background: "var(--bg-elevated)",
             border: "1px solid var(--border-subtle)",
@@ -102,7 +104,7 @@ export default function ProductCard({ product }: { product: Product }) {
         {/* Discount badge */}
         {hasDiscount && (
           <div
-            className="absolute right-3 top-3 flex items-center gap-1 rounded-full px-2 py-1"
+            className="absolute right-3 top-3 z-10 flex items-center gap-1 rounded-full px-2 py-1"
             style={{ background: "rgba(239,68,68,0.12)", border: "1px solid rgba(239,68,68,0.25)" }}
           >
             <Tag size={9} style={{ color: "#F87171" }} />
@@ -112,13 +114,23 @@ export default function ProductCard({ product }: { product: Product }) {
           </div>
         )}
 
-        {/* Icon */}
-        <div
-          className="flex h-16 w-16 items-center justify-center rounded-2xl transition-transform duration-300 group-hover:scale-110"
-          style={{ background: "var(--bg-elevated)", border: `1px solid ${cfg.accentBorder}` }}
-        >
-          <Icon size={28} style={{ color: cfg.accent }} />
-        </div>
+        {/* Image or Icon */}
+        {product.images?.[0] ? (
+          <Image
+            src={product.images[0]}
+            alt={product.name}
+            fill
+            className="object-cover transition-transform duration-300 group-hover:scale-105"
+            sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 25vw"
+          />
+        ) : (
+          <div
+            className="flex h-16 w-16 items-center justify-center rounded-2xl transition-transform duration-300 group-hover:scale-110"
+            style={{ background: "var(--bg-elevated)", border: `1px solid ${cfg.accentBorder}` }}
+          >
+            <Icon size={28} style={{ color: cfg.accent }} />
+          </div>
+        )}
       </div>
 
       {/* ── Content zone ── */}
@@ -153,11 +165,11 @@ export default function ProductCard({ product }: { product: Product }) {
         <div className="mt-4 pt-3" style={{ borderTop: "1px solid var(--border-subtle)" }}>
           <div className="mb-3 flex items-baseline gap-2">
             <span className="text-xl font-black" style={{ color: cfg.accent }}>
-              ${displayedPrice.toLocaleString("en-US")}
+              {displayedPrice.toLocaleString("vi-VN")}₫
             </span>
             {hasDiscount && (
               <span className="text-xs line-through" style={{ color: "var(--text-muted)" }}>
-                ${product.price.toLocaleString("en-US")}
+                {product.price.toLocaleString("vi-VN")}₫
               </span>
             )}
           </div>
