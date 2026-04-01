@@ -26,6 +26,7 @@ export async function POST(req: Request) {
     name?: string;
     category?: "seeds" | "nutrients" | "smart-pots";
     price?: number;
+    salePrice?: number;
     stock?: number;
     description?: string;
     image?: string;
@@ -47,6 +48,7 @@ export async function POST(req: Request) {
     name: body.name,
     category: body.category,
     price: body.price,
+    salePrice: typeof body.salePrice === "number" ? body.salePrice : undefined,
     stock: body.stock ?? 0,
     description: body.description ?? "",
     images: body.image ? [body.image] : [],
