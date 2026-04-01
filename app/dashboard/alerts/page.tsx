@@ -35,9 +35,9 @@ const MOCK_ALERTS: Alert[] = [
     level: "critical",
     category: "sensor",
     deviceId: "SGP-2024-001",
-    deviceName: "Chậu Húng Quế",
-    title: "TDS vượt ngưỡng nguy hiểm",
-    message: "TDS = 2180 ppm — Nồng độ chất rắn hòa tan quá cao. Pha loãng ngay bằng nước sạch để tránh cháy rễ.",
+    deviceName: "Basil Pot",
+    title: "TDS exceeded critical threshold",
+    message: "TDS = 2180 ppm — Dissolved solids concentration too high. Dilute immediately with clean water to prevent root burn.",
     timestamp: "2026-03-21T08:14:00Z",
     read: false,
   },
@@ -46,9 +46,9 @@ const MOCK_ALERTS: Alert[] = [
     level: "warning",
     category: "sensor",
     deviceId: "SGP-2024-002",
-    deviceName: "Rau Cải Nhà Bếp",
-    title: "pH ngoài khoảng lý tưởng",
-    message: "pH = 7.3 — Cao hơn ngưỡng tối đa (7.0). Rễ cây khó hấp thu Fe, Mn. Thêm pH Down để điều chỉnh.",
+    deviceName: "Kitchen Greens",
+    title: "pH outside ideal range",
+    message: "pH = 7.3 — Above maximum threshold (7.0). Roots have difficulty absorbing Fe, Mn. Add pH Down to adjust.",
     timestamp: "2026-03-21T07:45:00Z",
     read: false,
   },
@@ -57,9 +57,9 @@ const MOCK_ALERTS: Alert[] = [
     level: "critical",
     category: "device",
     deviceId: "SGP-2024-003",
-    deviceName: "Chậu Dâu Tây",
-    title: "Thiết bị mất kết nối",
-    message: "Không nhận được tín hiệu từ SGP-2024-003 trong 42 phút. Kiểm tra nguồn điện và kết nối WiFi.",
+    deviceName: "Strawberry Pot",
+    title: "Device disconnected",
+    message: "No signal received from SGP-2024-003 for 42 minutes. Check power supply and WiFi connection.",
     timestamp: "2026-03-21T07:32:00Z",
     read: false,
   },
@@ -68,9 +68,9 @@ const MOCK_ALERTS: Alert[] = [
     level: "success",
     category: "ai",
     deviceId: "SGP-2024-001",
-    deviceName: "Chậu Húng Quế",
-    title: "AI: Cây đang khỏe mạnh",
-    message: "YOLOv8 phân tích ảnh lúc 06:30 — Không phát hiện bệnh. Confidence 94%. Cây phát triển bình thường.",
+    deviceName: "Basil Pot",
+    title: "AI: Plant is Healthy",
+    message: "YOLOv8 analyzed image at 06:30 — No disease detected. Confidence 94%. Plant is developing normally.",
     timestamp: "2026-03-21T06:31:00Z",
     read: true,
   },
@@ -79,9 +79,9 @@ const MOCK_ALERTS: Alert[] = [
     level: "warning",
     category: "sensor",
     deviceId: "SGP-2024-001",
-    deviceName: "Chậu Húng Quế",
-    title: "Mực nước bồn thấp",
-    message: "Mực nước còn 22% — Dưới ngưỡng 25%. Bổ sung nước vào bồn dự trữ trong 24 giờ tới.",
+    deviceName: "Basil Pot",
+    title: "Reservoir water level low",
+    message: "Water level at 22% — Below 25% threshold. Refill the reservoir within the next 24 hours.",
     timestamp: "2026-03-21T06:00:00Z",
     read: true,
   },
@@ -90,9 +90,9 @@ const MOCK_ALERTS: Alert[] = [
     level: "info",
     category: "system",
     deviceId: "SGP-2024-002",
-    deviceName: "Rau Cải Nhà Bếp",
-    title: "Firmware cập nhật thành công",
-    message: "ESP32 SGP-2024-002 đã cập nhật lên firmware v1.3.1. Thêm tính năng hiệu chuẩn TDS tự động.",
+    deviceName: "Kitchen Greens",
+    title: "Firmware updated successfully",
+    message: "ESP32 SGP-2024-002 updated to firmware v1.3.1. Added automatic TDS calibration feature.",
     timestamp: "2026-03-20T23:10:00Z",
     read: true,
   },
@@ -101,9 +101,9 @@ const MOCK_ALERTS: Alert[] = [
     level: "warning",
     category: "ai",
     deviceId: "SGP-2024-002",
-    deviceName: "Rau Cải Nhà Bếp",
-    title: "AI: Phát hiện dấu hiệu vàng lá",
-    message: "YOLOv8 phát hiện 3 lá có dấu hiệu vàng nhạt (confidence 78%). Kết hợp TDS thấp (680 ppm) → Nghi thiếu đạm N. Đề xuất tăng dung dịch A+B.",
+    deviceName: "Kitchen Greens",
+    title: "AI: Yellow leaf signs detected",
+    message: "YOLOv8 detected 3 leaves with mild yellow signs (confidence 78%). Combined with low TDS (680 ppm) → Suspected nitrogen (N) deficiency. Recommend increasing A+B solution.",
     timestamp: "2026-03-20T18:30:00Z",
     read: true,
   },
@@ -112,9 +112,9 @@ const MOCK_ALERTS: Alert[] = [
     level: "info",
     category: "sensor",
     deviceId: "SGP-2024-001",
-    deviceName: "Chậu Húng Quế",
-    title: "Lịch tưới tự động hoàn thành",
-    message: "Bơm nước đã hoạt động 10 phút theo lịch định sẵn (06:00). Dung dịch dinh dưỡng đã được tuần hoàn.",
+    deviceName: "Basil Pot",
+    title: "Auto irrigation schedule completed",
+    message: "Water pump ran for 10 minutes on schedule (06:00). Nutrient solution has been circulated.",
     timestamp: "2026-03-20T06:11:00Z",
     read: true,
   },
@@ -123,9 +123,9 @@ const MOCK_ALERTS: Alert[] = [
     level: "success",
     category: "device",
     deviceId: "SGP-2024-003",
-    deviceName: "Chậu Dâu Tây",
-    title: "Thiết bị kết nối lại",
-    message: "SGP-2024-003 đã online trở lại sau 15 phút mất kết nối. Tất cả sensor đang hoạt động bình thường.",
+    deviceName: "Strawberry Pot",
+    title: "Device reconnected",
+    message: "SGP-2024-003 is back online after 15 minutes of disconnection. All sensors are operating normally.",
     timestamp: "2026-03-19T14:22:00Z",
     read: true,
   },
@@ -141,10 +141,10 @@ const LEVEL_CONFIG: Record<AlertLevel, {
   border: string;
   label: string;
 }> = {
-  critical: { icon: AlertTriangle, color: "#F87171", bg: "rgba(248,113,113,0.08)", border: "rgba(248,113,113,0.22)", label: "Nguy hiểm" },
-  warning:  { icon: AlertTriangle, color: "#FBBF24", bg: "rgba(251,191,36,0.08)",  border: "rgba(251,191,36,0.22)",  label: "Cảnh báo"  },
-  info:     { icon: Info,          color: "#60A5FA", bg: "rgba(96,165,250,0.08)",  border: "rgba(96,165,250,0.22)",  label: "Thông tin" },
-  success:  { icon: CheckCircle2,  color: "var(--emerald-400)", bg: "rgba(34,197,94,0.08)", border: "rgba(74,222,128,0.20)", label: "Tốt" },
+  critical: { icon: AlertTriangle, color: "#F87171", bg: "rgba(248,113,113,0.08)", border: "rgba(248,113,113,0.22)", label: "Critical" },
+  warning:  { icon: AlertTriangle, color: "#FBBF24", bg: "rgba(251,191,36,0.08)",  border: "rgba(251,191,36,0.22)",  label: "Warning"  },
+  info:     { icon: Info,          color: "#60A5FA", bg: "rgba(96,165,250,0.08)",  border: "rgba(96,165,250,0.22)",  label: "Info"     },
+  success:  { icon: CheckCircle2,  color: "var(--emerald-400)", bg: "rgba(34,197,94,0.08)", border: "rgba(74,222,128,0.20)", label: "Good" },
 };
 
 const CATEGORY_ICON: Record<AlertCategory, React.ElementType> = {
@@ -157,8 +157,8 @@ const CATEGORY_ICON: Record<AlertCategory, React.ElementType> = {
 const CATEGORY_LABEL: Record<AlertCategory, string> = {
   sensor: "Sensor",
   ai:     "AI",
-  system: "Hệ thống",
-  device: "Thiết bị",
+  system: "System",
+  device: "Device",
 };
 
 type FilterType = "all" | AlertLevel | AlertCategory;
@@ -171,10 +171,10 @@ function formatTime(iso: string) {
   const now = new Date();
   const diffMs = now.getTime() - d.getTime();
   const diffMin = Math.floor(diffMs / 60000);
-  if (diffMin < 60) return `${diffMin} phút trước`;
+  if (diffMin < 60) return `${diffMin}m ago`;
   const diffH = Math.floor(diffMin / 60);
-  if (diffH < 24) return `${diffH} giờ trước`;
-  return d.toLocaleDateString("vi-VN", { day: "2-digit", month: "2-digit" });
+  if (diffH < 24) return `${diffH}h ago`;
+  return d.toLocaleDateString("en-US", { month: "short", day: "numeric" });
 }
 
 /* ─────────────────────────────────────────
@@ -268,7 +268,7 @@ function AlertItem({
               }}
             >
               <CheckCheck size={10} />
-              Đánh dấu đã đọc
+              Mark as read
             </button>
           )}
           {alert.category === "device" && (
@@ -280,7 +280,7 @@ function AlertItem({
                 color: "var(--emerald-400)",
               }}
             >
-              Xem thiết bị
+              View device
               <ChevronRight size={10} />
             </button>
           )}
@@ -330,22 +330,22 @@ export default function AlertsPage() {
 
   /* stats */
   const stats = [
-    { label: "Chưa đọc",   value: unreadCount,                                    color: "#F87171",            icon: BellOff      },
-    { label: "Nguy hiểm",  value: alerts.filter((a) => a.level === "critical").length, color: "#F87171",        icon: AlertTriangle },
-    { label: "Cảnh báo",   value: alerts.filter((a) => a.level === "warning").length,  color: "#FBBF24",        icon: AlertTriangle },
-    { label: "AI Alerts",  value: alerts.filter((a) => a.category === "ai").length,    color: "#60A5FA",        icon: Camera        },
+    { label: "Unread",     value: unreadCount,                                        color: "#F87171",  icon: BellOff      },
+    { label: "Critical",   value: alerts.filter((a) => a.level === "critical").length, color: "#F87171",  icon: AlertTriangle },
+    { label: "Warning",    value: alerts.filter((a) => a.level === "warning").length,  color: "#FBBF24",  icon: AlertTriangle },
+    { label: "AI Alerts",  value: alerts.filter((a) => a.category === "ai").length,    color: "#60A5FA",  icon: Camera        },
   ];
 
   const FILTER_OPTIONS: { key: FilterType; label: string }[] = [
-    { key: "all",      label: "Tất cả" },
-    { key: "critical", label: "Nguy hiểm" },
-    { key: "warning",  label: "Cảnh báo" },
-    { key: "info",     label: "Thông tin" },
-    { key: "success",  label: "Tốt" },
+    { key: "all",      label: "All" },
+    { key: "critical", label: "Critical" },
+    { key: "warning",  label: "Warning" },
+    { key: "info",     label: "Info" },
+    { key: "success",  label: "Good" },
     { key: "sensor",   label: "Sensor" },
     { key: "ai",       label: "AI" },
-    { key: "device",   label: "Thiết bị" },
-    { key: "system",   label: "Hệ thống" },
+    { key: "device",   label: "Device" },
+    { key: "system",   label: "System" },
   ];
 
   return (
@@ -361,12 +361,12 @@ export default function AlertsPage() {
             // ALERTS
           </p>
           <h1 className="text-3xl font-bold" style={{ color: "var(--text-primary)" }}>
-            Cảnh báo hệ thống
+            System Alerts
           </h1>
           <p className="mt-1 text-sm" style={{ color: "var(--text-secondary)" }}>
-            Thông báo từ chậu cây, sensor và AI phân tích.
+            Notifications from your pots, sensors and AI analysis.
             {unreadCount > 0 && (
-              <span style={{ color: "#F87171" }}> · {unreadCount} chưa đọc</span>
+              <span style={{ color: "#F87171" }}> · {unreadCount} unread</span>
             )}
           </p>
         </div>
@@ -383,7 +383,7 @@ export default function AlertsPage() {
               }}
             >
               <CheckCheck size={13} />
-              Đọc tất cả
+              Mark all read
             </button>
           )}
           <button
@@ -396,7 +396,7 @@ export default function AlertsPage() {
             }}
           >
             <Trash2 size={13} />
-            Xoá đã đọc
+            Clear read
           </button>
         </div>
       </div>
@@ -427,7 +427,7 @@ export default function AlertsPage() {
       <div className="flex flex-wrap gap-2">
         <span className="flex items-center gap-1.5" style={{ color: "var(--text-muted)" }}>
           <Filter size={11} />
-          <span className="text-[10px] font-semibold uppercase tracking-wider">Lọc</span>
+          <span className="text-[10px] font-semibold uppercase tracking-wider">Filter</span>
         </span>
         {FILTER_OPTIONS.map(({ key, label }) => (
           <button
@@ -481,10 +481,10 @@ export default function AlertsPage() {
             <Bell size={24} />
           </div>
           <p className="font-semibold" style={{ color: "var(--text-primary)" }}>
-            Không có thông báo nào
+            No notifications
           </p>
           <p className="mt-1 text-sm" style={{ color: "var(--text-muted)" }}>
-            {filter === "all" ? "Tất cả hệ thống đang hoạt động bình thường." : "Không có thông báo cho bộ lọc này."}
+            {filter === "all" ? "All systems are operating normally." : "No notifications for this filter."}
           </p>
         </div>
       ) : (
@@ -494,7 +494,7 @@ export default function AlertsPage() {
             <div className="space-y-2">
               <p className="px-1 font-mono text-[10px] font-semibold uppercase tracking-wider"
                 style={{ color: "var(--text-muted)" }}>
-                Chưa đọc
+                Unread
               </p>
               {filtered.filter((a) => !a.read).map((alert) => (
                 <AlertItem
@@ -512,7 +512,7 @@ export default function AlertsPage() {
             <div className="space-y-2">
               <p className="px-1 font-mono text-[10px] font-semibold uppercase tracking-wider"
                 style={{ color: "var(--text-muted)" }}>
-                Đã đọc
+                Read
               </p>
               {filtered.filter((a) => a.read).map((alert) => (
                 <AlertItem

@@ -7,17 +7,17 @@ import { LayoutGrid, Bell, ShoppingBag, Settings2, Leaf } from "lucide-react";
 
 const NAV_GROUPS = [
   {
-    label: "Quản lý",
+    label: "Management",
     items: [
-      { href: "/dashboard",         icon: LayoutGrid, label: "Chậu cây",  desc: "Tất cả thiết bị", exact: true  },
-      { href: "/dashboard/alerts",  icon: Bell,       label: "Cảnh báo",  desc: "Smart alerts · AI", exact: false },
+      { href: "/dashboard",         icon: LayoutGrid, label: "My Pots",  desc: "All devices", exact: true  },
+      { href: "/dashboard/alerts",  icon: Bell,       label: "Alerts",   desc: "Smart alerts · AI", exact: false },
     ],
   },
   {
-    label: "Tài khoản",
+    label: "Account",
     items: [
-      { href: "/products",            icon: ShoppingBag, label: "Cửa hàng", desc: "Hạt giống · Dinh dưỡng", exact: false },
-      { href: "/dashboard/settings",  icon: Settings2,   label: "Cài đặt",  desc: "Hồ sơ · Thông báo",     exact: false },
+      { href: "/products",            icon: ShoppingBag, label: "Store",    desc: "Seeds · Nutrients",       exact: false },
+      { href: "/dashboard/settings",  icon: Settings2,   label: "Settings", desc: "Profile · Notifications", exact: false },
     ],
   },
 ];
@@ -36,7 +36,7 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
 
   /* Fetch unread alert count */
   useEffect(() => {
-    /* Tìm deviceId đầu tiên từ URL nếu đang ở device route */
+    /* Find deviceId from URL if on a device route */
     const match = pathname.match(/\/dashboard\/([^/]+)\//);
     if (!match) return;
     const deviceId = match[1];

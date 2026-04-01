@@ -31,7 +31,7 @@ export default async function DeviceLayout({ children, params }: Props) {
           <span style={{ color: "var(--border-normal)" }}>/</span>
 
           <span className="text-xs font-semibold" style={{ color: "var(--text-primary)" }}>
-            Chậu Húng Quế
+            Basil Pot
           </span>
 
           <span

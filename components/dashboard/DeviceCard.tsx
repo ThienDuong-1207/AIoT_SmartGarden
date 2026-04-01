@@ -48,7 +48,7 @@ export default function DeviceCard({ device, index }: { device: DeviceView; inde
   const metrics = [
     { icon: Droplets,    value: live.tds  !== null ? `${live.tds} ppm` : "—", label: "TDS",   color: "#60A5FA"            },
     { icon: FlaskConical, value: live.ph  !== null ? `${live.ph}`       : "—", label: "pH",    color: "var(--emerald-400)" },
-    { icon: Thermometer, value: live.temp !== null ? `${live.temp}°C`   : "—", label: "Nhiệt", color: "var(--gold-400)"    },
+    { icon: Thermometer, value: live.temp !== null ? `${live.temp}°C`   : "—", label: "Temp",  color: "var(--gold-400)"    },
   ];
 
   return (
@@ -131,7 +131,7 @@ export default function DeviceCard({ device, index }: { device: DeviceView; inde
               {device.name}
             </p>
             <p className="mt-0.5 text-xs" style={{ color: "var(--text-muted)" }}>
-              {device.plantType || "Thủy canh"} · <span className="font-mono">{device.deviceId}</span>
+              {device.plantType || "Hydroponics"} · <span className="font-mono">{device.deviceId}</span>
             </p>
           </div>
           <div

@@ -27,10 +27,10 @@ interface ChartReading { timestamp: string; temp?: number; tds_ppm?: number; ph?
 function timeAgo(dateStr?: string) {
   if (!dateStr) return "—";
   const diff = Math.floor((Date.now() - new Date(dateStr).getTime()) / 1000);
-  if (diff < 60)    return `${diff}s trước`;
-  if (diff < 3600)  return `${Math.floor(diff / 60)}m trước`;
-  if (diff < 86400) return `${Math.floor(diff / 3600)}h trước`;
-  return `${Math.floor(diff / 86400)}d trước`;
+  if (diff < 60)    return `${diff}s ago`;
+  if (diff < 3600)  return `${Math.floor(diff / 60)}m ago`;
+  if (diff < 86400) return `${Math.floor(diff / 3600)}h ago`;
+  return `${Math.floor(diff / 86400)}d ago`;
 }
 
 function statusOf(value: number | undefined, min: number, max: number): "ok" | "warn" | "none" {
@@ -107,7 +107,7 @@ function MetricCard({ label, value, unit, icon: Icon, color, iconBg, min, max, t
         <div className="flex justify-between text-[9px] font-mono" style={{ color: "var(--text-muted)" }}>
           <span>{min}{unit}</span>
           <span style={{ color: inRange ? "var(--emerald-400)" : "var(--gold-400)" }}>
-            {inRange ? "●  Trong ngưỡng" : "⚠  Cần kiểm tra"}
+            {inRange ? "●  In Range" : "⚠  Check Required"}
           </span>
           <span>{max}{unit}</span>
         </div>
@@ -190,13 +190,13 @@ export default function OverviewPage() {
       sparkVals: sparkOf("ph"),
     },
     {
-      label: "Nhiệt độ", value: r?.temp != null ? r.temp.toFixed(1) : "—", unit: "°C",
+      label: "Temperature", value: r?.temp != null ? r.temp.toFixed(1) : "—", unit: "°C",
       icon: Thermometer, color: "var(--gold-400)", iconBg: "rgba(245,158,11,0.12)",
       min: thr?.temp?.min ?? 18, max: thr?.temp?.max ?? 32,
       sparkVals: sparkOf("temp"),
     },
     {
-      label: "Độ ẩm", value: r?.humi != null ? r.humi.toFixed(0) : "—", unit: "%",
+      label: "Humidity", value: r?.humi != null ? r.humi.toFixed(0) : "—", unit: "%",
       icon: Wind, color: "var(--cyan-400)", iconBg: "rgba(6,182,212,0.12)",
       min: 40, max: 90,
       sparkVals: charts.slice(-12).map((c) => (c as unknown as { humi?: number }).humi ?? 0).filter(Boolean),
@@ -226,7 +226,7 @@ export default function OverviewPage() {
         <div className="flex items-center gap-1.5">
           <Activity size={11} style={{ color: "var(--text-muted)" }} />
           <span className="text-xs" style={{ color: "var(--text-muted)" }}>
-            Cập nhật: <span className="font-mono" style={{ color: "var(--text-secondary)" }}>{timeAgo(r?.timestamp)}</span>
+            Updated: <span className="font-mono" style={{ color: "var(--text-secondary)" }}>{timeAgo(r?.timestamp)}</span>
           </span>
         </div>
         {(data?.unreadAlerts ?? 0) > 0 && (
@@ -235,7 +235,7 @@ export default function OverviewPage() {
             <div className="flex items-center gap-1.5">
               <AlertTriangle size={11} style={{ color: "var(--gold-400)" }} />
               <span className="text-xs font-semibold" style={{ color: "var(--gold-400)" }}>
-                {data?.unreadAlerts} cảnh báo
+                {data?.unreadAlerts} alerts
               </span>
             </div>
           </>
@@ -243,7 +243,7 @@ export default function OverviewPage() {
         {loading && (
           <div className="ml-auto flex items-center gap-1.5">
             <div className="h-1.5 w-1.5 animate-pulse rounded-full" style={{ background: "var(--emerald-400)" }} />
-            <span className="text-[10px]" style={{ color: "var(--text-muted)" }}>Đang tải…</span>
+            <span className="text-[10px]" style={{ color: "var(--text-muted)" }}>Loading…</span>
           </div>
         )}
       </div>
@@ -266,7 +266,7 @@ export default function OverviewPage() {
                 TDS · 24h
               </p>
               <p className="section-label mt-0.5">
-                {charts.length > 0 ? `${charts.length} điểm dữ liệu` : "Chưa có dữ liệu"}
+                {charts.length > 0 ? `${charts.length} data points` : "No data"}
               </p>
             </div>
             <div className="flex items-center gap-3">
@@ -285,7 +285,7 @@ export default function OverviewPage() {
           <div className="px-4 pt-4 pb-2">
             <BarChart readings={charts} />
             <div className="mt-2 flex justify-between text-[9px] font-mono" style={{ color: "var(--text-muted)" }}>
-              <span>24h trước</span><span>18h</span><span>12h</span><span>6h</span>
+              <span>24h ago</span><span>18h</span><span>12h</span><span>6h</span>
               <span style={{ color: "var(--emerald-400)" }}>Now</span>
             </div>
           </div>
@@ -365,24 +365,24 @@ export default function OverviewPage() {
               <p className="text-xs" style={{ color: "var(--text-secondary)" }}>
                 {r
                   ? `TDS ${r.tds_ppm ?? "—"} ppm · pH ${r.ph ?? "—"} · Temp ${r.temp ?? "—"}°C · Humi ${r.humi ?? "—"}%`
-                  : "Chưa nhận được dữ liệu. Hãy chắc chắn ESP32 đã kết nối."
+                  : "No data received. Make sure your ESP32 is connected."
                 }
               </p>
             </div>
             <div className="flex items-center gap-3 mt-3">
               <div className="flex items-center gap-1.5 text-[10px]" style={{ color: "var(--text-muted)" }}>
                 <span className="h-1.5 w-1.5 rounded-full" style={{ background: "var(--emerald-400)" }} />
-                Lần cuối: {timeAgo(r?.timestamp)}
+                Last: {timeAgo(r?.timestamp)}
               </div>
               <div className="flex items-center gap-1.5 text-[10px]" style={{ color: "var(--text-muted)" }}>
                 <span className="h-1.5 w-1.5 rounded-full" style={{ background: r?.light_status ? "var(--gold-400)" : "var(--border-subtle)" }} />
-                Đèn: {r?.light_status ? "Bật" : "Tắt"}
+                Light: {r?.light_status ? "On" : "Off"}
               </div>
               {r?.water_level != null && (
                 <div className="flex items-center gap-1.5 text-[10px]" style={{ color: r.water_level < 20 ? "var(--gold-400)" : "var(--text-muted)" }}>
                   <span className="h-1.5 w-1.5 rounded-full"
                     style={{ background: r.water_level < 20 ? "var(--gold-500)" : "var(--blue-400)" }} />
-                  Nước: {r.water_level}%
+                  Pump: {r.water_level}%
                 </div>
               )}
             </div>
@@ -414,7 +414,7 @@ function AlertsSection({ deviceId }: { deviceId: string }) {
       <div className="flex items-center justify-between px-4 py-3" style={{ borderBottom: "1px solid var(--border-subtle)" }}>
         <div className="flex items-center gap-2">
           <AlertTriangle size={13} style={{ color: "var(--gold-400)" }} />
-          <span className="text-sm font-semibold" style={{ color: "var(--text-primary)" }}>Cảnh báo chưa đọc</span>
+          <span className="text-sm font-semibold" style={{ color: "var(--text-primary)" }}>Unread Alerts</span>
         </div>
         <span className="rounded-full px-2.5 py-0.5 font-mono text-[10px] font-bold"
           style={{ background: "rgba(245,158,11,0.12)", color: "var(--gold-400)", border: "1px solid rgba(245,158,11,0.20)" }}>
@@ -430,7 +430,7 @@ function AlertsSection({ deviceId }: { deviceId: string }) {
             <div className="flex-1 min-w-0">
               <p className="text-xs" style={{ color: "var(--text-secondary)" }}>{a.message}</p>
               <p className="mt-0.5 font-mono text-[10px]" style={{ color: "var(--text-muted)" }}>
-                {new Date(a.triggeredAt).toLocaleString("vi-VN")}
+                {new Date(a.triggeredAt).toLocaleString("en-US")}
               </p>
             </div>
           </div>

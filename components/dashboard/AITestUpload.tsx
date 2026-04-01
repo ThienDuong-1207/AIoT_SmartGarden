@@ -27,9 +27,9 @@ type PredictResult = {
 };
 
 const STATUS_CFG = {
-  healthy: { icon: CheckCircle,  color: "#10B981", bg: "rgba(16,185,129,0.08)", border: "rgba(16,185,129,0.25)", label: "Khỏe mạnh" },
-  warning: { icon: AlertTriangle, color: "#F59E0B", bg: "rgba(245,158,11,0.08)", border: "rgba(245,158,11,0.25)", label: "Cảnh báo"  },
-  danger:  { icon: XCircle,       color: "#F87171", bg: "rgba(239,68,68,0.08)",  border: "rgba(239,68,68,0.25)",  label: "Nguy hiểm" },
+  healthy: { icon: CheckCircle,  color: "#10B981", bg: "rgba(16,185,129,0.08)", border: "rgba(16,185,129,0.25)", label: "Healthy" },
+  warning: { icon: AlertTriangle, color: "#F59E0B", bg: "rgba(245,158,11,0.08)", border: "rgba(245,158,11,0.25)", label: "Warning" },
+  danger:  { icon: XCircle,       color: "#F87171", bg: "rgba(239,68,68,0.08)",  border: "rgba(239,68,68,0.25)",  label: "Danger"  },
 };
 
 const CLASS_COLORS: Record<string, string> = {
@@ -145,7 +145,7 @@ export default function AITestUpload({ deviceId, sensorContext, onSaved }: Props
 
       const res  = await fetch("/api/ai/predict", { method: "POST", body: form });
       const data = await res.json();
-      if (!res.ok) throw new Error(data.error ?? "Lỗi không xác định");
+      if (!res.ok) throw new Error(data.error ?? "Unknown error");
 
       if (data.originalWidth && data.originalHeight) {
         setOrigSize({ w: data.originalWidth, h: data.originalHeight });
@@ -205,25 +205,25 @@ export default function AITestUpload({ deviceId, sensorContext, onSaved }: Props
 
     const startedAt = new Date().toISOString();
 
-    // 1. Gửi lệnh capture_now tới ESP32
+    // 1. Send capture_now command to ESP32
     setCapturePhase("sending_command");
-    setCaptureMsg("Đang gửi lệnh chụp ảnh tới ESP32…");
+    setCaptureMsg("Sending capture command to ESP32…");
     try {
       const cmdRes = await fetch(`/api/devices/${deviceId}/command`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ command: "capture_now" }),
       });
-      if (!cmdRes.ok) throw new Error("Không gửi được lệnh tới thiết bị");
+      if (!cmdRes.ok) throw new Error("Failed to send command to device");
     } catch (e) {
       setError(e instanceof Error ? e.message : String(e));
       setCapturePhase("idle");
       return;
     }
 
-    // 2. Poll snapshot API chờ ảnh về (tối đa 30s)
+    // 2. Poll snapshot API waiting for image (max 30s)
     setCapturePhase("waiting_image");
-    setCaptureMsg("Chờ ESP32 chụp và gửi ảnh…");
+    setCaptureMsg("Waiting for ESP32 to capture and send image…");
 
     let elapsed = 0;
     const POLL_INTERVAL = 1500;
@@ -234,7 +234,7 @@ export default function AITestUpload({ deviceId, sensorContext, onSaved }: Props
         elapsed += POLL_INTERVAL;
         if (elapsed > MAX_WAIT) {
           clearInterval(pollRef.current!);
-          setError("Thiết bị không phản hồi trong 30 giây. Hãy kiểm tra kết nối camera.");
+          setError("Device did not respond within 30 seconds. Check camera connection.");
           setCapturePhase("idle");
           resolve();
           return;
@@ -251,7 +251,7 @@ export default function AITestUpload({ deviceId, sensorContext, onSaved }: Props
             tmp.src = src;
             // 3. Auto-analyze
             setCapturePhase("analyzing");
-            setCaptureMsg("Đang phân tích ảnh với plantAI.pt…");
+            setCaptureMsg("Analyzing image with plantAI.pt…");
             resolve();
             runPredict(src);
           }
@@ -270,9 +270,9 @@ export default function AITestUpload({ deviceId, sensorContext, onSaved }: Props
 
   const captureLabel = {
     idle:           <>Capture</>,
-    sending_command: <><Loader2 size={13} className="animate-spin" /> Gửi lệnh…</>,
-    waiting_image:   <><Loader2 size={13} className="animate-spin" /> Chờ ảnh…</>,
-    analyzing:       <><Loader2 size={13} className="animate-spin" /> Phân tích…</>,
+    sending_command: <><Loader2 size={13} className="animate-spin" /> Sending…</>,
+    waiting_image:   <><Loader2 size={13} className="animate-spin" /> Waiting…</>,
+    analyzing:       <><Loader2 size={13} className="animate-spin" /> Analyzing…</>,
   }[capturePhase];
 
   return (
@@ -287,7 +287,7 @@ export default function AITestUpload({ deviceId, sensorContext, onSaved }: Props
       >
         <ScanEye size={14} style={{ color: "var(--emerald-400)" }} />
         <span className="text-sm font-semibold" style={{ color: "var(--text-primary)" }}>
-          AI Test — Phân tích cây
+          AI Test — Analyze Plant
         </span>
         <span
           className="ml-auto rounded-full px-2.5 py-0.5 font-mono text-[10px]"
@@ -339,7 +339,7 @@ export default function AITestUpload({ deviceId, sensorContext, onSaved }: Props
                   style={{ background: "rgba(0,0,0,0.65)", color: "#fff", border: "1px solid rgba(255,255,255,0.15)" }}
                   onClick={(e) => { e.stopPropagation(); inputRef.current?.click(); }}
                 >
-                  <RefreshCw size={11} /> Đổi ảnh
+                  <RefreshCw size={11} /> Change Image
                 </button>
               )}
               {origSize && (
@@ -369,8 +369,8 @@ export default function AITestUpload({ deviceId, sensorContext, onSaved }: Props
                 <>
                   <ImageIcon size={36} style={{ color: "rgba(255,255,255,0.10)" }} />
                   <div className="text-center">
-                    <p className="text-sm" style={{ color: "var(--text-muted)" }}>Kéo thả hoặc click để upload ảnh</p>
-                    <p className="mt-0.5 font-mono text-[10px]" style={{ color: "rgba(255,255,255,0.08)" }}>Ảnh sẽ tự động phân tích · JPG · PNG · WEBP</p>
+                    <p className="text-sm" style={{ color: "var(--text-muted)" }}>Drag & drop or click to upload image</p>
+                    <p className="mt-0.5 font-mono text-[10px]" style={{ color: "rgba(255,255,255,0.08)" }}>Auto-analyzed on upload · JPG · PNG · WEBP</p>
                   </div>
                 </>
               )}
@@ -381,7 +381,7 @@ export default function AITestUpload({ deviceId, sensorContext, onSaved }: Props
           {loading && preview && (
             <div className="absolute inset-0 flex flex-col items-center justify-center gap-3 rounded-xl" style={{ background: "rgba(0,0,0,0.65)", backdropFilter: "blur(4px)" }}>
               <Loader2 size={28} className="animate-spin" style={{ color: "var(--emerald-400)" }} />
-              <p className="text-sm font-semibold" style={{ color: "var(--emerald-400)" }}>Đang chạy YOLOv8…</p>
+              <p className="text-sm font-semibold" style={{ color: "var(--emerald-400)" }}>Running YOLOv8…</p>
             </div>
           )}
 
@@ -442,7 +442,7 @@ export default function AITestUpload({ deviceId, sensorContext, onSaved }: Props
 
             {/* Recommendation */}
             <div className="rounded-xl p-3" style={{ background: "rgba(255,255,255,0.02)", border: "1px solid var(--border-subtle)" }}>
-              <p className="mb-1.5 text-[10px] font-semibold uppercase tracking-wider" style={{ color: "var(--text-muted)" }}>Khuyến nghị</p>
+              <p className="mb-1.5 text-[10px] font-semibold uppercase tracking-wider" style={{ color: "var(--text-muted)" }}>Recommendation</p>
               <p className="text-xs leading-relaxed" style={{ color: "var(--text-primary)" }}>{result.recommendation}</p>
             </div>
 

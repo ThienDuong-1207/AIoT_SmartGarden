@@ -9,8 +9,8 @@ import {
 type Params = Promise<{ deviceId: string }>;
 
 export default function SettingsPage() {
-  const [deviceName, setDeviceName]         = useState("Chậu Húng Quế");
-  const [plantType, setPlantType]           = useState("Húng quế");
+  const [deviceName, setDeviceName]         = useState("Basil Pot");
+  const [plantType, setPlantType]           = useState("Basil");
   const [camInterval, setCamInterval]       = useState("6");
   const [pushEnabled, setPushEnabled]       = useState(true);
   const [emailEnabled, setEmailEnabled]     = useState(false);
@@ -49,30 +49,30 @@ export default function SettingsPage() {
           style={{ borderBottom: "1px solid var(--border-subtle)" }}
         >
           <Leaf size={14} style={{ color: "var(--emerald-400)" }} />
-          <span className="text-sm font-semibold" style={{ color: "var(--text-primary)" }}>Thông tin thiết bị</span>
+          <span className="text-sm font-semibold" style={{ color: "var(--text-primary)" }}>Device Info</span>
         </div>
         <div className="grid gap-4 p-5 md:grid-cols-2">
           <div>
             <label className="mb-1.5 block text-xs font-semibold" style={{ color: "var(--text-muted)" }}>
-              Tên chậu cây
+              Pot name
             </label>
             <input
               value={deviceName}
               onChange={(e) => setDeviceName(e.target.value)}
               className="dark-input w-full text-sm"
-              placeholder="VD: Chậu Rau Cải Nhà Bếp"
+              placeholder="e.g. Kitchen Greens Pot"
             />
           </div>
           <div>
             <label className="mb-1.5 block text-xs font-semibold" style={{ color: "var(--text-muted)" }}>
-              Loại cây trồng
+              Plant type
             </label>
             <select
               value={plantType}
               onChange={(e) => setPlantType(e.target.value)}
               className="dark-select w-full text-sm"
             >
-              {["Húng quế", "Cải xanh", "Rau muống", "Xà lách", "Dâu tây", "Cà chua bi"].map((p) => (
+              {["Basil", "Bok choy", "Water spinach", "Lettuce", "Strawberry", "Cherry tomato"].map((p) => (
                 <option key={p}>{p}</option>
               ))}
             </select>
@@ -80,7 +80,7 @@ export default function SettingsPage() {
 
           <div className="md:col-span-2">
             <label className="mb-1.5 block text-xs font-semibold" style={{ color: "var(--text-muted)" }}>
-              Ảnh chậu cây
+              Pot photo
             </label>
             <div
               className="flex cursor-pointer flex-col items-center justify-center gap-2 rounded-xl py-8 transition-colors"
@@ -96,9 +96,9 @@ export default function SettingsPage() {
                 <Camera size={18} style={{ color: "var(--emerald-400)" }} />
               </div>
               <p className="text-xs" style={{ color: "var(--text-muted)" }}>
-                Kéo thả ảnh hoặc <span style={{ color: "var(--emerald-400)" }}>chọn file</span>
+                Drag and drop or <span style={{ color: "var(--emerald-400)" }}>choose a file</span>
               </p>
-              <p className="text-[10px]" style={{ color: "var(--text-muted)" }}>PNG, JPG — tối đa 5MB</p>
+              <p className="text-[10px]" style={{ color: "var(--text-muted)" }}>PNG, JPG — max 5MB</p>
             </div>
           </div>
         </div>
@@ -114,18 +114,18 @@ export default function SettingsPage() {
           style={{ borderBottom: "1px solid var(--border-subtle)" }}
         >
           <Camera size={14} style={{ color: "var(--text-muted)" }} />
-          <span className="text-sm font-semibold" style={{ color: "var(--text-primary)" }}>Lịch chụp camera</span>
+          <span className="text-sm font-semibold" style={{ color: "var(--text-primary)" }}>Camera schedule</span>
         </div>
         <div className="p-5">
           <p className="mb-3 text-xs" style={{ color: "var(--text-muted)" }}>
-            ESP32 sẽ chụp ảnh theo lịch và gửi lên AI để phân tích tự động.
+            The ESP32 will capture photos on schedule and send them to AI for automatic analysis.
           </p>
           <div className="grid grid-cols-2 gap-3 md:grid-cols-4">
             {[
-              { value: "1", label: "1 giờ" },
-              { value: "6", label: "6 giờ" },
-              { value: "12", label: "12 giờ" },
-              { value: "24", label: "Mỗi ngày" },
+              { value: "1", label: "1 hour" },
+              { value: "6", label: "6 hours" },
+              { value: "12", label: "12 hours" },
+              { value: "24", label: "Daily" },
             ].map(({ value, label }) => (
               <button
                 key={value}
@@ -137,12 +137,12 @@ export default function SettingsPage() {
                     : { background: "rgba(255,255,255,0.02)", color: "var(--text-secondary)", border: "1px solid var(--border-subtle)" }
                 }
               >
-                Mỗi {label}
+                Every {label}
               </button>
             ))}
           </div>
           <p className="mt-3 font-mono text-[10px]" style={{ color: "var(--text-muted)" }}>
-            Chụp tiếp theo: 20:30 hôm nay · Topic: garden/{"deviceId"}/camera
+            Next capture: 20:30 today · Topic: garden/{"deviceId"}/camera
           </p>
         </div>
       </div>
@@ -157,18 +157,18 @@ export default function SettingsPage() {
           style={{ borderBottom: "1px solid var(--border-subtle)" }}
         >
           <Bell size={14} style={{ color: "var(--gold-400)" }} />
-          <span className="text-sm font-semibold" style={{ color: "var(--text-primary)" }}>Thông báo</span>
+          <span className="text-sm font-semibold" style={{ color: "var(--text-primary)" }}>Notifications</span>
         </div>
         <div className="divide-y p-5 space-y-0" style={{ borderColor: "var(--border-subtle)" }}>
           {[
             {
               icon: Bell, label: "Push Notification (Firebase FCM)",
-              desc: "Gửi cảnh báo tức thì đến điện thoại", on: pushEnabled, set: setPushEnabled,
+              desc: "Send instant alerts to your phone", on: pushEnabled, set: setPushEnabled,
               color: "var(--gold-400)",
             },
             {
               icon: Shield, label: "Email Alert",
-              desc: "Gửi báo cáo hàng ngày và cảnh báo khẩn", on: emailEnabled, set: setEmailEnabled,
+              desc: "Send daily reports and urgent alerts", on: emailEnabled, set: setEmailEnabled,
               color: "var(--blue-400)",
             },
           ].map(({ icon: Icon, label, desc, on, set, color }) => (
@@ -205,7 +205,7 @@ export default function SettingsPage() {
           style={{ borderBottom: "1px solid var(--border-subtle)" }}
         >
           <Cpu size={14} style={{ color: "var(--text-muted)" }} />
-          <span className="text-sm font-semibold" style={{ color: "var(--text-primary)" }}>Thông tin phần cứng</span>
+          <span className="text-sm font-semibold" style={{ color: "var(--text-primary)" }}>Hardware Info</span>
         </div>
         <div className="divide-y px-5" style={{ borderColor: "var(--border-subtle)" }}>
           {[
@@ -214,7 +214,7 @@ export default function SettingsPage() {
             { label: "Firmware",        value: "v1.2.3",               mono: true },
             { label: "WiFi MAC",        value: "AA:BB:CC:DD:EE:FF",    mono: true },
             { label: "MQTT Broker",     value: "broker.hivemq.cloud",  mono: true },
-            { label: "Kết nối",         value: "Online · 2 ngày 14h",  mono: false },
+            { label: "Connection",      value: "Online · 2d 14h",      mono: false },
           ].map(({ label, value, mono }) => (
             <div
               key={label}
@@ -238,7 +238,7 @@ export default function SettingsPage() {
           </button>
           <button className="btn-ghost gap-2 text-xs">
             <Wifi size={12} />
-            Kết nối lại MQTT
+            Reconnect MQTT
           </button>
           <button
             className="ml-auto flex items-center gap-2 rounded-xl px-3 py-2 text-xs font-semibold transition-all"
@@ -249,7 +249,7 @@ export default function SettingsPage() {
             }}
           >
             <Trash2 size={12} />
-            Xóa thiết bị
+            Delete device
           </button>
         </div>
       </div>
@@ -258,7 +258,7 @@ export default function SettingsPage() {
       <div className="flex justify-end">
         <button onClick={handleSave} className="btn-emerald gap-2">
           {saved ? <CheckCircle size={14} /> : <Save size={14} />}
-          {saved ? "Đã lưu!" : "Lưu cài đặt"}
+          {saved ? "Saved!" : "Save settings"}
         </button>
       </div>
     </div>

@@ -96,9 +96,9 @@ function CalibrationAccordion() {
       >
         <div className="flex items-center gap-2">
           <RotateCcw size={13} style={{ color: "var(--text-muted)" }} />
-          <span className="text-sm font-semibold" style={{ color: "var(--text-primary)" }}>Hiệu Chuẩn Sensor</span>
+          <span className="text-sm font-semibold" style={{ color: "var(--text-primary)" }}>Sensor Calibration</span>
           <span className="rounded-full px-2 py-0.5 text-[10px]" style={{ background: "var(--bg-base)", color: "var(--text-muted)", border: "1px solid var(--border-subtle)" }}>
-            Tuỳ chọn
+            Optional
           </span>
         </div>
         <ChevronDown size={13} style={{ color: "var(--text-muted)", transform: open ? "rotate(180deg)" : "none", transition: "transform 0.2s ease" }} />
@@ -107,8 +107,8 @@ function CalibrationAccordion() {
       {open && (
         <div className="p-4 space-y-3">
           {[
-            { label: "pH Sensor",  icon: FlaskConical, color: "var(--emerald-400)", current: "6.2",  hint: "Dùng dung dịch chuẩn pH 7.0 & 4.0" },
-            { label: "TDS Sensor", icon: Droplets,     color: "var(--blue-400)",    current: "1150", hint: "Dùng dung dịch chuẩn 1000 ppm" },
+            { label: "pH Sensor",  icon: FlaskConical, color: "var(--emerald-400)", current: "6.2",  hint: "Use pH 7.0 & 4.0 calibration solution" },
+            { label: "TDS Sensor", icon: Droplets,     color: "var(--blue-400)",    current: "1150", hint: "Use 1000 ppm calibration solution" },
           ].map(({ label, icon: Icon, color, current, hint }) => (
             <div key={label} className="rounded-xl p-3.5" style={{ background: "var(--bg-base)", border: "1px solid var(--border-subtle)" }}>
               <div className="mb-2.5 flex items-center gap-2">
@@ -116,18 +116,18 @@ function CalibrationAccordion() {
                 <span className="text-xs font-semibold" style={{ color: "var(--text-primary)" }}>{label}</span>
                 <span className="font-mono text-xs font-bold ml-auto" style={{ color }}>{current}</span>
               </div>
-              <input type="number" placeholder="Nhập giá trị hiệu chuẩn..." className="dark-input w-full text-xs" />
+              <input type="number" placeholder="Enter calibration value..." className="dark-input w-full text-xs" />
               <p className="mt-1.5 text-[10px]" style={{ color: "var(--text-muted)" }}>{hint}</p>
               <button className="btn-ghost mt-2.5 w-full justify-center gap-2 text-xs">
                 <RotateCcw size={11} />
-                Hiệu chuẩn
+                Calibrate
               </button>
             </div>
           ))}
 
           <div className="flex items-start gap-2 rounded-xl px-3 py-2.5" style={{ background: "rgba(245,158,11,0.06)", border: "1px solid rgba(245,158,11,0.15)" }}>
             <WifiOff size={11} style={{ color: "var(--gold-400)", marginTop: 1, flexShrink: 0 }} />
-            <p className="text-[10px]" style={{ color: "var(--gold-400)" }}>Kết nối thiết bị trực tiếp để hiệu chuẩn chính xác hơn.</p>
+            <p className="text-[10px]" style={{ color: "var(--gold-400)" }}>Connect device directly for more accurate calibration.</p>
           </div>
         </div>
       )}
@@ -155,7 +155,7 @@ export default function SensorsPage() {
         body: JSON.stringify({ command }),
       });
       const json = await res.json();
-      if (json.ok) setLastCmd(`${command} · ${new Date().toLocaleTimeString("vi-VN")}`);
+      if (json.ok) setLastCmd(`${command} · ${new Date().toLocaleTimeString("en-US")}`);
       return json.ok;
     } catch { return false; }
   }, [deviceId]);
@@ -202,7 +202,7 @@ export default function SensorsPage() {
               {capturing ? (
                 <div className="z-10 text-center">
                   <div className="mx-auto mb-2 h-7 w-7 animate-spin rounded-full border-2 border-blue-400 border-t-transparent" />
-                  <p className="font-mono text-[10px]" style={{ color: "#60A5FA" }}>Đang chụp...</p>
+                  <p className="font-mono text-[10px]" style={{ color: "#60A5FA" }}>Capturing...</p>
                 </div>
               ) : (
                 <div className="z-10 text-center">
@@ -220,26 +220,26 @@ export default function SensorsPage() {
 
             <button onClick={handleCapture} disabled={capturing} className="btn-gold w-full gap-2 justify-center text-xs">
               <Camera size={12} />
-              {capturing ? "Đang xử lý..." : "Chụp & Phân tích AI"}
+              {capturing ? "Processing..." : "Capture & AI Analysis"}
             </button>
 
             {/* Auto schedule */}
             <div>
-              <p className="mb-2 text-[10px] font-semibold uppercase tracking-wider" style={{ color: "var(--text-muted)" }}>Lịch chụp tự động</p>
+              <p className="mb-2 text-[10px] font-semibold uppercase tracking-wider" style={{ color: "var(--text-muted)" }}>Auto Capture Schedule</p>
               <div className="grid grid-cols-3 gap-2">
-                {["6 tiếng", "12 tiếng", "24 tiếng"].map((opt) => (
+                {["6h", "12h", "24h"].map((opt) => (
                   <label
                     key={opt}
                     className="flex cursor-pointer items-center justify-between rounded-lg px-2.5 py-2"
                     style={{
-                      background: opt === "6 tiếng" ? "rgba(16,185,129,0.07)" : "var(--bg-base)",
-                      border: `1px solid ${opt === "6 tiếng" ? "rgba(16,185,129,0.20)" : "var(--border-subtle)"}`,
+                      background: opt === "6h" ? "rgba(16,185,129,0.07)" : "var(--bg-base)",
+                      border: `1px solid ${opt === "6h" ? "rgba(16,185,129,0.20)" : "var(--border-subtle)"}`,
                     }}
                   >
-                    <span className="text-[11px]" style={{ color: opt === "6 tiếng" ? "var(--emerald-400)" : "var(--text-muted)" }}>
+                    <span className="text-[11px]" style={{ color: opt === "6h" ? "var(--emerald-400)" : "var(--text-muted)" }}>
                       {opt}
                     </span>
-                    <input type="radio" name="schedule" defaultChecked={opt === "6 tiếng"} className="accent-emerald-500" />
+                    <input type="radio" name="schedule" defaultChecked={opt === "6h"} className="accent-emerald-500" />
                   </label>
                 ))}
               </div>
@@ -267,9 +267,9 @@ export default function SensorsPage() {
                   }
                 </div>
                 <div>
-                  <p className="text-sm font-semibold" style={{ color: "var(--text-primary)" }}>Bơm nước</p>
+                  <p className="text-sm font-semibold" style={{ color: "var(--text-primary)" }}>Water Pump</p>
                   <p className="text-[10px]" style={{ color: pump ? "var(--emerald-400)" : "var(--text-muted)" }}>
-                    {pumpLoading ? "Đang gửi lệnh..." : pump ? "● Đang chạy" : "○ Tắt"}
+                    {pumpLoading ? "Sending command..." : pump ? "● Running" : "○ Off"}
                   </p>
                 </div>
               </div>
@@ -289,9 +289,9 @@ export default function SensorsPage() {
                   }
                 </div>
                 <div>
-                  <p className="text-sm font-semibold" style={{ color: "var(--text-primary)" }}>Đèn grow light</p>
+                  <p className="text-sm font-semibold" style={{ color: "var(--text-primary)" }}>Grow Light</p>
                   <p className="text-[10px]" style={{ color: light ? "var(--gold-400)" : "var(--text-muted)" }}>
-                    {lightLoading ? "Đang gửi lệnh..." : light ? "● LED 20W · Bật" : "○ Tắt"}
+                    {lightLoading ? "Sending command..." : light ? "● LED 20W · On" : "○ Off"}
                   </p>
                 </div>
               </div>
@@ -302,25 +302,25 @@ export default function SensorsPage() {
             <div className="rounded-xl p-4" style={{ background: "var(--bg-base)", border: "1px solid var(--border-subtle)" }}>
               <div className="flex items-center gap-2 mb-3">
                 <Timer size={12} style={{ color: "#60A5FA" }} />
-                <p className="text-xs font-semibold" style={{ color: "var(--text-primary)" }}>Hẹn giờ tưới</p>
+                <p className="text-xs font-semibold" style={{ color: "var(--text-primary)" }}>Irrigation Timer</p>
               </div>
               <div className="grid grid-cols-2 gap-2">
                 <div>
-                  <label className="text-[10px]" style={{ color: "var(--text-muted)" }}>Giờ bắt đầu</label>
+                  <label className="text-[10px]" style={{ color: "var(--text-muted)" }}>Start Time</label>
                   <input type="time" defaultValue="06:00" className="dark-input mt-1 w-full text-xs" />
                 </div>
                 <div>
-                  <label className="text-[10px]" style={{ color: "var(--text-muted)" }}>Thời lượng</label>
+                  <label className="text-[10px]" style={{ color: "var(--text-muted)" }}>Duration</label>
                   <select className="dark-select mt-1 w-full text-xs">
-                    <option>5 phút</option>
-                    <option>10 phút</option>
-                    <option>15 phút</option>
+                    <option>5 min</option>
+                    <option>10 min</option>
+                    <option>15 min</option>
                   </select>
                 </div>
               </div>
               <button className="btn-emerald mt-3 w-full justify-center gap-2 text-xs">
                 <CheckCircle size={11} />
-                Lưu lịch tưới
+                Save Schedule
               </button>
             </div>
 
@@ -331,7 +331,7 @@ export default function SensorsPage() {
             >
               <Zap size={10} style={{ color: "var(--emerald-500)" }} />
               <span className="font-mono text-[10px]" style={{ color: "var(--text-muted)" }}>
-                {lastCmd ? `Lệnh cuối: ${lastCmd}` : `garden/${deviceId}/commands`}
+                {lastCmd ? `Last command: ${lastCmd}` : `garden/${deviceId}/commands`}
               </span>
             </div>
           </div>
@@ -342,21 +342,21 @@ export default function SensorsPage() {
       <div className="overflow-hidden rounded-2xl" style={{ background: "var(--bg-elevated)", border: "1px solid var(--border-subtle)" }}>
         <div className="flex items-center gap-2 px-5 py-3.5" style={{ borderBottom: "1px solid var(--border-subtle)" }}>
           <SlidersHorizontal size={13} style={{ color: "var(--text-muted)" }} />
-          <span className="text-sm font-semibold" style={{ color: "var(--text-primary)" }}>Ngưỡng Cảnh Báo</span>
+          <span className="text-sm font-semibold" style={{ color: "var(--text-primary)" }}>Alert Thresholds</span>
           <span className="ml-auto rounded-full px-2.5 py-0.5 font-mono text-[10px]" style={{ background: "rgba(16,185,129,0.10)", color: "var(--emerald-400)" }}>
             FCM Push Notification
           </span>
         </div>
         <div className="grid gap-6 p-5 sm:grid-cols-2 lg:grid-cols-4">
-          <ThresholdRow label="TDS"       icon={Droplets}     color="var(--blue-400)"    min={0}  max={3000} minVal={800}  maxVal={1800} unit=" ppm" />
-          <ThresholdRow label="pH"        icon={FlaskConical}  color="var(--emerald-400)" min={0}  max={14}   minVal={5.5}  maxVal={7.0}  unit=""    />
-          <ThresholdRow label="Nhiệt độ" icon={Droplets}     color="var(--gold-400)"    min={0}  max={50}   minVal={18}   maxVal={32}   unit="°C"  />
-          <ThresholdRow label="Mực nước" icon={Droplets}     color="#60A5FA"            min={0}  max={100}  minVal={20}   maxVal={100}  unit="%"   />
+          <ThresholdRow label="TDS"          icon={Droplets}     color="var(--blue-400)"    min={0}  max={3000} minVal={800}  maxVal={1800} unit=" ppm" />
+          <ThresholdRow label="pH"           icon={FlaskConical}  color="var(--emerald-400)" min={0}  max={14}   minVal={5.5}  maxVal={7.0}  unit=""    />
+          <ThresholdRow label="Temperature"  icon={Droplets}     color="var(--gold-400)"    min={0}  max={50}   minVal={18}   maxVal={32}   unit="°C"  />
+          <ThresholdRow label="Water Level"  icon={Droplets}     color="#60A5FA"            min={0}  max={100}  minVal={20}   maxVal={100}  unit="%"   />
         </div>
         <div className="flex justify-end px-5 pb-5">
           <button className="btn-emerald gap-2 text-xs">
             <CheckCircle size={12} />
-            Lưu ngưỡng cảnh báo
+            Save Thresholds
           </button>
         </div>
       </div>

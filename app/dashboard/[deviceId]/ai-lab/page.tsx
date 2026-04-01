@@ -31,12 +31,12 @@ type DiagDetail = DiagRecord;
 
 const STATUS_CFG = {
   healthy: { icon: CheckCircle,   color: "var(--emerald-400)", bg: "rgba(16,185,129,0.08)", border: "rgba(16,185,129,0.20)", label: "Healthy"   },
-  warning: { icon: AlertTriangle, color: "var(--gold-400)",    bg: "rgba(245,158,11,0.08)", border: "rgba(245,158,11,0.20)", label: "Cảnh báo"  },
-  danger:  { icon: XCircle,       color: "#F87171",             bg: "rgba(239,68,68,0.08)",  border: "rgba(239,68,68,0.20)",  label: "Nguy hiểm" },
+  warning: { icon: AlertTriangle, color: "var(--gold-400)",    bg: "rgba(245,158,11,0.08)", border: "rgba(245,158,11,0.20)", label: "Warning"   },
+  danger:  { icon: XCircle,       color: "#F87171",             bg: "rgba(239,68,68,0.08)",  border: "rgba(239,68,68,0.20)",  label: "Danger"    },
 };
 
-const FILTERS = ["Tất cả", "healthy", "warning", "danger"] as const;
-const FILTER_LABELS: Record<string, string> = { "Tất cả": "Tất cả", healthy: "Healthy", warning: "Cảnh báo", danger: "Nguy hiểm" };
+const FILTERS = ["All", "healthy", "warning", "danger"] as const;
+const FILTER_LABELS: Record<string, string> = { "All": "All", healthy: "Healthy", warning: "Warning", danger: "Danger" };
 
 function fmt(iso: string) {
   const d = new Date(iso);
@@ -104,8 +104,8 @@ function DetailModal({ id, deviceId, onClose }: { id: string; deviceId: string; 
             {[
               { label: "TDS",   value: s.tds,         unit: "ppm", icon: Droplets,     color: "var(--blue-400)"    },
               { label: "pH",    value: s.ph,           unit: "",    icon: FlaskConical,  color: "var(--emerald-400)" },
-              { label: "Nhiệt", value: s.temperature,  unit: "°C",  icon: Thermometer,  color: "var(--gold-400)"    },
-              { label: "Ẩm",    value: s.humidity,     unit: "%",   icon: Wind,         color: "#60A5FA"            },
+              { label: "Temp",  value: s.temperature,  unit: "°C",  icon: Thermometer,  color: "var(--gold-400)"    },
+              { label: "Hum",   value: s.humidity,     unit: "%",   icon: Wind,         color: "#60A5FA"            },
             ].map(({ label, value, unit, icon: Icon, color }) => (
               <div key={label} className="rounded-xl p-3 text-center" style={{ background: "rgba(255,255,255,0.03)", border: "1px solid var(--border-subtle)" }}>
                 <Icon size={13} style={{ color, margin: "0 auto" }} />
@@ -118,14 +118,14 @@ function DetailModal({ id, deviceId, onClose }: { id: string; deviceId: string; 
           </div>
 
           <div className="rounded-xl p-4 space-y-2" style={{ background: cfg.bg, border: `1px solid ${cfg.border}` }}>
-            <p className="text-[10px] font-semibold uppercase tracking-wider" style={{ color: cfg.color }}>Chẩn đoán (AI + Sensor)</p>
+            <p className="text-[10px] font-semibold uppercase tracking-wider" style={{ color: cfg.color }}>Diagnosis (AI + Sensor)</p>
             <p className="text-sm font-semibold leading-relaxed" style={{ color: "var(--text-primary)" }}>
-              {detail.fusedDiagnosis || detail.topDisease || "Không phát hiện bệnh"}
+              {detail.fusedDiagnosis || detail.topDisease || "No disease detected"}
             </p>
           </div>
 
           <div className="rounded-xl p-4" style={{ background: "rgba(255,255,255,0.02)", border: "1px solid var(--border-subtle)" }}>
-            <p className="mb-2 text-[10px] font-semibold uppercase tracking-wider" style={{ color: "var(--text-muted)" }}>Khuyến nghị</p>
+            <p className="mb-2 text-[10px] font-semibold uppercase tracking-wider" style={{ color: "var(--text-muted)" }}>Recommendation</p>
             <p className="text-sm leading-relaxed" style={{ color: "var(--text-primary)" }}>{detail.recommendation}</p>
           </div>
 
@@ -166,11 +166,11 @@ export default function AILabPage() {
   const [records,    setRecords]    = useState<DiagRecord[]>([]);
   const [stats,      setStats]      = useState({ healthy: 0, warning: 0, danger: 0 });
   const [total,      setTotal]      = useState(0);
-  const [filter,     setFilter]     = useState<string>("Tất cả");
+  const [filter,     setFilter]     = useState<string>("All");
   const [selectedId, setSelectedId] = useState<string | null>(null);
 
   const fetchRecords = useCallback(async () => {
-    const status = filter === "Tất cả" ? "" : `&status=${filter}`;
+    const status = filter === "All" ? "" : `&status=${filter}`;
     const res = await fetch(`/api/devices/${deviceId}/diagnostics?limit=20${status}`);
     const data = await res.json();
     setRecords(data.records ?? []);
@@ -215,17 +215,17 @@ export default function AILabPage() {
           >
             <div className="flex items-center gap-2 px-4 py-3" style={{ borderBottom: "1px solid var(--border-subtle)" }}>
               <BarChart2 size={13} style={{ color: "var(--emerald-400)" }} />
-              <span className="text-sm font-semibold" style={{ color: "var(--text-primary)" }}>Thông số phân tích</span>
-              <span className="ml-auto font-mono text-[10px]" style={{ color: "var(--text-muted)" }}>{total} lần quét</span>
+              <span className="text-sm font-semibold" style={{ color: "var(--text-primary)" }}>Analysis Stats</span>
+              <span className="ml-auto font-mono text-[10px]" style={{ color: "var(--text-muted)" }}>{total} scans</span>
             </div>
 
             {/* 4 stat cards */}
             <div className="grid grid-cols-2 divide-x divide-y" style={{ borderColor: "var(--border-subtle)" }}>
               {[
-                { label: "Tổng phân tích", value: total,                     icon: ScanEye,      color: "var(--text-primary)",  bg: "rgba(255,255,255,0.04)" },
-                { label: "Khỏe mạnh",      value: stats.healthy,             icon: CheckCircle,  color: "var(--emerald-400)",   bg: "rgba(16,185,129,0.10)"  },
-                { label: "Cần xử lý",      value: stats.warning + stats.danger, icon: AlertTriangle, color: "var(--gold-400)", bg: "rgba(245,158,11,0.10)"  },
-                { label: "Độ chính xác TB",value: `${avgConf}%`,             icon: TrendingUp,   color: "#60A5FA",               bg: "rgba(59,130,246,0.10)"  },
+                { label: "Total Analyses",  value: total,                        icon: ScanEye,      color: "var(--text-primary)",  bg: "rgba(255,255,255,0.04)" },
+                { label: "Healthy",         value: stats.healthy,                icon: CheckCircle,  color: "var(--emerald-400)",   bg: "rgba(16,185,129,0.10)"  },
+                { label: "Needs Treatment", value: stats.warning + stats.danger, icon: AlertTriangle, color: "var(--gold-400)", bg: "rgba(245,158,11,0.10)"  },
+                { label: "Avg Accuracy",    value: `${avgConf}%`,                icon: TrendingUp,   color: "#60A5FA",               bg: "rgba(59,130,246,0.10)"  },
               ].map(({ label, value, icon: Icon, color, bg }, i) => (
                 <div key={label} className="flex items-center gap-3 px-4 py-3" style={{ borderColor: "var(--border-subtle)", borderWidth: i > 0 ? undefined : 0 }}>
                   <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-xl" style={{ background: bg }}>
@@ -247,14 +247,14 @@ export default function AILabPage() {
           >
             <div className="flex items-center gap-2">
               <Activity size={12} style={{ color: "var(--text-muted)" }} />
-              <span className="text-xs font-semibold" style={{ color: "var(--text-secondary)" }}>Tỉ lệ trạng thái</span>
+              <span className="text-xs font-semibold" style={{ color: "var(--text-secondary)" }}>Status Ratio</span>
             </div>
             {total > 0 ? (
               <div className="space-y-2.5">
                 {[
-                  { label: "Healthy",    value: stats.healthy,              color: "var(--emerald-400)", bg: "rgba(16,185,129,0.12)" },
-                  { label: "Cảnh báo",   value: stats.warning,              color: "var(--gold-400)",    bg: "rgba(245,158,11,0.12)" },
-                  { label: "Nguy hiểm",  value: stats.danger,               color: "#F87171",             bg: "rgba(239,68,68,0.12)"  },
+                  { label: "Healthy", value: stats.healthy, color: "var(--emerald-400)", bg: "rgba(16,185,129,0.12)" },
+                  { label: "Warning", value: stats.warning, color: "var(--gold-400)",    bg: "rgba(245,158,11,0.12)" },
+                  { label: "Danger",  value: stats.danger,  color: "#F87171",             bg: "rgba(239,68,68,0.12)"  },
                 ].map(({ label, value, color, bg }) => {
                   const pct = total > 0 ? Math.round((value / total) * 100) : 0;
                   return (
@@ -274,7 +274,7 @@ export default function AILabPage() {
                 })}
               </div>
             ) : (
-              <p className="text-xs" style={{ color: "var(--text-muted)" }}>Chưa có dữ liệu phân tích.</p>
+              <p className="text-xs" style={{ color: "var(--text-muted)" }}>No analysis data yet.</p>
             )}
           </div>
 
@@ -287,13 +287,13 @@ export default function AILabPage() {
             >
               <div className="flex items-center gap-2 px-4 py-2.5" style={{ background: latestCfg.bg, borderBottom: `1px solid ${latestCfg.border}` }}>
                 <latestCfg.icon size={12} style={{ color: latestCfg.color }} />
-                <span className="text-xs font-semibold" style={{ color: latestCfg.color }}>Kết quả gần nhất</span>
+                <span className="text-xs font-semibold" style={{ color: latestCfg.color }}>Latest Result</span>
                 <span className="ml-auto font-mono text-[10px]" style={{ color: "var(--text-muted)" }}>{fmt(latestRecord.capturedAt)}</span>
               </div>
               <div className="px-4 py-3 space-y-2">
                 <div className="flex items-center justify-between">
                   <span className="text-xs font-semibold" style={{ color: "var(--text-primary)" }}>
-                    {latestRecord.topDisease || "Không phát hiện bệnh"}
+                    {latestRecord.topDisease || "No disease detected"}
                   </span>
                   <span className="font-mono text-sm font-black" style={{ color: latestCfg.color }}>
                     {(latestRecord.topConfidence * 100).toFixed(0)}%
@@ -332,7 +332,7 @@ export default function AILabPage() {
           style={{ background: "var(--bg-elevated)", border: "1px solid var(--border-subtle)" }}
         >
           <ScanEye size={12} style={{ color: "var(--emerald-400)" }} />
-          <span className="text-xs font-semibold" style={{ color: "var(--text-secondary)" }}>Lịch sử phân tích</span>
+          <span className="text-xs font-semibold" style={{ color: "var(--text-secondary)" }}>Analysis History</span>
           <div className="mx-2 h-3 w-px" style={{ background: "var(--border-subtle)" }} />
           <Filter size={11} style={{ color: "var(--text-muted)" }} />
           {FILTERS.map((f) => (
@@ -351,7 +351,7 @@ export default function AILabPage() {
           ))}
           <div className="ml-auto flex items-center gap-1.5">
             <Calendar size={11} style={{ color: "var(--text-muted)" }} />
-            <span className="text-xs" style={{ color: "var(--text-muted)" }}>{total} kết quả</span>
+            <span className="text-xs" style={{ color: "var(--text-muted)" }}>{total} results</span>
           </div>
         </div>
 
@@ -360,7 +360,7 @@ export default function AILabPage() {
           <div className="flex flex-col items-center justify-center rounded-2xl py-20" style={{ background: "var(--bg-elevated)", border: "1px solid var(--border-subtle)" }}>
             <ScanEye size={28} style={{ color: "var(--border-normal)" }} />
             <p className="mt-3 text-sm" style={{ color: "var(--text-muted)" }}>
-              Chưa có kết quả. Upload ảnh ở trên để bắt đầu.
+              No results yet. Upload an image above to get started.
             </p>
           </div>
         ) : (
@@ -410,7 +410,7 @@ export default function AILabPage() {
                       )}
                     </div>
                     <p className="line-clamp-2 text-xs font-semibold leading-snug" style={{ color: "#fff" }}>
-                      {record.fusedDiagnosis || (record.topDisease ? `Phát hiện: ${record.topDisease}` : "Không phát hiện bệnh")}
+                      {record.fusedDiagnosis || (record.topDisease ? `Detected: ${record.topDisease}` : "No disease detected")}
                     </p>
                     <div className="flex items-center justify-between">
                       <span className="font-mono text-[9px]" style={{ color: "rgba(255,255,255,0.35)" }}>{fmt(record.capturedAt)}</span>

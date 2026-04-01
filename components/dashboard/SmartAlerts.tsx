@@ -44,7 +44,7 @@ const SEVERITY_STYLE = {
 };
 
 /* Mock timestamps for demo */
-const MOCK_TIMES = ["2 phút trước", "15 phút trước", "1 giờ trước", "3 giờ trước", "6 giờ trước"];
+const MOCK_TIMES = ["2 min ago", "15 min ago", "1 hour ago", "3 hours ago", "6 hours ago"];
 
 export default function SmartAlerts({ alerts }: SmartAlertsProps) {
   const items = alerts.slice(0, 5);
@@ -74,12 +74,12 @@ export default function SmartAlerts({ alerts }: SmartAlertsProps) {
               Smart Alerts
             </p>
             <p className="text-xs" style={{ color: "var(--text-muted)" }}>
-              {items.length} cảnh báo gần nhất
+              {items.length} most recent alerts
             </p>
           </div>
         </div>
 
-        <span className="badge badge-gold">{items.length} mới</span>
+        <span className="badge badge-gold">{items.length} new</span>
       </div>
 
       {/* Alert rows */}
@@ -111,7 +111,7 @@ export default function SmartAlerts({ alerts }: SmartAlertsProps) {
                     className="mt-1 font-mono text-xs"
                     style={{ color: timeColor, opacity: 0.7 }}
                   >
-                    {MOCK_TIMES[i] ?? "Vừa xong"}
+                    {MOCK_TIMES[i] ?? "Just now"}
                   </p>
                 </div>
 
@@ -133,7 +133,7 @@ export default function SmartAlerts({ alerts }: SmartAlertsProps) {
         style={{ borderTop: "1px solid var(--border-subtle)" }}
       >
         <p className="font-mono text-xs" style={{ color: "var(--text-muted)" }}>
-          {">"} Cập nhật qua MQTT WebSocket — realtime ở phase tiếp theo.
+          {">"} Updated via MQTT WebSocket — realtime in next phase.
         </p>
       </div>
     </section>

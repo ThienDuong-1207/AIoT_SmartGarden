@@ -32,66 +32,66 @@ type GuideArticle = {
 
 /* ─── Guide data ─── */
 const GUIDE_CATEGORIES: GuideCategory[] = [
-  { icon: Sprout,    label: "Cơ bản",     color: "var(--emerald-400)", bg: "rgba(34,197,94,0.10)"   },
-  { icon: Beaker,    label: "Dinh dưỡng", color: "#60A5FA",            bg: "rgba(96,165,250,0.10)"  },
-  { icon: Bug,       label: "Bệnh cây",   color: "#F87171",            bg: "rgba(248,113,113,0.10)" },
-  { icon: Lightbulb, label: "Ánh sáng",   color: "#FBBF24",            bg: "rgba(251,191,36,0.10)"  },
+  { icon: Sprout,    label: "Basics",       color: "var(--emerald-400)", bg: "rgba(34,197,94,0.10)"   },
+  { icon: Beaker,    label: "Nutrients",    color: "#60A5FA",            bg: "rgba(96,165,250,0.10)"  },
+  { icon: Bug,       label: "Plant Disease",color: "#F87171",            bg: "rgba(248,113,113,0.10)" },
+  { icon: Lightbulb, label: "Lighting",     color: "#FBBF24",            bg: "rgba(251,191,36,0.10)"  },
 ];
 
 const GUIDE_ARTICLES: GuideArticle[] = [
   {
-    category: "Cơ bản",
-    title: "Bắt đầu với thủy canh",
-    summary: "Hệ thống thủy canh cơ bản, các loại giá thể và thiết lập môi trường lý tưởng cho cây trồng.",
-    readTime: "5 phút",
+    category: "Basics",
+    title: "Getting Started with Hydroponics",
+    summary: "Basic hydroponic systems, growing media types, and setting up the ideal environment for your plants.",
+    readTime: "5 min",
     tips: [
-      "Giữ nhiệt độ nước 18–24 °C để rễ cây phát triển tốt nhất.",
-      "Thay nước bồn mỗi 7–10 ngày để tránh tích tụ muối khoáng.",
-      "pH lý tưởng cho hầu hết rau ăn lá là 5.8–6.5.",
+      "Keep water temperature at 18–24 °C for optimal root development.",
+      "Change the reservoir water every 7–10 days to prevent mineral salt buildup.",
+      "Ideal pH for most leafy greens is 5.8–6.5.",
     ],
   },
   {
-    category: "Dinh dưỡng",
-    title: "Điều chỉnh pH chính xác",
-    summary: "pH ảnh hưởng trực tiếp đến khả năng hấp thụ dinh dưỡng. Biết cách tăng/giảm pH an toàn.",
-    readTime: "8 phút",
+    category: "Nutrients",
+    title: "Precise pH Adjustment",
+    summary: "pH directly affects nutrient absorption. Learn how to safely raise and lower pH levels.",
+    readTime: "8 min",
     tips: [
-      "Dùng pH Down (axit photphoric) để giảm, pH Up (kali hydroxit) để tăng.",
-      "Thêm từng giọt nhỏ, khuấy đều và đo lại sau 5 phút.",
-      "Đo pH vào cùng một thời điểm trong ngày để so sánh chính xác.",
+      "Use pH Down (phosphoric acid) to lower, pH Up (potassium hydroxide) to raise.",
+      "Add drop by drop, stir well, and re-measure after 5 minutes.",
+      "Measure pH at the same time each day for accurate comparisons.",
     ],
   },
   {
-    category: "Dinh dưỡng",
-    title: "Dung dịch dinh dưỡng A+B",
-    summary: "Cách pha dung dịch A+B đúng tỉ lệ, điều chỉnh TDS theo từng giai đoạn sinh trưởng.",
-    readTime: "6 phút",
+    category: "Nutrients",
+    title: "A+B Nutrient Solution",
+    summary: "How to mix A+B solution at the correct ratio and adjust TDS for each growth stage.",
+    readTime: "6 min",
     tips: [
-      "Giai đoạn mầm: TDS 400–600 ppm. Tăng dần lên 1000–1400 ppm khi cây trưởng thành.",
-      "Pha A trước, sau đó mới pha B vào bồn nước (không pha chung trong cùng 1 bình).",
-      "Dung dịch màu nâu hoặc có mùi hôi → thay hoàn toàn ngay.",
+      "Seedling stage: TDS 400–600 ppm. Gradually increase to 1000–1400 ppm at maturity.",
+      "Mix Part A first, then add Part B into the reservoir (never mix them in the same bottle).",
+      "Brown solution or foul smell → replace completely right away.",
     ],
   },
   {
-    category: "Bệnh cây",
-    title: "Nhận biết bệnh lá phổ biến",
-    summary: "Vàng lá, đốm nâu, lá cong — mỗi triệu chứng chỉ ra một vấn đề khác nhau.",
-    readTime: "10 phút",
+    category: "Plant Disease",
+    title: "Identifying Common Leaf Diseases",
+    summary: "Yellow leaves, brown spots, curled leaves — each symptom points to a different problem.",
+    readTime: "10 min",
     tips: [
-      "Lá vàng đều từ dưới lên → thiếu đạm (N), tăng TDS hoặc thêm dung dịch.",
-      "Đốm nâu viền vàng → bệnh nấm, giảm độ ẩm không khí và tăng thông gió.",
-      "Lá cong vào trong → mất nước hoặc nhiệt độ quá cao (>30 °C).",
+      "Uniform yellowing from bottom up → nitrogen (N) deficiency, increase TDS or add solution.",
+      "Brown spots with yellow edges → fungal disease, reduce air humidity and improve ventilation.",
+      "Inward-curling leaves → dehydration or temperature too high (>30 °C).",
     ],
   },
   {
-    category: "Ánh sáng",
-    title: "Tối ưu grow light",
-    summary: "Loại đèn, khoảng cách và lịch chiếu sáng phù hợp cho từng loại cây thủy canh.",
-    readTime: "7 phút",
+    category: "Lighting",
+    title: "Optimizing Grow Lights",
+    summary: "Light types, distances, and schedules suited for different hydroponic plants.",
+    readTime: "7 min",
     tips: [
-      "Đèn LED full-spectrum: cách mặt cây 20–40 cm tuỳ công suất.",
-      "Rau ăn lá cần 14–16 giờ sáng/ngày. Cây ăn quả cần 18 giờ giai đoạn sinh dưỡng.",
-      "Tắt đèn hoàn toàn 6–8 tiếng để cây có chu kỳ tối.",
+      "Full-spectrum LED: position 20–40 cm above canopy depending on wattage.",
+      "Leafy greens need 14–16 hours of light/day. Fruiting plants need 18 hours in vegetative stage.",
+      "Turn lights off completely for 6–8 hours to give plants a dark cycle.",
     ],
   },
 ];
@@ -114,24 +114,24 @@ const GROQ_MODELS = [
 const INITIAL_MESSAGES: Message[] = [
   {
     role: "assistant",
-    content: "Xin chào! Tôi là **Plant Doctor AI**.\n\nNhập API key để bắt đầu. Gợi ý:\n- **Groq** (groq.com/keys) — nhanh nhất ⚡, miễn phí\n- **OpenRouter** (openrouter.ai/keys) — nhiều model\n- **Ollama** — chạy local, không cần key\n\nTôi sẽ tư vấn về:\n- Chẩn đoán bệnh lá & thiếu dinh dưỡng\n- Điều chỉnh pH, TDS tối ưu\n- Lịch chăm sóc cây thủy canh",
-    timestamp: new Date().toLocaleTimeString("vi-VN", { hour: "2-digit", minute: "2-digit" }),
+    content: "Hello! I'm **Plant Doctor AI**.\n\nEnter an API key to get started. Options:\n- **Groq** (groq.com/keys) — fastest ⚡, free\n- **OpenRouter** (openrouter.ai/keys) — many models\n- **Ollama** — runs locally, no key needed\n\nI can help you with:\n- Diagnosing leaf diseases & nutrient deficiencies\n- Optimizing pH and TDS levels\n- Hydroponic plant care schedules",
+    timestamp: new Date().toLocaleTimeString("en-US", { hour: "2-digit", minute: "2-digit" }),
   },
 ];
 
 const SUGGESTIONS = [
-  "Cây bị vàng lá phải làm gì?",
-  "TDS 1150 ppm có ổn không?",
-  "Làm thế nào để điều chỉnh pH xuống 6.0?",
-  "Khi nào cần thay nước bồn thủy canh?",
+  "What should I do about yellowing leaves?",
+  "Is TDS 1150 ppm okay?",
+  "How do I adjust pH down to 6.0?",
+  "When should I change the hydroponic reservoir water?",
 ];
 
 const SENSOR_CONTEXT = [
-  { label: "TDS",      value: "1150 ppm", icon: Droplets,     color: "#60A5FA"            },
-  { label: "pH",       value: "6.2",      icon: FlaskConical,  color: "var(--emerald-400)" },
-  { label: "Nhiệt độ", value: "24.3°C",   icon: Thermometer,  color: "#FBBF24"            },
-  { label: "Độ ẩm",   value: "68%",      icon: Wind,          color: "#60A5FA"            },
-  { label: "Ánh sáng", value: "ON",       icon: Sun,           color: "#FBBF24"            },
+  { label: "TDS",         value: "1150 ppm", icon: Droplets,     color: "#60A5FA"            },
+  { label: "pH",          value: "6.2",      icon: FlaskConical,  color: "var(--emerald-400)" },
+  { label: "Temperature", value: "24.3°C",   icon: Thermometer,  color: "#FBBF24"            },
+  { label: "Humidity",    value: "68%",      icon: Wind,          color: "#60A5FA"            },
+  { label: "Light",       value: "ON",       icon: Sun,           color: "#FBBF24"            },
 ];
 
 function formatContent(text: string) {
@@ -172,7 +172,7 @@ function GuideCard({ article, open, onToggle }: {
             <span className="rounded-full px-1.5 py-0.5 font-mono text-[9px] font-semibold" style={{ background: cat.bg, color: cat.color }}>
               {article.category}
             </span>
-            <span className="text-[9px]" style={{ color: "var(--text-muted)" }}>{article.readTime} đọc</span>
+            <span className="text-[9px]" style={{ color: "var(--text-muted)" }}>{article.readTime} read</span>
           </div>
           <p className="text-xs font-semibold truncate" style={{ color: "var(--text-primary)" }}>
             {article.title}
@@ -211,7 +211,7 @@ function GuideCard({ article, open, onToggle }: {
 
 /* ─── Main Page ─── */
 export default function PlantDoctorPage() {
-  const [catFilter, setCatFilter] = useState("Tất cả");
+  const [catFilter, setCatFilter] = useState("All");
   const [openGuide, setOpenGuide] = useState<string | null>(null);
 
   const [endpoint, setEndpoint] = useState(() =>
@@ -278,10 +278,9 @@ export default function PlantDoctorPage() {
   async function handleSend(text = input) {
     const trimmed = text.trim();
     if (!trimmed || loading) return;
-    // Groq key ở server — không cần check. OpenRouter cần user nhập key.
-    if (!isLocal && !isGroq && !apiKey.trim()) { setKeyPanelOpen(true); setApiError("Vui lòng nhập OpenRouter API key trước."); return; }
+    if (!isLocal && !isGroq && !apiKey.trim()) { setKeyPanelOpen(true); setApiError("Please enter your OpenRouter API key first."); return; }
 
-    const now = new Date().toLocaleTimeString("vi-VN", { hour: "2-digit", minute: "2-digit" });
+    const now = new Date().toLocaleTimeString("en-US", { hour: "2-digit", minute: "2-digit" });
     const userMsg: Message = { role: "user", content: trimmed, timestamp: now };
     setMessages((prev) => [...prev, userMsg]);
     setInput("");
@@ -289,8 +288,8 @@ export default function PlantDoctorPage() {
     setApiError("");
 
     const systemPrompt =
-      `Bạn là Plant Doctor AI — chuyên gia thủy canh. Trả lời bằng tiếng Việt, ngắn gọn, thực tiễn.\n` +
-      `Dữ liệu sensor hiện tại: ${buildSensorContextString()}.`;
+      `You are Plant Doctor AI — a hydroponic expert. Respond in English, concisely and practically.\n` +
+      `Current sensor data: ${buildSensorContextString()}.`;
 
     const history = [...messages, userMsg]
       .filter((m) => m !== INITIAL_MESSAGES[0])
@@ -334,18 +333,18 @@ export default function PlantDoctorPage() {
       }
 
       const data = await res.json() as { choices?: { message?: { content?: string } }[] };
-      const reply = data?.choices?.[0]?.message?.content ?? "Không có phản hồi từ AI.";
-      setMessages((prev) => [...prev, { role: "assistant", content: reply, timestamp: new Date().toLocaleTimeString("vi-VN", { hour: "2-digit", minute: "2-digit" }) }]);
+      const reply = data?.choices?.[0]?.message?.content ?? "No response from AI.";
+      setMessages((prev) => [...prev, { role: "assistant", content: reply, timestamp: new Date().toLocaleTimeString("en-US", { hour: "2-digit", minute: "2-digit" }) }]);
     } catch (err: unknown) {
-      const message = err instanceof Error ? err.message : "Lỗi không xác định";
-      setApiError(`Lỗi API: ${message}`);
-      setMessages((prev) => [...prev, { role: "assistant", content: `⚠️ **Không thể kết nối AI.**\n${message}`, timestamp: now }]);
+      const message = err instanceof Error ? err.message : "Unknown error";
+      setApiError(`API Error: ${message}`);
+      setMessages((prev) => [...prev, { role: "assistant", content: `⚠️ **Unable to connect to AI.**\n${message}`, timestamp: now }]);
     } finally {
       setLoading(false);
     }
   }
 
-  const filteredGuides = catFilter === "Tất cả"
+  const filteredGuides = catFilter === "All"
     ? GUIDE_ARTICLES
     : GUIDE_ARTICLES.filter((a) => a.category === catFilter);
 
@@ -360,12 +359,12 @@ export default function PlantDoctorPage() {
         {/* Header */}
         <div className="flex items-center gap-2 px-4 py-3.5" style={{ borderBottom: "1px solid var(--border-subtle)" }}>
           <BookOpen size={13} style={{ color: "var(--emerald-400)" }} />
-          <span className="text-sm font-semibold" style={{ color: "var(--text-primary)" }}>Hướng dẫn</span>
+          <span className="text-sm font-semibold" style={{ color: "var(--text-primary)" }}>Guides</span>
         </div>
 
         {/* Category filter */}
         <div className="flex flex-wrap gap-1.5 px-3 py-3" style={{ borderBottom: "1px solid var(--border-subtle)" }}>
-          {["Tất cả", ...GUIDE_CATEGORIES.map((c) => c.label)].map((c) => {
+          {["All", ...GUIDE_CATEGORIES.map((c) => c.label)].map((c) => {
             const cat    = GUIDE_CATEGORIES.find((gc) => gc.label === c);
             const active = catFilter === c;
             return (
@@ -401,14 +400,14 @@ export default function PlantDoctorPage() {
         {/* Ideal values footer */}
         <div className="px-3 py-3" style={{ borderTop: "1px solid var(--border-subtle)" }}>
           <p className="mb-2 font-mono text-[9px] font-semibold uppercase tracking-wider" style={{ color: "var(--text-muted)" }}>
-            Giá trị lý tưởng
+            Ideal Values
           </p>
           <div className="grid grid-cols-2 gap-1.5">
             {[
-              { label: "pH",        range: "5.8–6.5",      color: "var(--emerald-400)" },
-              { label: "TDS",       range: "800–1400 ppm",  color: "#60A5FA" },
-              { label: "Nhiệt độ", range: "18–26°C",       color: "#FBBF24" },
-              { label: "Độ ẩm KK", range: "60–80%",        color: "#60A5FA" },
+              { label: "pH",          range: "5.8–6.5",      color: "var(--emerald-400)" },
+              { label: "TDS",         range: "800–1400 ppm",  color: "#60A5FA" },
+              { label: "Temperature", range: "18–26°C",       color: "#FBBF24" },
+              { label: "Air Humidity",range: "60–80%",        color: "#60A5FA" },
             ].map(({ label, range, color }) => (
               <div key={label} className="rounded-lg p-2" style={{ background: "var(--bg-base)", border: "1px solid var(--border-subtle)" }}>
                 <p className="font-mono text-[10px] font-bold" style={{ color }}>{range}</p>
@@ -459,7 +458,7 @@ export default function PlantDoctorPage() {
               style={{ background: "var(--bg-base)", border: "1px solid var(--border-subtle)", color: "var(--text-secondary)" }}
             >
               <Key size={11} />
-              {apiKey ? "Đổi key" : "Nhập key"}
+              {apiKey ? "Change key" : "Enter key"}
             </button>
           </div>
         </div>
@@ -505,10 +504,10 @@ export default function PlantDoctorPage() {
               <>
                 <p className="text-xs" style={{ color: "var(--text-muted)" }}>
                   {isGroq
-                    ? <>Lấy API key tại <span className="font-mono" style={{ color: "#60A5FA" }}>console.groq.com/keys</span> — miễn phí ⚡</>
-                    : <>Lấy API key tại <span className="font-mono" style={{ color: "#60A5FA" }}>openrouter.ai/keys</span> — free tier có sẵn</>
+                    ? <>Get your API key at <span className="font-mono" style={{ color: "#60A5FA" }}>console.groq.com/keys</span> — free ⚡</>
+                    : <>Get your API key at <span className="font-mono" style={{ color: "#60A5FA" }}>openrouter.ai/keys</span> — free tier available</>
                   }
-                  {" "}Key lưu trong trình duyệt.
+                  {" "}Key is stored in your browser.
                 </p>
                 <div className="flex gap-2">
                   <div className="relative flex flex-1 items-center rounded-xl" style={{ background: "var(--bg-base)", border: "1px solid var(--border-normal)" }}>
@@ -556,7 +555,7 @@ export default function PlantDoctorPage() {
             )}
 
             <button onClick={() => { setKeyPanelOpen(false); setApiError(""); }} className="btn-emerald w-full py-1.5 text-xs">
-              Lưu
+              Save
             </button>
 
             {apiError && (
@@ -648,7 +647,7 @@ export default function PlantDoctorPage() {
               value={input}
               onChange={(e) => setInput(e.target.value)}
               onKeyDown={(e) => e.key === "Enter" && !e.shiftKey && handleSend()}
-              placeholder={isLocal || apiKey ? "Hỏi về cây trồng của bạn..." : `Nhập ${isGroq ? "Groq" : "OpenRouter"} API key để bắt đầu...`}
+              placeholder={isLocal || apiKey ? "Ask about your plants..." : `Enter your ${isGroq ? "Groq" : "OpenRouter"} API key to get started...`}
               className="flex-1 bg-transparent text-xs focus:outline-none"
               style={{ color: "var(--text-primary)" }}
             />
@@ -659,7 +658,7 @@ export default function PlantDoctorPage() {
             className="btn-emerald shrink-0 gap-2 px-4 py-2.5 text-xs"
           >
             <Send size={12} />
-            Gửi
+            Send
           </button>
         </div>
       </div>

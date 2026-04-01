@@ -110,7 +110,7 @@ function Field({
             className="rounded-full px-2 py-0.5 font-mono text-[9px] font-semibold"
             style={{ background: "rgba(255,255,255,0.05)", color: "var(--text-muted)" }}
           >
-            Tự động
+            Auto
           </span>
         )}
       </div>
@@ -172,17 +172,17 @@ export default function UserSettingsPage() {
           {"// USER SETTINGS"}
         </p>
         <h1 className="text-3xl font-bold" style={{ color: "var(--text-primary)" }}>
-          Cài đặt tài khoản
+          Account Settings
         </h1>
         <p className="mt-1 text-sm" style={{ color: "var(--text-secondary)" }}>
-          Quản lý hồ sơ, thông báo và bảo mật tài khoản của bạn.
+          Manage your profile, notifications, and account security.
         </p>
       </div>
 
       {/* ══════════════════════════════
           PROFILE
       ══════════════════════════════ */}
-      <Section icon={User} iconColor="var(--emerald-400)" title="Hồ sơ cá nhân">
+      <Section icon={User} iconColor="var(--emerald-400)" title="Profile">
         {/* Avatar */}
         <div className="mb-6 flex items-center gap-5">
           <div className="relative">
@@ -225,7 +225,7 @@ export default function UserSettingsPage() {
               className="mt-2 text-xs font-semibold transition-colors"
               style={{ color: "var(--emerald-400)" }}
             >
-              Đổi ảnh đại diện
+              Change avatar
             </button>
           </div>
         </div>
@@ -233,10 +233,10 @@ export default function UserSettingsPage() {
         {/* Fields */}
         <div className="grid gap-4 sm:grid-cols-2">
           <Field
-            label="Tên hiển thị"
+            label="Display name"
             value={profileDisplayName}
             onChange={setDisplayName}
-            placeholder="Nhập tên của bạn"
+            placeholder="Enter your name"
             icon={User}
           />
           <Field
@@ -246,28 +246,28 @@ export default function UserSettingsPage() {
             readOnly
           />
           <Field
-            label="Số điện thoại"
+            label="Phone number"
             value={phone}
             onChange={setPhone}
-            placeholder="Nhập số điện thoại"
+            placeholder="Enter phone number"
             icon={Phone}
           />
           <Field
-            label="Vị trí"
+            label="Location"
             value={location}
             onChange={setLocation}
-            placeholder="Nhập thành phố, quốc gia"
+            placeholder="Enter city, country"
             icon={MapPin}
           />
           <div className="sm:col-span-2">
             <label className="mb-1.5 block text-xs font-semibold" style={{ color: "var(--text-muted)" }}>
-              Giới thiệu
+              Bio
             </label>
             <textarea
               value={bio}
               onChange={(e) => setBio(e.target.value)}
               rows={2}
-              placeholder="Viết vài dòng về bạn..."
+              placeholder="Write a few lines about yourself..."
               className="w-full resize-none rounded-xl px-4 py-2.5 text-xs focus:outline-none"
               style={{
                 background: "var(--bg-overlay)",
@@ -282,22 +282,22 @@ export default function UserSettingsPage() {
       {/* ══════════════════════════════
           NOTIFICATIONS
       ══════════════════════════════ */}
-      <Section icon={Bell} iconColor="#FBBF24" title="Thông báo">
+      <Section icon={Bell} iconColor="#FBBF24" title="Notifications">
         <div className="space-y-0 divide-y" style={{ borderColor: "var(--border-subtle)" }}>
           {[
             {
               icon: Smartphone, label: "Push Notification",
-              desc: "Nhận cảnh báo tức thì trên điện thoại (Firebase FCM)",
+              desc: "Receive instant alerts on your phone (Firebase FCM)",
               on: pushOn, set: setPushOn, color: "var(--emerald-400)",
             },
             {
               icon: Mail, label: "Email Alert",
-              desc: "Báo cáo hàng ngày và cảnh báo khẩn cấp qua email",
+              desc: "Daily reports and emergency alerts via email",
               on: emailOn, set: setEmailOn, color: "#60A5FA",
             },
             {
               icon: Phone, label: "SMS Alert",
-              desc: "Tin nhắn SMS khi xảy ra sự cố nghiêm trọng",
+              desc: "SMS messages when a critical incident occurs",
               on: smsOn, set: setSmsOn, color: "#FBBF24",
             },
           ].map(({ icon: Icon, label, desc, on, set, color }) => (
@@ -324,11 +324,11 @@ export default function UserSettingsPage() {
           className="mt-4 rounded-xl p-4 space-y-3"
           style={{ background: "rgba(255,255,255,0.02)", border: "1px solid var(--border-subtle)" }}
         >
-          <p className="text-xs font-semibold" style={{ color: "var(--text-secondary)" }}>Loại cảnh báo</p>
+          <p className="text-xs font-semibold" style={{ color: "var(--text-secondary)" }}>Alert types</p>
           {[
-            { label: "AI phân tích bệnh cây",  desc: "Kết quả YOLOv8 mỗi lần chụp ảnh",   on: aiAlertOn,     set: setAiAlertOn     },
-            { label: "Sensor vượt ngưỡng",      desc: "pH, TDS, nhiệt độ, mực nước",         on: sensorAlertOn, set: setSensorAlertOn },
-            { label: "Báo cáo hàng tuần",       desc: "Tổng hợp tình trạng cây mỗi tuần",   on: weeklyReport,  set: setWeeklyReport  },
+            { label: "AI plant disease analysis", desc: "YOLOv8 results for each photo taken",    on: aiAlertOn,     set: setAiAlertOn     },
+            { label: "Sensor threshold exceeded",  desc: "pH, TDS, temperature, water level",     on: sensorAlertOn, set: setSensorAlertOn },
+            { label: "Weekly report",              desc: "Weekly summary of plant health status", on: weeklyReport,  set: setWeeklyReport  },
           ].map(({ label, desc, on, set }) => (
             <div key={label} className="flex items-center justify-between">
               <div>
@@ -344,7 +344,7 @@ export default function UserSettingsPage() {
       {/* ══════════════════════════════
           SECURITY
       ══════════════════════════════ */}
-      <Section icon={Shield} iconColor="#60A5FA" title="Bảo mật">
+      <Section icon={Shield} iconColor="#60A5FA" title="Security">
         <div className="space-y-4">
           {/* Google OAuth note */}
           <div
@@ -353,8 +353,8 @@ export default function UserSettingsPage() {
           >
             <Globe size={14} style={{ color: "#60A5FA", flexShrink: 0 }} />
             <p className="text-xs" style={{ color: "var(--text-secondary)" }}>
-              Tài khoản đăng nhập qua <span style={{ color: "#60A5FA" }}>Google OAuth</span>.
-              Đổi mật khẩu trực tiếp tại tài khoản Google của bạn.
+              Account signed in via <span style={{ color: "#60A5FA" }}>Google OAuth</span>.
+              Change your password directly in your Google account.
             </p>
           </div>
 
@@ -362,7 +362,7 @@ export default function UserSettingsPage() {
           <div className="space-y-3 opacity-40 pointer-events-none select-none">
             <div>
               <label className="mb-1.5 block text-xs font-semibold" style={{ color: "var(--text-muted)" }}>
-                Mật khẩu hiện tại
+                Current password
               </label>
               <div
                 className="flex items-center gap-3 rounded-xl px-4 py-2.5"
@@ -383,8 +383,8 @@ export default function UserSettingsPage() {
               </div>
             </div>
             <div className="grid gap-3 sm:grid-cols-2">
-              <Field label="Mật khẩu mới" value={newPass} onChange={setNewPass} type="password" placeholder="••••••••" icon={Key} />
-              <Field label="Xác nhận mật khẩu" value={confirmPass} onChange={setConfirmPass} type="password" placeholder="••••••••" icon={Key} />
+              <Field label="New password" value={newPass} onChange={setNewPass} type="password" placeholder="••••••••" icon={Key} />
+              <Field label="Confirm password" value={confirmPass} onChange={setConfirmPass} type="password" placeholder="••••••••" icon={Key} />
             </div>
           </div>
 
@@ -395,7 +395,7 @@ export default function UserSettingsPage() {
       <div className="flex justify-end pb-8">
         <button onClick={handleSave} className="btn-emerald gap-2">
           {saved ? <CheckCircle size={14} /> : <Save size={14} />}
-          {saved ? "Đã lưu!" : "Lưu thay đổi"}
+          {saved ? "Saved!" : "Save changes"}
         </button>
       </div>
     </div>

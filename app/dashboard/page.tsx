@@ -15,9 +15,9 @@ type DeviceView = {
 };
 
 const MOCK_DEVICES: DeviceView[] = [
-  { _id: "mock-1", deviceId: "SGP-2024-001", name: "Chậu Húng Quế",   plantType: "Húng quế", isOnline: true,  image: "/images/chaucay.webp" },
-  { _id: "mock-2", deviceId: "SGP-2024-002", name: "Rau Cải Nhà Bếp", plantType: "Cải xanh", isOnline: true,  image: "/images/chau1.png"    },
-  { _id: "mock-3", deviceId: "SGP-2024-003", name: "Chậu Dâu Tây",    plantType: "Dâu tây",  isOnline: false, image: "/images/chau2.png"    },
+  { _id: "mock-1", deviceId: "SGP-2024-001", name: "Basil Pot",      plantType: "Basil",       isOnline: true,  image: "/images/chaucay.webp" },
+  { _id: "mock-2", deviceId: "SGP-2024-002", name: "Kitchen Greens", plantType: "Mustard green", isOnline: true,  image: "/images/chau1.png"    },
+  { _id: "mock-3", deviceId: "SGP-2024-003", name: "Strawberry Pot", plantType: "Strawberry",  isOnline: false, image: "/images/chau2.png"    },
 ];
 
 async function getDevices(userId: string): Promise<DeviceView[]> {
@@ -39,16 +39,16 @@ async function getDevices(userId: string): Promise<DeviceView[]> {
 
 function getGreeting() {
   const hour = new Date().getHours();
-  if (hour < 12) return "Chào buổi sáng";
-  if (hour < 18) return "Chào buổi chiều";
-  return "Chào buổi tối";
+  if (hour < 12) return "Good morning";
+  if (hour < 18) return "Good afternoon";
+  return "Good evening";
 }
 
 export default async function DashboardPage() {
   const session = await getServerSession(authOptions);
   const userId  = session?.user?.id;
   const devices = userId ? await getDevices(userId) : MOCK_DEVICES;
-  const firstName = session?.user?.name?.split(" ").at(-1) ?? "bạn";
+  const firstName = session?.user?.name?.split(" ").at(-1) ?? "there";
 
   const onlineCount  = devices.filter((d) => d.isOnline).length;
   const offlineCount = devices.length - onlineCount;
@@ -73,19 +73,19 @@ export default async function DashboardPage() {
             </p>
           </div>
           <h1 className="text-2xl font-black" style={{ color: "var(--text-primary)" }}>
-            Vườn của bạn
+            Your Garden
           </h1>
           <p className="mt-1 text-sm" style={{ color: "var(--text-muted)" }}>
-            {onlineCount}/{devices.length} thiết bị đang hoạt động
+            {onlineCount}/{devices.length} devices online
           </p>
         </div>
 
         <button
           className="btn-ghost shrink-0 gap-2 text-sm"
-          title="Thêm thiết bị bằng activation code"
+          title="Add device with activation code"
         >
           <Plus size={14} />
-          Thêm thiết bị
+          Add Device
         </button>
       </div>
 
@@ -93,7 +93,7 @@ export default async function DashboardPage() {
       {devices.length > 0 && (
         <div className="grid grid-cols-2 gap-3 sm:grid-cols-4">
           {[
-            { icon: Cpu,     label: "Tổng thiết bị", value: devices.length, color: "var(--text-primary)",  iconBg: "rgba(255,255,255,0.06)" },
+            { icon: Cpu,     label: "Total Devices", value: devices.length, color: "var(--text-primary)",  iconBg: "rgba(255,255,255,0.06)" },
             { icon: Wifi,    label: "Online",          value: onlineCount,    color: "var(--emerald-400)",   iconBg: "rgba(16,185,129,0.10)"  },
             { icon: WifiOff, label: "Offline",          value: offlineCount,   color: offlineCount > 0 ? "#F87171" : "var(--text-muted)", iconBg: offlineCount > 0 ? "rgba(239,68,68,0.10)" : "rgba(255,255,255,0.04)" },
             { icon: Activity, label: "Uptime",          value: `${uptimePct}%`, color: "var(--gold-400)",   iconBg: "rgba(245,158,11,0.10)"  },
@@ -118,7 +118,7 @@ export default async function DashboardPage() {
       {/* ── Device grid ── */}
       <div>
         <p className="mb-3 text-xs font-semibold uppercase tracking-wider" style={{ color: "var(--text-muted)" }}>
-          Thiết bị · {devices.length}
+          Devices · {devices.length}
         </p>
 
         {devices.length === 0 ? (
@@ -129,9 +129,9 @@ export default async function DashboardPage() {
             <div className="mb-5 flex h-14 w-14 items-center justify-center rounded-2xl" style={{ background: "rgba(16,185,129,0.08)" }}>
               <Cpu size={24} style={{ color: "var(--emerald-400)" }} />
             </div>
-            <p className="font-semibold" style={{ color: "var(--text-primary)" }}>Chưa có thiết bị nào</p>
+            <p className="font-semibold" style={{ color: "var(--text-primary)" }}>No devices yet</p>
             <p className="mt-2 max-w-xs text-sm" style={{ color: "var(--text-muted)" }}>
-              Dùng activation code để liên kết Smart Pot với tài khoản của bạn.
+              Use an activation code to link your Smart Pot to your account.
             </p>
             <p
               className="mt-4 rounded-lg px-4 py-2 font-mono text-xs"
