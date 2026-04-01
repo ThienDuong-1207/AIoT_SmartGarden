@@ -1,70 +1,90 @@
 import type { NextAuthOptions } from "next-auth";
 import GoogleProvider from "next-auth/providers/google";
 import CredentialsProvider from "next-auth/providers/credentials";
+import type { Provider } from "next-auth/providers";
 import bcrypt from "bcryptjs";
 import UserModel from "@/models/User";
 import { dbConnect } from "@/lib/mongodb";
 
+const googleClientId = process.env.GOOGLE_CLIENT_ID;
+const googleClientSecret = process.env.GOOGLE_CLIENT_SECRET;
+const enableGoogle = Boolean(googleClientId && googleClientSecret);
+
+async function ensureDbConnection() {
+  try {
+    await dbConnect();
+    return true;
+  } catch (error) {
+    console.error("[auth] Database connection failed", error);
+    return false;
+  }
+}
+
+const providers: Provider[] = [
+  ...(enableGoogle
+    ? [
+        GoogleProvider({
+          clientId: googleClientId as string,
+          clientSecret: googleClientSecret as string,
+        }),
+      ]
+    : []),
+  CredentialsProvider({
+    name: "Email Login",
+    credentials: {
+      email: { label: "Email", type: "email" },
+      password: { label: "Password", type: "password" },
+    },
+    async authorize(credentials) {
+      if (!credentials?.email || !credentials?.password) {
+        throw new Error("Missing email or password");
+      }
+
+      const normalizedEmail = credentials.email.trim().toLowerCase();
+      const normalizedPassword = credentials.password.trim();
+
+      if (!(await ensureDbConnection())) {
+        throw new Error("Authentication service is not configured correctly");
+      }
+
+      const user = await UserModel.findOne({
+        email: { $regex: `^${normalizedEmail.replace(/[.*+?^${}()|[\]\\]/g, "\\$&")}$`, $options: "i" },
+      });
+      if (!user) {
+        throw new Error("Account not found");
+      }
+
+      if (user.status === "banned") {
+        throw new Error("Account is currently locked");
+      }
+
+      if (!user.password) {
+        throw new Error("Admin account has no password set");
+      }
+
+      const passwordValue = String(user.password);
+      const isBcryptHash = /^\$2[aby]\$\d{2}\$/.test(passwordValue);
+      const isPasswordValid = isBcryptHash
+        ? await bcrypt.compare(normalizedPassword, passwordValue)
+        : normalizedPassword === passwordValue;
+
+      if (!isPasswordValid) {
+        throw new Error("Incorrect password");
+      }
+
+      return {
+        id: user._id.toString(),
+        name: user.name,
+        email: user.email,
+        image: user.image,
+      };
+    },
+  }),
+];
+
 export const authOptions: NextAuthOptions = {
-  providers: [
-    GoogleProvider({
-      clientId: process.env.GOOGLE_CLIENT_ID || "",
-      clientSecret: process.env.GOOGLE_CLIENT_SECRET || "",
-    }),
-    CredentialsProvider({
-      name: "Admin Login",
-      credentials: {
-        email: { label: "Email", type: "email" },
-        password: { label: "Password", type: "password" },
-      },
-      async authorize(credentials) {
-        if (!credentials?.email || !credentials?.password) {
-          throw new Error("Missing email or password");
-        }
-
-        const normalizedEmail = credentials.email.trim().toLowerCase();
-        const normalizedPassword = credentials.password.trim();
-
-        await dbConnect();
-
-        const user = await UserModel.findOne({
-          email: { $regex: `^${normalizedEmail.replace(/[.*+?^${}()|[\]\\]/g, "\\$&")}$`, $options: "i" },
-        });
-        if (!user) {
-          throw new Error("Account not found");
-        }
-
-        if (user.role !== "admin") {
-          throw new Error("Only admin accounts can sign in this way");
-        }
-
-        if (user.status === "banned") {
-          throw new Error("Account is currently locked");
-        }
-
-        if (!user.password) {
-          throw new Error("Admin account has no password set");
-        }
-
-        const passwordValue = String(user.password);
-        const isBcryptHash = /^\$2[aby]\$\d{2}\$/.test(passwordValue);
-        const isPasswordValid = isBcryptHash
-          ? await bcrypt.compare(normalizedPassword, passwordValue)
-          : normalizedPassword === passwordValue;
-
-        if (!isPasswordValid) {
-          throw new Error("Incorrect password");
-        }
-
-        return {
-          id: user._id.toString(),
-          name: user.name,
-          email: user.email,
-          image: user.image,
-        };
-      },
-    }),
-  ],
+  debug: process.env.NODE_ENV === "development",
+  providers,
   session: {
     strategy: "jwt",
   },
@@ -77,11 +97,17 @@ export const authOptions: NextAuthOptions = {
         return true;
       }
 
+      if (!enableGoogle && account?.provider === "google") {
+        return false;
+      }
+
       if (!user.email || !user.name) {
         return false;
       }
 
-      await dbConnect();
+      if (!(await ensureDbConnection())) {
+        return false;
+      }
 
       const existingUser = await UserModel.findOne({ email: user.email });
 
@@ -115,7 +141,10 @@ export const authOptions: NextAuthOptions = {
         token.provider = account.provider;
       }
 
-      await dbConnect();
+      if (!(await ensureDbConnection())) {
+        return token;
+      }
+
       const dbUser = await UserModel.findOne({ email: token.email });
       if (!dbUser) {
         return token;

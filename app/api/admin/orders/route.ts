@@ -4,6 +4,9 @@ import { authOptions } from "@/lib/auth";
 import OrderModel from "@/models/Order";
 import { dbConnect } from "@/lib/mongodb";
 
+export const dynamic = "force-dynamic";
+export const revalidate = 0;
+
 export async function GET() {
   const session = await getServerSession(authOptions);
   if (!session || session.user?.role !== "admin") {
@@ -17,7 +20,14 @@ export async function GET() {
     .sort({ createdAt: -1 })
     .lean();
 
-  return NextResponse.json({ data: orders });
+  return NextResponse.json(
+    { data: orders },
+    {
+      headers: {
+        "Cache-Control": "no-store, no-cache, must-revalidate, proxy-revalidate",
+      },
+    }
+  );
 }
 
 export async function PATCH(req: Request) {

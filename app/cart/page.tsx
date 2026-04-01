@@ -32,9 +32,37 @@ export default function CartPage() {
   const shipping   = total >= 50 ? 0 : 4.99;
   const grandTotal = total + shipping;
 
-  function handleCheckout() {
-    clear();
-    router.push("/checkout/success");
+  async function handleCheckout() {
+    try {
+      const res = await fetch("/api/orders", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          items: items.map((item) => ({ slug: item.slug, qty: item.qty })),
+        }),
+      });
+
+      const data = (await res.json()) as {
+        error?: string;
+        data?: { orderCode?: string };
+      };
+
+      if (!res.ok) {
+        alert(data.error || "Checkout failed. Please try again.");
+        return;
+      }
+
+      clear();
+      const orderCode = data.data?.orderCode;
+      if (orderCode) {
+        router.push(`/checkout/success?order=${encodeURIComponent(orderCode)}`);
+        return;
+      }
+
+      router.push("/checkout/success");
+    } catch {
+      alert("Checkout failed. Please try again.");
+    }
   }
 
   /* ── Empty state ── */
