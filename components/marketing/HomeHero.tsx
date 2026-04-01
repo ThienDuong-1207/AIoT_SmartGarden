@@ -134,7 +134,7 @@ export default function HomeHero({ isLoaded = false, shouldPlayVideo = true }: H
           opacity: 0,
         }}
       >
-        <source src="/videos/video_plant.mp4" type="video/mp4" />
+        <source src="/videos/herovideo.mp4" type="video/mp4" />
       </video>
 
       {/* Cinematic Fade Overlay */}
