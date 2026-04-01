@@ -18,8 +18,6 @@ const CommandSchema = new Schema(
     command: {
       type: String,
       enum: [
-        "light_on", "light_off",
-        "pump_on",  "pump_off",
         "capture_now",
         "reboot",
         "update_config",

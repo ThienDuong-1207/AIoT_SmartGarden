@@ -3,28 +3,9 @@
 import { useParams, useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 import { ChevronLeft, Loader2, BarChart3 } from "lucide-react";
-import PumpControl from "@/components/dashboard/PumpControl";
-import LightControl from "@/components/dashboard/LightControl";
-import WateringSchedule from "@/components/dashboard/WateringSchedule";
 import SensorCalibrationWizard from "@/components/dashboard/SensorCalibrationWizard";
 
 interface DeviceConfig {
-  pump: {
-    status: boolean;
-    schedule: Array<{ time: string; durationMinutes: number; enabled: boolean }>;
-    lastActivated?: Date;
-    activationCount?: number;
-  };
-  light: {
-    status: boolean;
-    brightness: number;
-    schedule: Array<{ startTime: string; endTime: string; brightness: number; enabled: boolean }>;
-  };
-  watering: {
-    autoMode: boolean;
-    intervalHours?: number;
-    schedule: Array<{ time: string; durationMinutes: number; enabled: boolean }>;
-  };
   sensor: {
     calibrationMode: boolean;
     calibratingType?: string | null;
@@ -34,22 +15,6 @@ interface DeviceConfig {
 
 function normalizeConfig(raw: Partial<DeviceConfig> | null | undefined): DeviceConfig {
   return {
-    pump: {
-      status: raw?.pump?.status ?? false,
-      schedule: raw?.pump?.schedule ?? [],
-      lastActivated: raw?.pump?.lastActivated,
-      activationCount: raw?.pump?.activationCount ?? 0,
-    },
-    light: {
-      status: raw?.light?.status ?? false,
-      brightness: raw?.light?.brightness ?? 100,
-      schedule: raw?.light?.schedule ?? [],
-    },
-    watering: {
-      autoMode: raw?.watering?.autoMode ?? false,
-      intervalHours: raw?.watering?.intervalHours ?? 6,
-      schedule: raw?.watering?.schedule ?? [],
-    },
     sensor: {
       calibrationMode: raw?.sensor?.calibrationMode ?? false,
       calibratingType: raw?.sensor?.calibratingType ?? null,
@@ -117,32 +82,7 @@ export default function IoTControlsPage() {
       </div>
 
       {/* Grid of Controls */}
-      <div className="grid gap-4 md:grid-cols-2">
-        {/* Pump Control */}
-        <PumpControl
-          deviceId={deviceId as string}
-          initialStatus={config.pump.status}
-          initialSchedule={config.pump.schedule}
-          onUpdate={(updated) => setConfig({ ...config, pump: updated.pump })}
-        />
-
-        {/* Light Control */}
-        <LightControl
-          deviceId={deviceId as string}
-          initialStatus={config.light.status}
-          initialBrightness={config.light.brightness}
-          initialSchedule={config.light.schedule}
-          onUpdate={(updated) => setConfig({ ...config, light: updated.light })}
-        />
-      </div>
-
-      <div className="grid gap-4 md:grid-cols-2">
-        <WateringSchedule
-          deviceId={deviceId as string}
-          initialWatering={config.watering}
-          onUpdate={(updated) => setConfig({ ...config, watering: updated.watering })}
-        />
-
+      <div className="grid gap-4 md:grid-cols-1">
         <SensorCalibrationWizard
           deviceId={deviceId as string}
           initialSensor={config.sensor}

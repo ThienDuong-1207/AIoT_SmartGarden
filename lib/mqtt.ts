@@ -142,9 +142,6 @@ async function handleMqttMessage(topic: string, message: string) {
         temp: data.temperature ?? data.temp,
         humi: data.humidity ?? data.humi,
         tds_ppm: data.tds_ppm ?? data.tds,
-        ph: data.ph,
-        light_status: data.light_status,
-        water_level: data.water_level,
         raw: data,
       });
       console.log(`[mqtt] Đã lưu DB cho: ${deviceId}`);
@@ -164,7 +161,6 @@ async function handleMqttMessage(topic: string, message: string) {
       const alerts: Array<{ deviceId: string; userId: unknown; type: string; severity: string; message: string; value?: number; threshold?: number; triggeredAt: Date }> = [];
 
       const tds = data.tds_ppm ?? data.tds;
-      const ph = data.ph;
       const temp = data.temperature ?? data.temp;
       const wl = data.water_level;
 
@@ -174,14 +170,6 @@ async function handleMqttMessage(topic: string, message: string) {
           alerts.push({ deviceId, userId: device.userId, type: "tds_low", severity: "warning", message: `Nồng độ dinh dưỡng thấp: ${tds} ppm (tối thiểu ${thresholds.tds.min} ppm)`, value: tds, threshold: thresholds.tds.min, triggeredAt: ts });
         else if (tds > thresholds.tds.max)
           alerts.push({ deviceId, userId: device.userId, type: "tds_high", severity: "warning", message: `Nồng độ dinh dưỡng cao: ${tds} ppm (tối đa ${thresholds.tds.max} ppm)`, value: tds, threshold: thresholds.tds.max, triggeredAt: ts });
-      }
-
-      // Logic Cảnh báo pH
-      if (ph != null && thresholds.ph) {
-        if (ph < thresholds.ph.min)
-          alerts.push({ deviceId, userId: device.userId, type: "ph_low", severity: "danger", message: `pH quá thấp: ${ph} (tối thiểu ${thresholds.ph.min})`, value: ph, threshold: thresholds.ph.min, triggeredAt: ts });
-        else if (ph > thresholds.ph.max)
-          alerts.push({ deviceId, userId: device.userId, type: "ph_high", severity: "danger", message: `pH quá cao: ${ph} (tối đa ${thresholds.ph.max})`, value: ph, threshold: thresholds.ph.max, triggeredAt: ts });
       }
 
       // Logic Cảnh báo Nhiệt độ

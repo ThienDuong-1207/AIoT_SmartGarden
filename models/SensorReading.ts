@@ -7,9 +7,6 @@ const SensorReadingSchema = new Schema(
     temp:         { type: Number },   // °C
     humi:         { type: Number },   // %
     tds_ppm:      { type: Number },   // ppm
-    ph:           { type: Number },
-    light_status: { type: Boolean },  // đèn bật/tắt
-    water_level:  { type: Number },   // % mực nước
     raw:          { type: Schema.Types.Mixed }, // raw payload từ ESP32
   },
   {
