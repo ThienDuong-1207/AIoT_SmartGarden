@@ -80,101 +80,109 @@ export default function ProductsClient({ products }: { products: Product[] }) {
           Filter + Sort bar (sticky)
       ══════════════════════════════════════ */}
       <div
-        className="sticky z-30"
+        className="sticky top-[72px] z-30"
         style={{
-          top: "72px",
-          background: "rgba(0, 0, 0, 0.4)",
-          backdropFilter: "blur(20px)",
-          borderBottom: "1px solid rgba(34, 211, 238, 0.1)",
+          background: "transparent",
         }}
       >
-        <div className="mx-auto flex w-full max-w-7xl items-center justify-between gap-4 overflow-x-auto px-4 py-3 md:px-8">
+        <div className="mx-auto w-full max-w-7xl px-4 py-3 md:px-8">
+          <div
+            className="flex items-center justify-between gap-4 rounded-2xl px-3 py-2.5"
+            style={{
+              background: "var(--header-bg-scrolled)",
+              backdropFilter: "blur(16px)",
+              border: "1px solid var(--header-border)",
+              boxShadow: "var(--shadow-card)",
+              overflow: "visible",
+            }}
+          >
 
-          {/* Category tabs */}
-          <div className="flex items-center gap-1.5">
-            {CATEGORIES.map(({ value, label, icon: Icon }) => {
-              const active = value === activeCategory;
-              return (
-                <button
-                  key={value}
-                  onClick={() => setActiveCategory(value)}
-                  className={`flex shrink-0 items-center gap-2 rounded-full px-4 py-1.5 text-xs font-semibold transition-all duration-300 border ${
-                    active 
-                      ? "bg-emerald-500/15 border-emerald-500/40 text-emerald-400" 
-                      : "bg-white/[0.03] border-white/10 text-slate-300 hover:text-emerald-400 hover:border-emerald-500/30"
-                  }`}
-                >
-                  <span
-                    className={`h-1.5 w-1.5 rounded-full transition-colors ${
-                      active ? "bg-emerald-400 shadow-[0_0_8px_rgba(52,211,153,0.5)]" : "bg-slate-600"
-                    }`}
-                  />
-                  <Icon size={12} className={active ? "text-emerald-400" : "text-slate-400"} />
-                  {label}
-                  <span
-                    className={`rounded-full px-1.5 py-0.5 font-mono text-[10px] transition-colors ${
-                      active ? "bg-emerald-500/20 text-emerald-400" : "bg-white/5 text-slate-500"
-                    }`}
-                  >
-                    {countOf(value)}
-                  </span>
-                </button>
-              );
-            })}
-          </div>
-
-          {/* Sort dropdown */}
-          <div className="relative shrink-0">
-            <button
-              onClick={() => setSortOpen((o) => !o)}
-              className="flex items-center gap-2 rounded-xl px-4 py-1.5 text-xs font-semibold transition-all hover:border-emerald-500/30 hover:text-emerald-400"
-              style={{
-                background: "rgba(255,255,255,0.03)",
-                border: "1px solid rgba(255,255,255,0.1)",
-                color: "var(--text-secondary)",
-              }}
-            >
-              <SlidersHorizontal size={11} />
-              {activeSortLabel}
-              <ChevronDown
-                size={11}
-                className="transition-transform duration-200"
-                style={{ transform: sortOpen ? "rotate(180deg)" : "none" }}
-              />
-            </button>
-
-            {sortOpen && (
-              <div
-                className="absolute right-0 top-full z-50 mt-2 w-44 overflow-hidden rounded-xl py-1 glass-panel"
-                style={{
-                  background: "rgba(0,0,0,0.6)",
-                  backdropFilter: "blur(16px)",
-                  border: "1px solid rgba(34, 211, 238, 0.15)",
-                  boxShadow: "0 16px 48px rgba(0,0,0,0.5)",
-                }}
-              >
-                {SORT_OPTIONS.map(({ value, label }) => (
+            {/* Category tabs */}
+            <div className="flex min-w-0 flex-1 items-center gap-1.5 overflow-x-auto pr-1">
+              {CATEGORIES.map(({ value, label, icon: Icon }) => {
+                const active = value === activeCategory;
+                return (
                   <button
                     key={value}
-                    onClick={() => { setSortBy(value); setSortOpen(false); }}
-                    className="flex w-full items-center gap-2 px-4 py-2.5 text-left text-xs transition-colors"
-                    style={{
-                      color: sortBy === value ? "var(--emerald-400)" : "var(--text-secondary)",
-                      background: sortBy === value ? "rgba(16,185,129,0.08)" : "transparent",
-                    }}
+                    onClick={() => setActiveCategory(value)}
+                    className={`flex shrink-0 items-center gap-2 rounded-full px-4 py-1.5 text-xs font-semibold transition-all duration-300 border ${
+                      active
+                        ? "bg-emerald-500/15 border-emerald-500/40 text-emerald-400"
+                        : "bg-white/[0.03] border-white/10 text-slate-300 hover:text-emerald-400 hover:border-emerald-500/30"
+                    }`}
                   >
-                    {sortBy === value && (
-                      <span
-                        className="h-1.5 w-1.5 rounded-full"
-                        style={{ background: "var(--emerald-500)", flexShrink: 0 }}
-                      />
-                    )}
-                    {sortBy !== value && <span className="h-1.5 w-1.5" />}
+                    <span
+                      className={`h-1.5 w-1.5 rounded-full transition-colors ${
+                        active ? "bg-emerald-400 shadow-[0_0_8px_rgba(52,211,153,0.5)]" : "bg-slate-600"
+                      }`}
+                    />
+                    <Icon size={12} className={active ? "text-emerald-400" : "text-slate-400"} />
                     {label}
+                    <span
+                      className={`rounded-full px-1.5 py-0.5 font-mono text-[10px] transition-colors ${
+                        active ? "bg-emerald-500/20 text-emerald-400" : "bg-white/5 text-slate-500"
+                      }`}
+                    >
+                      {countOf(value)}
+                    </span>
                   </button>
-                ))}
-              </div>
-            )}
+                );
+              })}
+            </div>
+
+            {/* Sort dropdown */}
+            <div className="relative z-[60] shrink-0">
+              <button
+                onClick={() => setSortOpen((o) => !o)}
+                className="flex items-center gap-2 rounded-xl px-4 py-1.5 text-xs font-semibold transition-all hover:border-emerald-500/30 hover:text-emerald-400"
+                style={{
+                  background: "var(--bg-elevated)",
+                  border: "1px solid var(--border-normal)",
+                  color: "var(--text-secondary)",
+                }}
+              >
+                <SlidersHorizontal size={11} />
+                {activeSortLabel}
+                <ChevronDown
+                  size={11}
+                  className="transition-transform duration-200"
+                  style={{ transform: sortOpen ? "rotate(180deg)" : "none" }}
+                />
+              </button>
+
+              {sortOpen && (
+                <div
+                  className="absolute right-0 top-full z-[80] mt-2 max-h-56 w-52 overflow-y-auto rounded-xl py-1 glass-panel"
+                  style={{
+                    background: "var(--bg-elevated)",
+                    backdropFilter: "blur(16px)",
+                    border: "1px solid var(--border-normal)",
+                    boxShadow: "var(--shadow-elevated)",
+                  }}
+                >
+                  {SORT_OPTIONS.map(({ value, label }) => (
+                    <button
+                      key={value}
+                      onClick={() => { setSortBy(value); setSortOpen(false); }}
+                      className="flex w-full items-center gap-2 px-4 py-2.5 text-left text-xs transition-colors"
+                      style={{
+                        color: sortBy === value ? "var(--emerald-500)" : "var(--text-primary)",
+                        background: sortBy === value ? "rgba(16,185,129,0.08)" : "transparent",
+                      }}
+                    >
+                      {sortBy === value && (
+                        <span
+                          className="h-1.5 w-1.5 rounded-full"
+                          style={{ background: "var(--emerald-500)", flexShrink: 0 }}
+                        />
+                      )}
+                      {sortBy !== value && <span className="h-1.5 w-1.5" />}
+                      {label}
+                    </button>
+                  ))}
+                </div>
+              )}
+            </div>
           </div>
         </div>
       </div>

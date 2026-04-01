@@ -6,6 +6,7 @@ import { useSession, signOut } from "next-auth/react";
 import { ShoppingCart, Bell, User, LogOut, LayoutDashboard, ChevronDown, Menu, X } from "lucide-react";
 import { usePathname } from "next/navigation";
 import ThemeToggle from "@/components/ui/ThemeToggle";
+import { loadCart } from "@/lib/cart";
 
 const NAV_LINKS = [
   { href: "/",          label: "Home" },
@@ -19,6 +20,7 @@ export default function AppHeaderClient() {
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
   const [isMobileOpen, setIsMobileOpen]     = useState(false);
   const [unreadAlerts, setUnreadAlerts]     = useState(0);
+  const [cartCount, setCartCount]           = useState(0);
   const { data: session }                   = useSession();
   const pathname                            = usePathname();
   const isAdminRoute                        = pathname.startsWith("/admin");
@@ -76,6 +78,25 @@ export default function AppHeaderClient() {
       document.removeEventListener("visibilitychange", onVisibilityChange);
     };
   }, [session]);
+
+  /* ---------- sync cart badge ---------- */
+  useEffect(() => {
+    const syncCartCount = () => {
+      const totalQty = loadCart().reduce((sum, item) => sum + item.qty, 0);
+      setCartCount(totalQty);
+    };
+
+    syncCartCount();
+    window.addEventListener("cart-updated", syncCartCount);
+    window.addEventListener("storage", syncCartCount);
+    window.addEventListener("focus", syncCartCount);
+
+    return () => {
+      window.removeEventListener("cart-updated", syncCartCount);
+      window.removeEventListener("storage", syncCartCount);
+      window.removeEventListener("focus", syncCartCount);
+    };
+  }, []);
 
   const isActive = (href: string) =>
     href === "/" ? pathname === "/" : pathname.startsWith(href);
@@ -171,6 +192,14 @@ export default function AppHeaderClient() {
                 title="Cart"
               >
                 <ShoppingCart size={17} />
+                {cartCount > 0 && (
+                  <span
+                    className="absolute -right-1 -top-1 flex h-5 min-w-5 items-center justify-center rounded-full px-1 text-[10px] font-bold"
+                    style={{ background: "var(--emerald-500)", color: "#fff" }}
+                  >
+                    {cartCount > 99 ? "99+" : cartCount}
+                  </span>
+                )}
               </Link>
 
               {/* Notifications icon */}
@@ -366,7 +395,7 @@ export default function AppHeaderClient() {
 
             <div className="mt-4" style={{ borderTop: "1px solid var(--border-subtle)", paddingTop: "1rem" }}>
               <Link href="/cart" className="flex items-center gap-3 rounded-xl px-4 py-3.5 text-base font-medium" style={{ color: "var(--text-secondary)" }}>
-                <ShoppingCart size={18} /> Cart
+                <ShoppingCart size={18} /> Cart{cartCount > 0 ? ` (${cartCount})` : ""}
               </Link>
               {!session && (
                 <Link href="/auth/login" className="btn-emerald mt-3 w-full justify-center text-base">
