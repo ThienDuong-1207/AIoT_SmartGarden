@@ -35,7 +35,7 @@ export async function POST(req: NextRequest) {
       );
     }
 
-    const deviceId: string = body.device_id ?? body.deviceId;
+    const deviceId = (body.device_id ?? body.deviceId) as string;
     if (!deviceId) {
       return NextResponse.json({ error: "device_id required" }, { status: 400 });
     }
