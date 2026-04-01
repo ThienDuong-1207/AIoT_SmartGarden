@@ -4,7 +4,7 @@ import mqtt, { type MqttClient } from "mqtt";
   MQTT singleton cho Next.js server-side.
   Kết nối tới HiveMQ Cloud qua mqtts (TLS port 8883).
 
-  Topics:
+  Topics hoạt động chuẩn:
     garden/{deviceId}/sensors   — ESP32 gửi sensor data
     garden/{deviceId}/commands  — Server gửi lệnh điều khiển
     garden/{deviceId}/status    — ESP32 heartbeat online/offline
@@ -18,8 +18,8 @@ declare global {
 
 function getMqttOptions() {
   return {
-    host:     process.env.MQTT_HOST ?? "broker.hivemq.com",
-    port:     parseInt(process.env.MQTT_PORT ?? "8883"),
+    host: process.env.MQTT_HOST ?? "broker.hivemq.com",
+    port: parseInt(process.env.MQTT_PORT ?? "8883"),
     protocol: "mqtts" as const,
     username: process.env.MQTT_USERNAME,
     password: process.env.MQTT_PASSWORD,
@@ -32,27 +32,27 @@ function getMqttOptions() {
 }
 
 export function getMqttClient(): MqttClient | null {
-  // Không kết nối MQTT trong môi trường build / edge runtime
+  // Không kết nối MQTT trong môi trường build / browser
   if (typeof window !== "undefined") return null;
   if (!process.env.MQTT_HOST) return null;
 
   if (global._mqttClient?.connected) return global._mqttClient;
 
-  // Tránh tạo nhiều connection trong hot-reload
+  // Tránh tạo nhiều connection trong quá trình Next.js hot-reload
   if (global._mqttConnecting) return global._mqttClient ?? null;
 
   global._mqttConnecting = true;
 
   try {
     const opts = getMqttOptions();
-    const url  = `mqtts://${opts.host}:${opts.port}`;
+    const url = `mqtts://${opts.host}:${opts.port}`;
     const client = mqtt.connect(url, opts);
 
     client.on("connect", () => {
       global._mqttConnecting = false;
       console.log("[mqtt] Connected to HiveMQ:", opts.host);
 
-      // Subscribe tất cả garden topics
+      // Subscribe tất cả các topic thuộc hệ thống garden
       client.subscribe("garden/#", { qos: 1 }, (err) => {
         if (err) console.error("[mqtt] Subscribe error:", err);
         else console.log("[mqtt] Subscribed to garden/#");
@@ -89,7 +89,7 @@ export function getMqttClient(): MqttClient | null {
 
 /*
   Publish command tới ESP32.
-  garden/{deviceId}/commands
+  Topic: garden/{deviceId}/commands
 */
 export async function publishCommand(deviceId: string, payload: string): Promise<void> {
   const client = getMqttClient();
@@ -102,7 +102,7 @@ export async function publishCommand(deviceId: string, payload: string): Promise
     client.publish(topic, payload, { qos: 1, retain: false }, (err) => {
       if (err) reject(err);
       else {
-        console.log(`[mqtt] Published to ${topic}:`, payload);
+        console.log(`📤 [mqtt] Published to ${topic}:`, payload);
         resolve();
       }
     });
@@ -114,75 +114,89 @@ export async function publishCommand(deviceId: string, payload: string): Promise
   Được gọi tự động từ client.on("message").
 */
 async function handleMqttMessage(topic: string, message: string) {
-  // Pattern: garden/{deviceId}/{type}
+  // Bắt chuẩn mẫu Topic: garden/{deviceId}/{type}
   const match = topic.match(/^garden\/([^/]+)\/(.+)$/);
   if (!match) return;
 
   const [, deviceId, type] = match;
 
+  // Xử lý loại tin nhắn: DỮ LIỆU CẢM BIẾN (sensors)
   if (type === "sensors") {
     try {
       const data = JSON.parse(message);
+
+      // Dynamic imports để tránh lỗi vòng lặp trong Next.js serverless
       const { dbConnect } = await import("@/lib/mongodb");
-      const DeviceModel        = (await import("@/models/Device")).default;
+      const DeviceModel = (await import("@/models/Device")).default;
       const SensorReadingModel = (await import("@/models/SensorReading")).default;
-      const AlertModel         = (await import("@/models/Alert")).default;
+      const AlertModel = (await import("@/models/Alert")).default;
       const { sendNotification, alertToNotification } = await import("@/lib/sendNotification");
 
       await dbConnect();
-
       const ts = new Date();
+
+      // 1. Lưu Dữ liệu Chuỗi thời gian (SensorReading)
       await SensorReadingModel.create({
         deviceId,
-        timestamp:    ts,
-        temp:         data.temperature ?? data.temp,
-        humi:         data.humidity ?? data.humi,
-        tds_ppm:      data.tds_ppm ?? data.tds,
-        ph:           data.ph,
+        timestamp: ts,
+        temp: data.temperature ?? data.temp,
+        humi: data.humidity ?? data.humi,
+        tds_ppm: data.tds_ppm ?? data.tds,
+        ph: data.ph,
         light_status: data.light_status,
-        water_level:  data.water_level,
-        raw:          data,
+        water_level: data.water_level,
+        raw: data,
       });
+      console.log(`[mqtt] Đã lưu DB cho: ${deviceId}`);
 
+      // 2. Cập nhật trạng thái thiết bị (Heartbeat)
       const device = await DeviceModel.findOneAndUpdate(
         { deviceId },
         { isOnline: true, lastSeenAt: ts },
-        { new: false } // trả về doc cũ để đọc config + userId
+        { new: false } // Trả về doc cũ để đọc config + userId
       );
 
       if (!device) return;
       const isPushMuted = !!(device.mutePushUntil && new Date(device.mutePushUntil).getTime() > ts.getTime());
 
-      // Kiểm tra ngưỡng → tạo Alert + gửi FCM
+      // 3. Kiểm tra ngưỡng → tạo Alert + gửi FCM
       const thresholds = device.config?.alertThresholds ?? {};
       const alerts: Array<{ deviceId: string; userId: unknown; type: string; severity: string; message: string; value?: number; threshold?: number; triggeredAt: Date }> = [];
 
-      const tds  = data.tds_ppm ?? data.tds;
-      const ph   = data.ph;
+      const tds = data.tds_ppm ?? data.tds;
+      const ph = data.ph;
       const temp = data.temperature ?? data.temp;
-      const wl   = data.water_level;
+      const wl = data.water_level;
 
+      // Logic Cảnh báo TDS
       if (tds != null && thresholds.tds) {
         if (tds < thresholds.tds.min)
-          alerts.push({ deviceId, userId: device.userId, type: "tds_low",  severity: "warning", message: `Low TDS: ${tds} ppm (min ${thresholds.tds.min} ppm)`, value: tds, threshold: thresholds.tds.min, triggeredAt: ts });
+          alerts.push({ deviceId, userId: device.userId, type: "tds_low", severity: "warning", message: `Nồng độ dinh dưỡng thấp: ${tds} ppm (tối thiểu ${thresholds.tds.min} ppm)`, value: tds, threshold: thresholds.tds.min, triggeredAt: ts });
         else if (tds > thresholds.tds.max)
-          alerts.push({ deviceId, userId: device.userId, type: "tds_high", severity: "warning", message: `High TDS: ${tds} ppm (max ${thresholds.tds.max} ppm)`, value: tds, threshold: thresholds.tds.max, triggeredAt: ts });
+          alerts.push({ deviceId, userId: device.userId, type: "tds_high", severity: "warning", message: `Nồng độ dinh dưỡng cao: ${tds} ppm (tối đa ${thresholds.tds.max} ppm)`, value: tds, threshold: thresholds.tds.max, triggeredAt: ts });
       }
+
+      // Logic Cảnh báo pH
       if (ph != null && thresholds.ph) {
         if (ph < thresholds.ph.min)
-          alerts.push({ deviceId, userId: device.userId, type: "ph_low",  severity: "danger", message: `pH too low: ${ph} (min ${thresholds.ph.min})`, value: ph, threshold: thresholds.ph.min, triggeredAt: ts });
+          alerts.push({ deviceId, userId: device.userId, type: "ph_low", severity: "danger", message: `pH quá thấp: ${ph} (tối thiểu ${thresholds.ph.min})`, value: ph, threshold: thresholds.ph.min, triggeredAt: ts });
         else if (ph > thresholds.ph.max)
-          alerts.push({ deviceId, userId: device.userId, type: "ph_high", severity: "danger", message: `pH too high: ${ph} (max ${thresholds.ph.max})`, value: ph, threshold: thresholds.ph.max, triggeredAt: ts });
+          alerts.push({ deviceId, userId: device.userId, type: "ph_high", severity: "danger", message: `pH quá cao: ${ph} (tối đa ${thresholds.ph.max})`, value: ph, threshold: thresholds.ph.max, triggeredAt: ts });
       }
+
+      // Logic Cảnh báo Nhiệt độ
       if (temp != null && thresholds.temp) {
         if (temp < thresholds.temp.min)
-          alerts.push({ deviceId, userId: device.userId, type: "temp_low",  severity: "warning", message: `Low temperature: ${temp}°C (min ${thresholds.temp.min}°C)`, value: temp, threshold: thresholds.temp.min, triggeredAt: ts });
+          alerts.push({ deviceId, userId: device.userId, type: "temp_low", severity: "warning", message: `Nhiệt độ thấp: ${temp}°C (tối thiểu ${thresholds.temp.min}°C)`, value: temp, threshold: thresholds.temp.min, triggeredAt: ts });
         else if (temp > thresholds.temp.max)
-          alerts.push({ deviceId, userId: device.userId, type: "temp_high", severity: "warning", message: `High temperature: ${temp}°C (max ${thresholds.temp.max}°C)`, value: temp, threshold: thresholds.temp.max, triggeredAt: ts });
+          alerts.push({ deviceId, userId: device.userId, type: "temp_high", severity: "warning", message: `Nhiệt độ cao: ${temp}°C (tối đa ${thresholds.temp.max}°C)`, value: temp, threshold: thresholds.temp.max, triggeredAt: ts });
       }
-      if (wl != null && wl < 20)
-        alerts.push({ deviceId, userId: device.userId, type: "water_low", severity: "danger", message: `Low water level: ${wl}% — refill immediately!`, value: wl, threshold: 20, triggeredAt: ts });
 
+      // Logic Cảnh báo Mực nước
+      if (wl != null && wl < 20)
+        alerts.push({ deviceId, userId: device.userId, type: "water_low", severity: "danger", message: `Mực nước cạn: ${wl}% — Vui lòng bơm thêm nước ngay!`, value: wl, threshold: 20, triggeredAt: ts });
+
+      // Lưu Cảnh báo vào DB và bắn Notification
       if (alerts.length > 0) {
         await AlertModel.insertMany(alerts);
         if (!isPushMuted) {
@@ -190,16 +204,17 @@ async function handleMqttMessage(topic: string, message: string) {
           const userId = device.userId?.toString();
           if (userId) {
             for (const alert of alerts) {
-              sendNotification(userId, alertToNotification(alert.type, alert.message, deviceName)).catch(() => {});
+              sendNotification(userId, alertToNotification(alert.type, alert.message, deviceName)).catch(() => { });
             }
           }
         }
       }
     } catch (err) {
-      console.error("[mqtt] Sensor ingest error:", err);
+      console.error("❌ [mqtt] Sensor ingest error:", err);
     }
   }
 
+  // Xử lý loại tin nhắn: TRẠNG THÁI (status)
   if (type === "status") {
     try {
       const data = JSON.parse(message);
