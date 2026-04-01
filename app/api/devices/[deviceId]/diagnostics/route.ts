@@ -199,9 +199,14 @@ export async function POST(req: NextRequest, { params }: Params) {
   const cloudName = process.env.CLOUDINARY_CLOUD_NAME;
   const apiKey = process.env.CLOUDINARY_API_KEY;
   const apiSecret = process.env.CLOUDINARY_API_SECRET;
+  const uploadPreset = process.env.CLOUDINARY_UPLOAD_PRESET;
+  let uploadFailureReason = "";
 
   const uploadToCloudinary = async (fileValue: string): Promise<string | null> => {
-    if (!cloudName || !apiKey || !apiSecret) return null;
+    if (!cloudName || !apiKey || !apiSecret) {
+      uploadFailureReason = "Missing Cloudinary credentials";
+      return null;
+    }
 
     const timestamp = Math.floor(Date.now() / 1000).toString();
     const folder = `AIoT_smartGarden/diagnostics/${deviceId}`;
@@ -222,6 +227,30 @@ export async function POST(req: NextRequest, { params }: Params) {
     if (!uploadRes.ok) {
       const errPayload = await uploadRes.text().catch(() => "");
       console.warn("[diagnostics] Cloudinary upload failed:", errPayload || `HTTP ${uploadRes.status}`);
+
+      // Fallback: unsigned upload via preset (useful when signed upload is rejected intermittently)
+      if (uploadPreset) {
+        const fallbackForm = new FormData();
+        fallbackForm.append("file", fileValue);
+        fallbackForm.append("upload_preset", uploadPreset);
+        fallbackForm.append("folder", folder);
+
+        const fallbackRes = await fetch(
+          `https://api.cloudinary.com/v1_1/${cloudName}/image/upload`,
+          { method: "POST", body: fallbackForm }
+        );
+
+        if (fallbackRes.ok) {
+          const fallbackData = await fallbackRes.json() as { secure_url?: string };
+          return fallbackData.secure_url ?? null;
+        }
+
+        const fallbackPayload = await fallbackRes.text().catch(() => "");
+        uploadFailureReason = fallbackPayload || `Signed ${uploadRes.status}; fallback ${fallbackRes.status}`;
+        return null;
+      }
+
+      uploadFailureReason = errPayload || `HTTP ${uploadRes.status}`;
       return null;
     }
 
@@ -257,11 +286,9 @@ export async function POST(req: NextRequest, { params }: Params) {
     }
   }
 
-  if (!imageUrl) {
-    return NextResponse.json(
-      { error: "Image upload failed. Diagnostic was not saved." },
-      { status: 502 }
-    );
+  const imageUploadFailed = !!imageBase64 && !imageUrl;
+  if (imageUploadFailed) {
+    console.warn("[diagnostics] Image upload failed; saving diagnostic without image URL", uploadFailureReason || "unknown reason");
   }
 
   const doc = await AIdiagnosticModel.create({
@@ -292,5 +319,8 @@ export async function POST(req: NextRequest, { params }: Params) {
     sensorContext: finalSensorContext,
     fusedDiagnosis: finalFusedDiagnosis,
     recommendation: finalRecommendation,
+    imageUploadFailed,
+    warning: imageUploadFailed ? "Image upload failed. Diagnostic was saved without image." : undefined,
+    warningDetail: imageUploadFailed ? uploadFailureReason || undefined : undefined,
   }, { status: 201 });
 }
