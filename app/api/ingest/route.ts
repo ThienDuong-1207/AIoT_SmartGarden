@@ -59,8 +59,15 @@ export async function POST(req: NextRequest) {
       return NextResponse.json({ error: "Invalid token" }, { status: 401 });
     }
 
-    const sd = body.sensor_data ?? {};
-    const ts = body.timestamp ? new Date(body.timestamp * 1000) : new Date();
+    const sd = (body.sensor_data ?? {}) as Record<string, any>;
+    const rawTimestamp = body.timestamp;
+    const epochSeconds =
+      typeof rawTimestamp === "number"
+        ? rawTimestamp
+        : typeof rawTimestamp === "string"
+          ? Number(rawTimestamp)
+          : NaN;
+    const ts = Number.isFinite(epochSeconds) ? new Date(epochSeconds * 1000) : new Date();
     const isPushMuted = !!(device.mutePushUntil && new Date(device.mutePushUntil).getTime() > ts.getTime());
 
     // Lưu SensorReading

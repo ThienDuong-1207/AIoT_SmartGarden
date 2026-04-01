@@ -319,6 +319,8 @@ export default function AILabPage() {
       return;
     }
 
+    const record = latestRecord;
+
     const controller = new AbortController();
 
     async function fetchOllamaPlan() {
@@ -328,10 +330,10 @@ export default function AILabPage() {
       const prompt = [
         "You are an expert agronomy AI assistant for hydroponic smart garden systems.",
         "Create a detailed 7-day treatment and monitoring plan based on this plant health data:",
-        `Plant status: ${latestRecord.status.toUpperCase()}`,
-        `Detected disease/condition: ${latestRecord.topDisease || "No specific disease detected"}`,
-        `Detection confidence: ${(latestRecord.topConfidence * 100).toFixed(1)}%`,
-        `Complete diagnosis: ${latestRecord.fusedDiagnosis || "Plant health status appears normal"}`,
+        `Plant status: ${record.status.toUpperCase()}`,
+        `Detected disease/condition: ${record.topDisease || "No specific disease detected"}`,
+        `Detection confidence: ${((record.topConfidence ?? 0) * 100).toFixed(1)}%`,
+        `Complete diagnosis: ${record.fusedDiagnosis || "Plant health status appears normal"}`,
         `Current sensor readings: TDS=${tds ?? "unavailable"} ppm, pH=${ph ?? "unavailable"}, temp=${temp ?? "unavailable"}°C, humidity=${humidity ?? "unavailable"}%`,
         `Risk scores: Nutrient=${nutrientRiskScore}%, pH=${phRiskScore}%, Heat/Light=${heatLightRiskScore}%, Fungal=${fungalRiskScore}%`,
         `Dominant risk factor: ${dominantFactor}`,

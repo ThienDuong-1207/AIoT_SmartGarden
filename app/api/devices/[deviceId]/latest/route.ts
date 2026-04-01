@@ -22,8 +22,14 @@ export async function GET(req: NextRequest, { params }: { params: Params }) {
 
     const [latest, device, unreadAlerts] = await Promise.all([
       SensorReadingModel
-        .findOne({ deviceId })
-        .sort({ timestamp: -1 })
+        .findOne({
+          deviceId,
+          $or: [
+            { timestamp: { $exists: true } },
+            { createdAt: { $exists: true } },
+          ],
+        })
+        .sort({ timestamp: -1, createdAt: -1 })
         .select("-raw -__v")
         .lean(),
       DeviceModel
@@ -42,8 +48,29 @@ export async function GET(req: NextRequest, { params }: { params: Params }) {
       ? Date.now() - new Date(device.lastSeenAt).getTime() < 5 * 60 * 1000
       : false;
 
+    const toFiniteOrUndefined = (v: unknown) => {
+      const n = typeof v === "number" ? v : Number(v);
+      return Number.isFinite(n) ? n : undefined;
+    };
+
+    const normalizedLatest = latest
+      ? (() => {
+          const r = latest as Record<string, unknown>;
+          const tsRaw = r.timestamp ?? r.createdAt;
+          const ts = tsRaw ? new Date(String(tsRaw)) : null;
+          return {
+            ...r,
+            timestamp: ts && !Number.isNaN(ts.getTime()) ? ts.toISOString() : undefined,
+            temp: toFiniteOrUndefined(r.temp),
+            humi: toFiniteOrUndefined(r.humi ?? r.hum ?? r.humidity),
+            tds_ppm: toFiniteOrUndefined(r.tds_ppm ?? r.tds),
+            ph: toFiniteOrUndefined(r.ph),
+          };
+        })()
+      : null;
+
     return NextResponse.json({
-      reading: latest ?? null,
+      reading: normalizedLatest,
       device: {
         isOnline,
         lastSeenAt: device.lastSeenAt,

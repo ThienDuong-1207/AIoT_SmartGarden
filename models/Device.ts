@@ -34,6 +34,55 @@ const DeviceSchema = new Schema(
         },
       },
       notificationsEnabled: { type: Boolean, default: true },
+        // IoT Peripheral Control
+        pump: {
+          status: { type: Boolean, default: false },
+          schedule: [
+            {
+              time: String,
+              durationMinutes: { type: Number, default: 15 },
+              enabled: { type: Boolean, default: true },
+            },
+          ],
+          lastActivated: Date,
+          activationCount: { type: Number, default: 0 },
+        },
+        light: {
+          status: { type: Boolean, default: true },
+          brightness: { type: Number, default: 100 },
+          schedule: [
+            {
+              startTime: String,
+              endTime: String,
+              brightness: { type: Number, default: 100 },
+              enabled: { type: Boolean, default: true },
+            },
+          ],
+        },
+        watering: {
+          autoMode: { type: Boolean, default: false },
+          intervalHours: { type: Number, default: 6 },
+          schedule: [
+            {
+              time: String,
+              durationMinutes: { type: Number, default: 15 },
+              enabled: { type: Boolean, default: true },
+            },
+          ],
+          nextScheduledRun: Date,
+        },
+        sensor: {
+          calibrationMode: { type: Boolean, default: false },
+          calibratingType: { type: String, enum: ["TDS", "pH"], default: null },
+          lastCalibrated: Date,
+        },
+        operationEvents: [
+          {
+            type: { type: String },
+            timestamp: { type: Date, default: Date.now },
+            meta: { type: Schema.Types.Mixed, default: {} },
+          },
+        ],
     },
   },
   { timestamps: true }

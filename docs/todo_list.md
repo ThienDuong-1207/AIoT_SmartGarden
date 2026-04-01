@@ -188,28 +188,30 @@
 ## 🔴 ⏳ TODO — Phase 2–4
 
 ### 🔴 IoT Peripheral Control
+- [x] API config endpoint: `PATCH /api/devices/:id/config`
+- [x] Dashboard route: `/dashboard/[deviceId]/controls`
 - [ ] **Pump Control:**
-  - [ ] Dashboard UI toggle (ON/OFF)
-  - [ ] Send MQTT command: `garden/{deviceId}/commands` → `{pump: ON|OFF}`
-  - [ ] Visual feedback (green= running, gray= off)
+  - [x] Dashboard UI toggle (ON/OFF)
+  - [x] Send MQTT command: `garden/{deviceId}/commands` (payload config)
+  - [x] Visual feedback (green= running, gray= off)
   - File: `components/dashboard/PumpControl.tsx`
 
 - [ ] **Light Control:**
-  - [ ] Toggle on/off
-  - [ ] Brightness slider (0–100%)
-  - [ ] Schedule presets (12h light, 16h light, custom)
+  - [x] Toggle on/off
+  - [x] Brightness slider (0–100%)
+  - [x] Schedule presets (12h light, 16h light, custom)
   - File: `components/dashboard/LightControl.tsx`
 
 - [ ] **Watering Schedule:**
-  - [ ] Set auto water times (e.g., 08:00, 14:00, 20:00)
-  - [ ] Interval selector (every X hours)
-  - [ ] Save to `devices.config.wateringSchedule`
-  - [ ] Firmware receives via MQTT
+  - [x] Set auto water times (e.g., 08:00, 14:00, 20:00)
+  - [x] Interval selector (every X hours)
+  - [x] Save to device config via API
+  - [x] Firmware receives via MQTT command payload
 
 - [ ] **Sensor Calibration:**
-  - [ ] Calibration wizard for pH, TDS sensors
-  - [ ] Step-by-step instructions
-  - [ ] Submit readings → trigger ESP32 calibration routine
+  - [x] Calibration wizard for pH, TDS sensors
+  - [x] Step-by-step instructions
+  - [x] Send calibration command to ESP32 via MQTT
 
 ### 🔴 Orders & Checkout
 - [ ] **Checkout Form:**

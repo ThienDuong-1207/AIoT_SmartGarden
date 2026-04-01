@@ -12,7 +12,7 @@ import {
 
 const TABS = [
   { label: "Overview",       icon: LayoutDashboard,    segment: "overview"     },
-  { label: "Sensor Control", icon: SlidersHorizontal,  segment: "sensors"      },
+  { label: "Sensor Control", icon: SlidersHorizontal,  segment: "controls"     },
   { label: "AI Lab",         icon: ScanEye,            segment: "ai-lab"       },
   { label: "Plant Doctor",   icon: MessageSquareHeart, segment: "plant-doctor" },
   { label: "Settings",       icon: Settings2,          segment: "settings"     },
