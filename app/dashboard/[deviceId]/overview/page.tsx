@@ -266,10 +266,36 @@ export default function OverviewPage() {
   const [visibleSeries, setVisibleSeries] = useState<Record<SeriesKey, boolean>>({ tds: true, temp: true });
   const [loading, setLoading] = useState(true);
   const [isClient, setIsClient] = useState(false);
+  const [cameraImage, setCameraImage] = useState<string | null>(null);
+  const [isCameraLoading, setIsCameraLoading] = useState(true);
 
   useEffect(() => {
     setIsClient(true);
   }, []);
+
+  // Fetch Camera Image
+  useEffect(() => {
+    let interval: NodeJS.Timeout;
+    async function fetchCamera() {
+      try {
+        const res = await fetch(`/api/devices/${deviceId}/camera/latest`);
+        if (res.ok) {
+          const json = await res.json();
+          if (json.success && json.data?.imageUrl) {
+            setCameraImage(`${json.data.imageUrl}?t=${Date.now()}`);
+          }
+        }
+      } catch (error) {
+        console.error("Camera fail:", error);
+      } finally {
+        setIsCameraLoading(false);
+      }
+    }
+    
+    fetchCamera();
+    interval = setInterval(fetchCamera, 60000); // Tự động refetch mỗi 60s
+    return () => clearInterval(interval);
+  }, [deviceId]);
 
   const safeTimeAgo = (dateStr?: string) => (isClient ? timeAgo(dateStr) : "—");
   const safeLocaleDateTime = (dateStr?: string) => (isClient && dateStr ? new Date(dateStr).toLocaleString("en-US") : "—");
@@ -606,21 +632,32 @@ export default function OverviewPage() {
           {/* Camera preview */}
           <div className="relative flex h-40 w-56 shrink-0 items-center justify-center overflow-hidden rounded-lg"
             style={{ background: "#080D14", border: "1px solid var(--border-subtle)" }}>
-            <div className="pointer-events-none absolute inset-0 opacity-10"
+            <div className="pointer-events-none z-10 absolute inset-0 opacity-15"
               style={{ backgroundImage: "radial-gradient(rgba(59,130,246,0.5) 1px, transparent 1px)", backgroundSize: "18px 18px" }} />
             {[{ top: 8, left: 8, bT: true, bL: true }, { top: 8, right: 8, bT: true, bR: true },
               { bottom: 8, left: 8, bB: true, bL: true }, { bottom: 8, right: 8, bB: true, bR: true }
             ].map((p, i) => (
-              <div key={i} className="absolute h-4 w-4"
+              <div key={i} className="absolute z-20 h-4 w-4"
                 style={{ top: p.top, left: (p as {left?: number}).left, right: (p as {right?: number}).right, bottom: (p as {bottom?: number}).bottom,
                   borderTop: p.bT ? "1.5px solid #3B82F6" : undefined, borderLeft: p.bL ? "1.5px solid #3B82F6" : undefined,
                   borderRight: (p as {bR?: boolean}).bR ? "1.5px solid #3B82F6" : undefined, borderBottom: (p as {bB?: boolean}).bB ? "1.5px solid #3B82F6" : undefined }} />
             ))}
-            <div className="z-10 text-center">
-              <Camera size={20} style={{ color: "rgba(255,255,255,0.12)", margin: "0 auto" }} />
-              <p className="mt-1.5 font-mono text-[9px]" style={{ color: "var(--text-muted)" }}>OV2640 · CAM_01</p>
-            </div>
-            <div className="absolute inset-x-0 bottom-0 flex justify-between px-3 py-1"
+            
+            {isCameraLoading ? (
+              <div className="z-10 text-center animate-pulse">
+                <Camera size={20} style={{ color: "rgba(255,255,255,0.4)", margin: "0 auto" }} />
+                <p className="mt-1.5 font-mono text-[9px]" style={{ color: "var(--text-muted)" }}>Đang tải ảnh từ vệ tinh...</p>
+              </div>
+            ) : cameraImage ? (
+              <img src={cameraImage} alt="Live Camera" className="absolute z-0 inset-0 h-full w-full object-cover" />
+            ) : (
+              <div className="z-10 text-center">
+                <Camera size={20} style={{ color: "rgba(255,255,255,0.12)", margin: "0 auto" }} />
+                <p className="mt-1.5 font-mono text-[9px]" style={{ color: "var(--text-muted)" }}>NO SIGNAL</p>
+              </div>
+            )}
+
+            <div className="absolute z-20 inset-x-0 bottom-0 flex justify-between px-3 py-1"
               style={{ background: "rgba(0,0,0,0.55)" }}>
               <span className="font-mono text-[8px]" style={{ color: "#60A5FA" }}>CAM_01</span>
               <span className="font-mono text-[8px]" style={{ color: d?.isOnline ? "var(--emerald-400)" : "var(--text-muted)" }}>
