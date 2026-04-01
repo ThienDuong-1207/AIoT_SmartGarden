@@ -10,33 +10,19 @@ import {
 
 /* ── Types ── */
 interface SensorReading {
-  temp?: number; humi?: number; tds_ppm?: number; ph?: number;
-  water_level?: number; light_status?: boolean; timestamp?: string;
+  temp?: number; humi?: number; tds_ppm?: number; timestamp?: string;
 }
 interface LatestData {
   reading: SensorReading | null;
   device: {
     isOnline: boolean; lastSeenAt?: string;
     name: string; plantType: string;
-    thresholds?: { tds?: { min: number; max: number }; ph?: { min: number; max: number }; temp?: { min: number; max: number }; };
+    thresholds?: { tds?: { min: number; max: number }; temp?: { min: number; max: number }; };
   };
   unreadAlerts: number;
 }
-interface ChartReading { timestamp: string; temp?: number; tds_ppm?: number; ph?: number; light_status?: boolean; }
+interface ChartReading { timestamp: string; temp?: number; tds_ppm?: number; }
 interface DeviceConfigView {
-  pump?: {
-    status?: boolean;
-    lastActivated?: string;
-  };
-  light?: {
-    status?: boolean;
-    brightness?: number;
-  };
-  watering?: {
-    autoMode?: boolean;
-    intervalHours?: number;
-    schedule?: Array<{ time?: string; durationMinutes?: number; enabled?: boolean }>;
-  };
   sensor?: {
     calibrationMode?: boolean;
     calibratingType?: string | null;
@@ -50,7 +36,7 @@ interface DeviceConfigView {
 }
 
 type RangeOption = "6h" | "24h" | "7d";
-type SeriesKey = "tds" | "ph" | "temp";
+type SeriesKey = "tds" | "temp";
 
 /* ── Helpers ── */
 function timeAgo(dateStr?: string) {
@@ -164,7 +150,7 @@ function MultiLineTrendChart({
   markers,
 }: {
   readings: ChartReading[];
-  thresholds: { tds: { min: number; max: number }; ph: { min: number; max: number }; temp: { min: number; max: number } };
+  thresholds: { tds: { min: number; max: number }; temp: { min: number; max: number } };
   visible: Record<SeriesKey, boolean>;
   markers: Array<{ type: string; timestamp: string; label: string; color: string }>;
 }) {
@@ -179,9 +165,6 @@ function MultiLineTrendChart({
       tds: typeof r.tds_ppm === "number" && Number.isFinite(r.tds_ppm)
         ? normalizeByThreshold(r.tds_ppm, thresholds.tds.min, thresholds.tds.max)
         : null,
-      ph: typeof r.ph === "number" && Number.isFinite(r.ph)
-        ? normalizeByThreshold(r.ph, thresholds.ph.min, thresholds.ph.max)
-        : null,
       temp: typeof r.temp === "number" && Number.isFinite(r.temp)
         ? normalizeByThreshold(r.temp, thresholds.temp.min, thresholds.temp.max)
         : null,
@@ -194,7 +177,7 @@ function MultiLineTrendChart({
       .map((p) => `${p.x},${chartHeight - ((p[key] as number) / 100) * chartHeight}`)
       .join(" ");
 
-  const hasAnySeries = points.some((p) => p.tds != null || p.ph != null || p.temp != null);
+  const hasAnySeries = points.some((p) => p.tds != null || p.temp != null);
 
   const safeTopY = chartHeight - 75 / 100 * chartHeight;
   const safeBottomY = chartHeight - 25 / 100 * chartHeight;
@@ -229,7 +212,6 @@ function MultiLineTrendChart({
             })}
 
             {visible.tds && <polyline points={toPolyline("tds")} stroke="var(--blue-400)" strokeWidth="2" fill="none" strokeLinecap="round" strokeLinejoin="round" />}
-            {visible.ph && <polyline points={toPolyline("ph")} stroke="var(--emerald-400)" strokeWidth="2" fill="none" strokeLinecap="round" strokeLinejoin="round" />}
             {visible.temp && <polyline points={toPolyline("temp")} stroke="var(--gold-400)" strokeWidth="2" fill="none" strokeLinecap="round" strokeLinejoin="round" />}
           </svg>
         </div>
@@ -242,7 +224,6 @@ function MultiLineTrendChart({
 
         <div className="mt-2 flex justify-between text-[10px]" style={{ color: "var(--text-muted)" }}>
           <span>TDS: {thresholds.tds.min}-{thresholds.tds.max}ppm</span>
-          <span>pH: {thresholds.ph.min}-{thresholds.ph.max}</span>
           <span>Temp: {thresholds.temp.min}-{thresholds.temp.max}°C</span>
         </div>
       </div>
@@ -282,7 +263,7 @@ export default function OverviewPage() {
   const [charts, setCharts] = useState<ChartReading[]>([]);
   const [config, setConfig] = useState<DeviceConfigView | null>(null);
   const [range, setRange] = useState<RangeOption>("24h");
-  const [visibleSeries, setVisibleSeries] = useState<Record<SeriesKey, boolean>>({ tds: true, ph: true, temp: true });
+  const [visibleSeries, setVisibleSeries] = useState<Record<SeriesKey, boolean>>({ tds: true, temp: true });
   const [loading, setLoading] = useState(true);
   const [isClient, setIsClient] = useState(false);
 
@@ -305,18 +286,16 @@ export default function OverviewPage() {
         return {
           timestamp: String(r.timestamp ?? ""),
           tds_ppm: toFiniteOrUndefined(r.tds_ppm),
-          ph: toFiniteOrUndefined(r.ph),
           temp: toFiniteOrUndefined(r.temp),
-          light_status: typeof r.light_status === "boolean" ? r.light_status : undefined,
         };
       })
-      .filter((r) => !!r.timestamp && (r.tds_ppm != null || r.ph != null || r.temp != null));
+      .filter((r) => !!r.timestamp && (r.tds_ppm != null || r.temp != null));
   };
 
   const toggleSeries = (key: SeriesKey) => {
     setVisibleSeries((prev) => {
       const next = { ...prev, [key]: !prev[key] };
-      if (!next.tds && !next.ph && !next.temp) {
+      if (!next.tds && !next.temp) {
         return prev; // keep at least one line visible
       }
       return next;
@@ -361,7 +340,7 @@ export default function OverviewPage() {
   const thr = d?.thresholds;
 
   /* Spark arrays from chart history */
-  function sparkOf(key: "tds_ppm" | "ph" | "temp") {
+  function sparkOf(key: "tds_ppm" | "temp") {
     return charts.slice(-12).map((c) => c[key] ?? 0).filter(Boolean);
   }
 
@@ -371,12 +350,6 @@ export default function OverviewPage() {
       icon: Droplets, color: "var(--blue-400)", iconBg: "rgba(59,130,246,0.12)",
       min: thr?.tds?.min ?? 800, max: thr?.tds?.max ?? 1800,
       sparkVals: sparkOf("tds_ppm"),
-    },
-    {
-      label: "pH", value: r?.ph != null ? r.ph.toFixed(1) : "—", unit: "",
-      icon: FlaskConical, color: "var(--emerald-400)", iconBg: "rgba(16,185,129,0.12)",
-      min: thr?.ph?.min ?? 5.5, max: thr?.ph?.max ?? 7.0,
-      sparkVals: sparkOf("ph"),
     },
     {
       label: "Temperature", value: r?.temp != null ? r.temp.toFixed(1) : "—", unit: "°C",
@@ -399,7 +372,6 @@ export default function OverviewPage() {
 
   const thresholdSet = {
     tds: { min: thr?.tds?.min ?? 800, max: thr?.tds?.max ?? 1800 },
-    ph: { min: thr?.ph?.min ?? 5.5, max: thr?.ph?.max ?? 7.0 },
     temp: { min: thr?.temp?.min ?? 18, max: thr?.temp?.max ?? 32 },
   };
 
@@ -407,38 +379,18 @@ export default function OverviewPage() {
   const chartEndTs = charts[charts.length - 1]?.timestamp;
   const validCounts = {
     tds: charts.filter((c) => typeof c.tds_ppm === "number" && Number.isFinite(c.tds_ppm)).length,
-    ph: charts.filter((c) => typeof c.ph === "number" && Number.isFinite(c.ph)).length,
     temp: charts.filter((c) => typeof c.temp === "number" && Number.isFinite(c.temp)).length,
   };
-
-  const lightTransitionMarkers = charts
-    .filter((_, idx, arr) => idx > 0 && arr[idx - 1].light_status !== arr[idx].light_status)
-    .map((r) => ({
-      type: r.light_status ? "light_on" : "light_off",
-      timestamp: r.timestamp,
-      label: r.light_status ? "Light ON" : "Light OFF",
-      color: "#FBBF24",
-    }));
 
   const configMarkers = (config?.operationEvents ?? [])
     .filter((e) => e.type && e.timestamp)
     .map((e) => {
       const type = e.type as string;
       const labelMap: Record<string, string> = {
-        pump_on: "Pump ON",
-        pump_off: "Pump OFF",
-        light_on: "Light ON",
-        light_off: "Light OFF",
-        light_preset_changed: "Light preset",
         calibration_start: `Calib start ${e.meta?.sensorType ?? ""}`.trim(),
         calibration_complete: `Calib done ${e.meta?.sensorType ?? ""}`.trim(),
       };
       const colorMap: Record<string, string> = {
-        pump_on: "#22C55E",
-        pump_off: "#94A3B8",
-        light_on: "#FBBF24",
-        light_off: "#94A3B8",
-        light_preset_changed: "#60A5FA",
         calibration_start: "#FB923C",
         calibration_complete: "#10B981",
       };
@@ -451,7 +403,7 @@ export default function OverviewPage() {
       };
     });
 
-  const eventMarkers = [...configMarkers, ...lightTransitionMarkers]
+  const eventMarkers = [...configMarkers]
     .sort((a, b) => new Date(a.timestamp).getTime() - new Date(b.timestamp).getTime());
 
   if (!isClient) {
@@ -531,7 +483,7 @@ export default function OverviewPage() {
                   : "No data"}
               </p>
               <p className="mt-1 text-[10px] font-mono" style={{ color: "var(--text-muted)" }}>
-                Valid points · TDS: {validCounts.tds} · pH: {validCounts.ph} · Temp: {validCounts.temp}
+                Valid points · TDS: {validCounts.tds} · Temp: {validCounts.temp}
               </p>
             </div>
             <div className="flex items-center gap-2">
@@ -556,7 +508,6 @@ export default function OverviewPage() {
             <div className="mb-3 flex flex-wrap items-center gap-2">
               {([
                 { key: "tds", label: "TDS", color: "var(--blue-400)" },
-                { key: "ph", label: "pH", color: "var(--emerald-400)" },
                 { key: "temp", label: "Temp", color: "var(--gold-400)" },
               ] as Array<{ key: SeriesKey; label: string; color: string }>).map((s) => (
                 <button
@@ -589,10 +540,9 @@ export default function OverviewPage() {
           </div>
 
           {/* Summary stats */}
-          <div className="grid grid-cols-3 divide-x" style={{ borderTop: "1px solid var(--border-subtle)", borderColor: "var(--border-subtle)" }}>
+          <div className="grid grid-cols-2 divide-x" style={{ borderTop: "1px solid var(--border-subtle)", borderColor: "var(--border-subtle)" }}>
             {[
               { label: "TDS TB",  value: avg("tds_ppm") != null ? `${avg("tds_ppm")!.toFixed(0)} ppm` : "—", color: "var(--blue-400)"    },
-              { label: "pH TB",   value: avg("ph")      != null ? avg("ph")!.toFixed(2)                 : "—", color: "var(--emerald-400)" },
               { label: "Temp TB", value: avg("temp")    != null ? `${avg("temp")!.toFixed(1)} °C`       : "—", color: "var(--gold-400)"   },
             ].map(({ label, value, color }) => (
               <div key={label} className="px-3 py-2.5 text-center" style={{ borderColor: "var(--border-subtle)" }}>
@@ -624,36 +574,6 @@ export default function OverviewPage() {
         </div>
 
         <div className="grid gap-3 p-4 md:grid-cols-2 lg:grid-cols-4">
-          <div className="rounded-lg p-3" style={{ background: "var(--bg-base)", border: "1px solid var(--border-subtle)" }}>
-            <p className="text-[10px]" style={{ color: "var(--text-muted)" }}>Pump</p>
-            <p className="text-xs font-semibold" style={{ color: config?.pump?.status ? "var(--emerald-400)" : "var(--text-secondary)" }}>
-              {config?.pump?.status ? "ON" : "OFF"}
-            </p>
-            <p className="mt-1 text-[10px]" style={{ color: "var(--text-muted)" }}>
-              Last activated: {safeTimeAgo(config?.pump?.lastActivated)}
-            </p>
-          </div>
-
-          <div className="rounded-lg p-3" style={{ background: "var(--bg-base)", border: "1px solid var(--border-subtle)" }}>
-            <p className="text-[10px]" style={{ color: "var(--text-muted)" }}>Light</p>
-            <p className="text-xs font-semibold" style={{ color: config?.light?.status ? "var(--gold-400)" : "var(--text-secondary)" }}>
-              {config?.light?.status ? "ON" : "OFF"} · {config?.light?.brightness ?? 0}%
-            </p>
-            <p className="mt-1 text-[10px]" style={{ color: "var(--text-muted)" }}>
-              Adjust from controls tab
-            </p>
-          </div>
-
-          <div className="rounded-lg p-3" style={{ background: "var(--bg-base)", border: "1px solid var(--border-subtle)" }}>
-            <p className="text-[10px]" style={{ color: "var(--text-muted)" }}>Watering</p>
-            <p className="text-xs font-semibold" style={{ color: config?.watering?.autoMode ? "var(--blue-400)" : "var(--text-secondary)" }}>
-              {config?.watering?.autoMode ? "AUTO" : "MANUAL"} · Every {config?.watering?.intervalHours ?? 6}h
-            </p>
-            <p className="mt-1 text-[10px]" style={{ color: "var(--text-muted)" }}>
-              Slots: {config?.watering?.schedule?.length ?? 0}
-            </p>
-          </div>
-
           <div className="rounded-lg p-3" style={{ background: "var(--bg-base)", border: "1px solid var(--border-subtle)" }}>
             <p className="text-[10px]" style={{ color: "var(--text-muted)" }}>Calibration</p>
             <p className="text-xs font-semibold" style={{ color: config?.sensor?.calibrationMode ? "#FB923C" : "var(--emerald-400)" }}>
@@ -724,7 +644,7 @@ export default function OverviewPage() {
               </div>
               <p className="text-xs" style={{ color: "var(--text-secondary)" }}>
                 {r
-                  ? `TDS ${r.tds_ppm ?? "—"} ppm · pH ${r.ph ?? "—"} · Temp ${r.temp ?? "—"}°C · Humi ${r.humi ?? "—"}%`
+                  ? `TDS ${r.tds_ppm ?? "—"} ppm · Temp ${r.temp ?? "—"}°C · Humi ${r.humi ?? "—"}%`
                   : "No data received. Make sure your ESP32 is connected."
                 }
               </p>
@@ -734,17 +654,6 @@ export default function OverviewPage() {
                 <span className="h-1.5 w-1.5 rounded-full" style={{ background: "var(--emerald-400)" }} />
                 Last: {safeTimeAgo(r?.timestamp)}
               </div>
-              <div className="flex items-center gap-1.5 text-[10px]" style={{ color: "var(--text-muted)" }}>
-                <span className="h-1.5 w-1.5 rounded-full" style={{ background: r?.light_status ? "var(--gold-400)" : "var(--border-subtle)" }} />
-                Light: {r?.light_status ? "On" : "Off"}
-              </div>
-              {r?.water_level != null && (
-                <div className="flex items-center gap-1.5 text-[10px]" style={{ color: r.water_level < 20 ? "var(--gold-400)" : "var(--text-muted)" }}>
-                  <span className="h-1.5 w-1.5 rounded-full"
-                    style={{ background: r.water_level < 20 ? "var(--gold-500)" : "var(--blue-400)" }} />
-                  Water level: {r.water_level}%
-                </div>
-              )}
             </div>
           </div>
         </div>
