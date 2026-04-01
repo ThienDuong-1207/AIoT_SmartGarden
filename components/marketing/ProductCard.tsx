@@ -82,9 +82,16 @@ export default function ProductCard({ product }: { product: Product }) {
         (e.currentTarget as HTMLElement).style.boxShadow = "none";
       }}
     >
+      <Link
+        href={`/products/${product.slug}`}
+        className="absolute inset-0 z-0"
+        aria-label={`View details for ${product.name}`}
+        title="View details"
+      />
+
       {/* ── Visual zone ── */}
       <div
-        className="relative flex items-center justify-center overflow-hidden"
+        className="relative z-10 flex items-center justify-center overflow-hidden"
         style={{ height: 160, background: cfg.accentBg }}
       >
         {/* Category badge */}
@@ -134,7 +141,7 @@ export default function ProductCard({ product }: { product: Product }) {
       </div>
 
       {/* ── Content zone ── */}
-      <div className="flex flex-1 flex-col p-4">
+      <div className="relative z-10 flex flex-1 flex-col p-4 pointer-events-none">
         {/* Rating */}
         <div className="mb-2.5 flex items-center gap-1">
           {Array.from({ length: 5 }).map((_, i) => (
@@ -174,7 +181,7 @@ export default function ProductCard({ product }: { product: Product }) {
             )}
           </div>
 
-          <div className="flex gap-2">
+          <div className="pointer-events-auto flex gap-2">
             <button
               onClick={handleAddToCart}
               className="flex flex-1 items-center justify-center gap-1.5 rounded-xl py-2 text-xs font-semibold transition-all duration-150"

@@ -378,12 +378,7 @@ export default async function ProductDetailPage({ params }: { params: Params }) 
 
               {/* Price block */}
               <div
-                className="mt-6 rounded-xl p-4"
-                style={{
-                  background: "rgba(0,0,0,0.4)",
-                  backdropFilter: "blur(12px)",
-                  border: "1px solid rgba(34, 211, 238, 0.1)",
-                }}
+                className="product-price-panel mt-6 rounded-xl p-4"
               >
                 <p className="text-xs font-semibold uppercase tracking-wider" style={{ color: "var(--text-muted)" }}>
                   Sale Price
@@ -400,7 +395,7 @@ export default async function ProductDetailPage({ params }: { params: Params }) 
 
               {/* Action buttons */}
               <div className="mt-5 flex flex-col gap-3 sm:flex-row">
-                <button className="btn-gold flex flex-1 items-center justify-center gap-2 py-3">
+                <button className="btn-gold btn-gold-light-fixed flex flex-1 items-center justify-center gap-2 py-3">
                   <ShoppingCart size={16} />
                   Add to Cart
                 </button>
