@@ -491,6 +491,29 @@ code, pre, kbd {
   transform: scale(0.97);
 }
 
+.product-price-panel {
+  background: rgba(0, 0, 0, 0.4);
+  backdrop-filter: blur(12px);
+  border: 1px solid rgba(34, 211, 238, 0.1);
+}
+
+[data-theme="light"] .product-price-panel {
+  background: #F2F4F7;
+  border: 1px solid #C8D1DB;
+  box-shadow: none;
+}
+
+[data-theme="light"] .btn-gold-light-fixed {
+  background: linear-gradient(135deg, #FBBF24, #F59E0B);
+  color: #1F2328;
+  border: 1px solid rgba(217, 119, 6, 0.35);
+}
+
+[data-theme="light"] .btn-gold-light-fixed:hover {
+  filter: brightness(1.04);
+  box-shadow: 0 8px 18px rgba(245, 158, 11, 0.25);
+}
+
 /* Danger button */
 .btn-danger {
   display: inline-flex;
@@ -555,6 +578,17 @@ code, pre, kbd {
 [data-theme="light"] .btn-ghost:hover {
   background: #F6F8FA;
   border-color: #B1BAC4;
+}
+
+[data-theme="light"] .btn-gold {
+  background: linear-gradient(135deg, #FBBF24, #F59E0B);
+  color: #1F2328;
+  border: 1px solid rgba(217, 119, 6, 0.35);
+}
+
+[data-theme="light"] .btn-gold:hover {
+  filter: brightness(1.04);
+  box-shadow: 0 8px 18px rgba(245, 158, 11, 0.25);
 }
 
 /* ============================================================
