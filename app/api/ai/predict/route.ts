@@ -16,7 +16,7 @@ export async function POST(req: NextRequest) {
     }
 
     if (!file || !(file instanceof Blob)) {
-      return NextResponse.json({ error: "Không có file ảnh" }, { status: 400 });
+      return NextResponse.json({ error: "No image file provided" }, { status: 400 });
     }
 
     const proxyForm = new FormData();
@@ -29,7 +29,7 @@ export async function POST(req: NextRequest) {
 
     if (!aiRes.ok) {
       const text = await aiRes.text();
-      return NextResponse.json({ error: `AI service lỗi: ${text}` }, { status: 502 });
+      return NextResponse.json({ error: `AI service error: ${text}` }, { status: 502 });
     }
 
     const result = await aiRes.json();
@@ -46,7 +46,7 @@ export async function POST(req: NextRequest) {
     const msg = err instanceof Error ? err.message : String(err);
     if (msg.includes("ECONNREFUSED") || msg.includes("fetch failed")) {
       return NextResponse.json(
-        { error: "AI service chưa khởi động. Vui lòng chạy docker compose up -d" },
+        { error: "AI service is not running. Please run docker compose up -d" },
         { status: 503 }
       );
     }

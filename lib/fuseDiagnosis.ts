@@ -20,58 +20,58 @@ export function fuseDiagnosis(
   if (status === "healthy") {
     const notes: string[] = [];
     if (tds !== null && tds !== undefined) {
-      if (tds < 600)  notes.push("TDS thấp — cần bổ sung dinh dưỡng");
-      if (tds > 1800) notes.push("TDS cao — pha loãng dung dịch");
+      if (tds < 600)  notes.push("Low TDS — add nutrients");
+      if (tds > 1800) notes.push("High TDS — dilute the solution");
     }
     if (ph !== null && ph !== undefined) {
-      if (ph < 5.5) notes.push("pH quá thấp — thêm KOH để nâng pH");
-      if (ph > 7.0) notes.push("pH quá cao — thêm axit để hạ pH");
+      if (ph < 5.5) notes.push("pH too low — add KOH to raise pH");
+      if (ph > 7.0) notes.push("pH too high — add acid to lower pH");
     }
-    if (notes.length > 0) return `Cây khỏe nhưng chú ý: ${notes.join("; ")}.`;
-    return "Cây phát triển bình thường. Không phát hiện bệnh.";
+    if (notes.length > 0) return `Plant looks healthy, but note: ${notes.join("; ")}.`;
+    return "Plant is developing normally. No disease detected.";
   }
 
   // --- Bệnh: kết hợp sensor để suy luận nguyên nhân ---
 
   if (cls === "yellow_leaf") {
     if (ph !== null && ph !== undefined && ph > 6.8)
-      return `Vàng lá — Nghi ngờ thiếu sắt (Fe) do pH cao (${ph}). pH cao làm Fe kết tủa, cây không hấp thu được.`;
+      return `Yellow leaf — Suspected iron (Fe) deficiency due to high pH (${ph}). High pH precipitates Fe, reducing uptake.`;
     if (tds !== null && tds !== undefined && tds < 600)
-      return `Vàng lá — TDS quá thấp (${tds} ppm), thiếu dinh dưỡng tổng thể (N, Mg, Fe).`;
+      return `Yellow leaf — TDS is too low (${tds} ppm), indicating overall nutrient deficiency (N, Mg, Fe).`;
     if (temperature !== null && temperature !== undefined && temperature > 30)
-      return `Vàng lá — Nhiệt độ cao (${temperature}°C) gây stress nhiệt, ức chế hấp thu dinh dưỡng.`;
-    return "Vàng lá — Kiểm tra pH (mục tiêu 5.8–6.5) và nồng độ TDS.";
+      return `Yellow leaf — High temperature (${temperature}°C) causes heat stress and suppresses nutrient uptake.`;
+    return "Yellow leaf — Check pH (target 5.8-6.5) and TDS concentration.";
   }
 
   if (cls === "powdery_mildew") {
     if (humidity !== null && humidity !== undefined && humidity > 75)
-      return `Nấm phấn trắng — Độ ẩm cao (${humidity}%) tạo điều kiện phát triển nấm. Cần tăng thông gió ngay.`;
-    return "Nấm phấn trắng — Giảm độ ẩm, tăng thông gió, phun baking soda 1%.";
+      return `Powdery mildew — High humidity (${humidity}%) promotes fungal growth. Increase ventilation immediately.`;
+    return "Powdery mildew — Reduce humidity, improve airflow, and spray 1% baking soda solution.";
   }
 
   if (cls === "brown_spot") {
     if (humidity !== null && humidity !== undefined && humidity > 70)
-      return `Đốm nâu — Độ ẩm cao (${humidity}%) kết hợp nhiệt độ ${temperature ?? "?"}°C tạo điều kiện nấm Cercospora phát triển.`;
-    return "Đốm nâu — Nghi mầm bệnh nấm. Loại bỏ lá bệnh, cải thiện thông gió.";
+      return `Brown spot — High humidity (${humidity}%) with temperature ${temperature ?? "?"}°C creates favorable conditions for Cercospora fungus.`;
+    return "Brown spot — Suspected fungal infection. Remove affected leaves and improve ventilation.";
   }
 
   if (cls === "aphid") {
-    return `Rệp sáp — Mật độ ${tds !== null && tds !== undefined && tds > 1400 ? "có thể tăng do TDS cao" : "thấp"}. Phun neem oil 0.5%, kiểm tra mặt dưới lá.`;
+    return `Aphid — Population is ${tds !== null && tds !== undefined && tds > 1400 ? "possibly increased by high TDS" : "low"}. Spray 0.5% neem oil and inspect leaf undersides.`;
   }
 
   if (cls === "nutrient_deficiency") {
     if (tds !== null && tds !== undefined && tds < 700)
-      return `Thiếu dinh dưỡng — TDS chỉ ${tds} ppm (quá thấp). Bổ sung dung dịch A+B để đạt 1000–1400 ppm.`;
+      return `Nutrient deficiency — TDS is only ${tds} ppm (too low). Add A+B nutrient solution to reach 1000-1400 ppm.`;
     if (ph !== null && ph !== undefined && (ph < 5.3 || ph > 6.8))
-      return `Thiếu dinh dưỡng — pH=${ph} làm giảm khả năng hấp thu. Điều chỉnh pH về 5.8–6.5 trước.`;
-    return "Thiếu dinh dưỡng tổng thể — Thay dung dịch dinh dưỡng mới và kiểm tra EC.";
+      return `Nutrient deficiency — pH=${ph} reduces nutrient uptake. Adjust pH to 5.8-6.5 first.`;
+    return "Overall nutrient deficiency — replace with fresh nutrient solution and check EC.";
   }
 
   // Fallback
   const parts: string[] = [];
-  if (topDisease) parts.push(`Phát hiện: ${topDisease}`);
+  if (topDisease) parts.push(`Detected: ${topDisease}`);
   if (tds    !== null && tds    !== undefined) parts.push(`TDS=${tds} ppm`);
   if (ph     !== null && ph     !== undefined) parts.push(`pH=${ph}`);
   if (temperature !== null && temperature !== undefined) parts.push(`Temp=${temperature}°C`);
-  return parts.join(" · ") || "Phát hiện bất thường. Theo dõi và chụp lại sau 12h.";
+  return parts.join(" · ") || "Anomaly detected. Monitor and capture another image in 12 hours.";
 }

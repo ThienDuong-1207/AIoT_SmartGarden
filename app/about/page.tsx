@@ -6,7 +6,7 @@ export const dynamic = "force-dynamic";
 
 export const metadata: Metadata = {
   title: "About Us | Smart Garden AIoT",
-  description: "Học thêm về sứ mệnh và công nghệ của Smart Garden AIoT",
+  description: "Learn more about the mission and technology behind Smart Garden AIoT",
 };
 
 export default function AboutPage() {

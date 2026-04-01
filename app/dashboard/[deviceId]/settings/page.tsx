@@ -1,10 +1,11 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import {
   Leaf, Bell, Wifi, Cpu, Camera, Shield,
-  CheckCircle, Trash2, RefreshCw, Save,
+  CheckCircle, Trash2, RefreshCw, Save, AlertCircle,
 } from "lucide-react";
+import { requestFcmToken } from "@/lib/firebaseClient";
 
 type Params = Promise<{ deviceId: string }>;
 
@@ -12,21 +13,63 @@ export default function SettingsPage() {
   const [deviceName, setDeviceName]         = useState("Basil Pot");
   const [plantType, setPlantType]           = useState("Basil");
   const [camInterval, setCamInterval]       = useState("6");
-  const [pushEnabled, setPushEnabled]       = useState(true);
+  const [pushEnabled, setPushEnabled]       = useState(false);
+  const [pushLoading, setPushLoading]       = useState(false);
+  const [pushError, setPushError]           = useState<string | null>(null);
   const [emailEnabled, setEmailEnabled]     = useState(false);
   const [saved, setSaved]                   = useState(false);
+
+  // Initialize push state based on notification permission
+  useEffect(() => {
+    if (typeof window === "undefined" || !("Notification" in window)) return;
+    setPushEnabled(Notification.permission === "granted");
+  }, []);
+
+  async function handlePushToggle(newValue: boolean) {
+    setPushLoading(true);
+    setPushError(null);
+
+    if (newValue) {
+      // Enable push notifications
+      const token = await requestFcmToken();
+      if (!token) {
+        setPushError("Could not enable push notifications");
+        setPushLoading(false);
+        return;
+      }
+      setPushEnabled(true);
+    } else {
+      // Disable push notifications
+      try {
+        await fetch("/api/users/fcm-token", {
+          method: "PATCH",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ token: null }),
+        });
+        setPushEnabled(false);
+      } catch (err) {
+        setPushError("Failed to disable notifications");
+      }
+    }
+    setPushLoading(false);
+  }
 
   function handleSave() {
     setSaved(true);
     setTimeout(() => setSaved(false), 2500);
   }
 
-  function Toggle({ on, onChange }: { on: boolean; onChange: (v: boolean) => void }) {
+  function Toggle({ on, onChange, disabled }: { on: boolean; onChange: (v: boolean) => void; disabled?: boolean }) {
     return (
       <button
-        onClick={() => onChange(!on)}
+        onClick={() => !disabled && onChange(!on)}
+        disabled={disabled}
         className="relative h-5 w-9 rounded-full transition-colors duration-200"
-        style={{ background: on ? "var(--emerald-500)" : "rgba(255,255,255,0.10)" }}
+        style={{
+          background: on ? "var(--emerald-500)" : "rgba(255,255,255,0.10)",
+          opacity: disabled ? 0.6 : 1,
+          cursor: disabled ? "not-allowed" : "pointer",
+        }}
       >
         <span
           className="absolute top-0.5 h-4 w-4 rounded-full bg-white shadow transition-transform duration-200"
@@ -160,38 +203,55 @@ export default function SettingsPage() {
           <span className="text-sm font-semibold" style={{ color: "var(--text-primary)" }}>Notifications</span>
         </div>
         <div className="divide-y p-5 space-y-0" style={{ borderColor: "var(--border-subtle)" }}>
-          {[
-            {
-              icon: Bell, label: "Push Notification (Firebase FCM)",
-              desc: "Send instant alerts to your phone", on: pushEnabled, set: setPushEnabled,
-              color: "var(--gold-400)",
-            },
-            {
-              icon: Shield, label: "Email Alert",
-              desc: "Send daily reports and urgent alerts", on: emailEnabled, set: setEmailEnabled,
-              color: "var(--blue-400)",
-            },
-          ].map(({ icon: Icon, label, desc, on, set, color }) => (
-            <div
-              key={label}
-              className="flex items-center justify-between py-4"
-              style={{ borderBottom: "1px solid var(--border-subtle)" }}
-            >
-              <div className="flex items-center gap-3">
-                <div
-                  className="flex h-9 w-9 shrink-0 items-center justify-center rounded-lg"
-                  style={{ background: on ? "rgba(255,255,255,0.06)" : "rgba(255,255,255,0.02)" }}
-                >
-                  <Icon size={15} style={{ color: on ? color : "var(--text-muted)" }} />
-                </div>
-                <div>
-                  <p className="text-xs font-semibold" style={{ color: "var(--text-primary)" }}>{label}</p>
-                  <p className="text-[10px]" style={{ color: "var(--text-muted)" }}>{desc}</p>
-                </div>
+          {/* Push Notification */}
+          <div
+            className="flex items-center justify-between py-4"
+            style={{ borderBottom: "1px solid var(--border-subtle)" }}
+          >
+            <div className="flex items-center gap-3">
+              <div
+                className="flex h-9 w-9 shrink-0 items-center justify-center rounded-lg"
+                style={{ background: pushEnabled ? "rgba(255,255,255,0.06)" : "rgba(255,255,255,0.02)" }}
+              >
+                <Bell size={15} style={{ color: pushEnabled ? "var(--gold-400)" : "var(--text-muted)" }} />
               </div>
-              <Toggle on={on} onChange={set} />
+              <div>
+                <p className="text-xs font-semibold" style={{ color: "var(--text-primary)" }}>Push Notification (Firebase FCM)</p>
+                <p className="text-[10px]" style={{ color: "var(--text-muted)" }}>Send instant alerts to your phone</p>
+              </div>
             </div>
-          ))}
+            <Toggle on={pushEnabled} onChange={handlePushToggle} disabled={pushLoading} />
+          </div>
+          
+          {/* Push error message */}
+          {pushError && (
+            <div
+              className="flex items-start gap-2 py-3 px-3 rounded-lg"
+              style={{ background: "rgba(239,68,68,0.08)", border: "1px solid rgba(239,68,68,0.20)" }}
+            >
+              <AlertCircle size={14} style={{ color: "#F87171", marginTop: "1px", flexShrink: 0 }} />
+              <p className="text-xs" style={{ color: "#F87171" }}>{pushError}</p>
+            </div>
+          )}
+
+          {/* Email Alert */}
+          <div
+            className="flex items-center justify-between py-4"
+          >
+            <div className="flex items-center gap-3">
+              <div
+                className="flex h-9 w-9 shrink-0 items-center justify-center rounded-lg"
+                style={{ background: emailEnabled ? "rgba(255,255,255,0.06)" : "rgba(255,255,255,0.02)" }}
+              >
+                <Shield size={15} style={{ color: emailEnabled ? "var(--blue-400)" : "var(--text-muted)" }} />
+              </div>
+              <div>
+                <p className="text-xs font-semibold" style={{ color: "var(--text-primary)" }}>Email Alert</p>
+                <p className="text-[10px]" style={{ color: "var(--text-muted)" }}>Send daily reports and urgent alerts</p>
+              </div>
+            </div>
+            <Toggle on={emailEnabled} onChange={setEmailEnabled} />
+          </div>
         </div>
       </div>
 

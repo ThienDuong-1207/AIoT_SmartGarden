@@ -27,7 +27,10 @@ export async function POST(req: NextRequest, { params }: { params: Params }) {
     const auth = await authorizeDevice(req, deviceId);
     if (auth.error) return auth.error;
 
-    const { command }: { command: Command } = await req.json();
+    const {
+      command,
+      suppressPushMs,
+    }: { command: Command; suppressPushMs?: number } = await req.json();
 
     if (!VALID_COMMANDS.includes(command)) {
       return NextResponse.json(
@@ -45,6 +48,12 @@ export async function POST(req: NextRequest, { params }: { params: Params }) {
 
     const sentAt = new Date();
     const payload = JSON.stringify({ command, sentAt: sentAt.toISOString() });
+
+    // Optional: mute push notifications for a short window (used by AI Lab manual capture)
+    if (command === "capture_now" && suppressPushMs && suppressPushMs > 0) {
+      const muteUntil = new Date(sentAt.getTime() + Math.min(suppressPushMs, 5 * 60 * 1000));
+      await DeviceModel.updateOne({ deviceId }, { $set: { mutePushUntil: muteUntil } });
+    }
 
     // Publish MQTT (non-blocking — nếu MQTT chưa kết nối thì log lỗi nhẹ)
     try {

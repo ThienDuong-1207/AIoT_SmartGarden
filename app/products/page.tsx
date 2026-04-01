@@ -277,7 +277,7 @@ export default async function ProductsPage() {
                     <p className="font-mono text-xs font-black" style={{ color: "#FBBF24" }}>
                       24.3 <span className="text-[9px] font-normal">°C</span>
                     </p>
-                    <p className="text-[9px]" style={{ color: "rgba(255,255,255,0.40)" }}>Nhiệt độ</p>
+                    <p className="text-[9px]" style={{ color: "rgba(255,255,255,0.40)" }}>Temperature</p>
                   </div>
                 </div>
               </div>

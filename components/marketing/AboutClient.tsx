@@ -14,22 +14,22 @@ if (typeof window !== "undefined") gsap.registerPlugin(ScrollTrigger, useGSAP);
    MOCK DATA
 ──────────────────────────────────────────────────────────────────────────── */
 const PILLARS = [
-  { icon: Leaf, iconColor: "var(--emerald-400)", iconBg: "rgba(16,185,129,0.10)", title: "Sứ mệnh", desc: "Giúp bất kì ai có thể trồng rau sạch, nuôi trồng thủy canh tại nhà một cách dễ dàng và tự động hóa." },
-  { icon: Eye, iconColor: "var(--blue-400)", iconBg: "rgba(59,130,246,0.10)", title: "Tầm nhìn", desc: "Trở thành nền tảng hàng đầu trong kỹ thuật canh tác thông minh tại Đông Nam Á." },
-  { icon: Heart, iconColor: "var(--gold-400)", iconBg: "rgba(245,158,11,0.10)", title: "Giá trị", desc: "Chất lượng, độ tin cậy, tính sáng tạo và sự quan tâm đến cộng đồng nông dân." },
+  { icon: Leaf, iconColor: "var(--emerald-400)", iconBg: "rgba(16,185,129,0.10)", title: "Mission", desc: "Enable anyone to grow clean vegetables and hydroponic crops at home with simple automation." },
+  { icon: Eye, iconColor: "var(--blue-400)", iconBg: "rgba(59,130,246,0.10)", title: "Vision", desc: "Become a leading smart farming platform across Southeast Asia." },
+  { icon: Heart, iconColor: "var(--gold-400)", iconBg: "rgba(245,158,11,0.10)", title: "Values", desc: "Quality, reliability, innovation, and strong support for the farming community." },
 ];
 
 const TECH_STACK = [
-  { icon: Cpu, color: "var(--blue-400)", label: "Cảm biến IoT", desc: "Đo TDS, pH, nhiệt độ, độ ẩm theo thời gian thực" },
-  { icon: ScanEye, color: "var(--emerald-400)", label: "AI Diagnosis", desc: "Phân tích ảnh lá cây để phát hiện bệnh và gợi ý xử lý" },
-  { icon: Droplets, color: "var(--blue-400)", label: "Thủy canh", desc: "Hệ thống NFT, DWC tối ưu cho leafy greens" },
-  { icon: LayoutDashboard, color: "var(--gold-400)", label: "Dashboard Web", desc: "Giám sát thông số và điều khiển từ xa" },
+  { icon: Cpu, color: "var(--blue-400)", label: "IoT Sensors", desc: "Real-time monitoring of TDS, pH, temperature, and humidity" },
+  { icon: ScanEye, color: "var(--emerald-400)", label: "AI Diagnosis", desc: "Analyze leaf images to detect diseases and suggest treatments" },
+  { icon: Droplets, color: "var(--blue-400)", label: "Hydroponics", desc: "NFT and DWC systems optimized for leafy greens" },
+  { icon: LayoutDashboard, color: "var(--gold-400)", label: "Web Dashboard", desc: "Remote monitoring and control from anywhere" },
 ];
 
 const JOURNEY = [
-  { year: "2024 / KHỞI NGUỒN", title: "Văn Lang Uni Lab", desc: "Nghiên cứu nguyên lý thủy canh kết hợp IoT cơ bản tại phòng Lab VLU, tối ưu năng suất không gian hẹp." },
-  { year: "2025 / BỨT PHÁ", title: "Hackathon AIoT", desc: "Đưa mô hình AI nhận diện bệnh lá vào luồng Camera ESP32-CAM, thiết lập Dashboard UI Cinematic." },
-  { year: "2026 / HOÀN THIỆN", title: "Smart Garden AIoT", desc: "Thương mại hóa hệ sinh thái với MQTT realtime, cảnh báo Firebase và châm dinh dưỡng tự động." },
+  { year: "2024 / FOUNDATION", title: "Van Lang Uni Lab", desc: "Researched hydroponic fundamentals with basic IoT integration at the VLU lab to optimize yields in limited spaces." },
+  { year: "2025 / BREAKTHROUGH", title: "AIoT Hackathon", desc: "Integrated AI leaf disease detection into ESP32-CAM workflows and designed a cinematic dashboard UI." },
+  { year: "2026 / PRODUCTIZED", title: "Smart Garden AIoT", desc: "Commercialized the ecosystem with real-time MQTT, Firebase alerts, and automatic nutrient dosing." },
 ];
 
 const TEAM = [
@@ -273,10 +273,10 @@ export default function AboutClient() {
             // PROJECT_IDENTITY
           </span>
           <h1 className="mt-4 text-5xl md:text-7xl font-black text-white uppercase tracking-tighter">
-            Về Smart Garden <span className="text-emerald-400">AIoT</span>
+            About Smart Garden <span className="text-emerald-400">AIoT</span>
           </h1>
           <p className="mt-6 max-w-2xl text-base leading-relaxed md:text-lg" style={{ color: "var(--text-secondary)" }}>
-            Hệ sinh thái kết hợp hình thái nông nghiệp thủy canh cổ điển với công nghệ IoT và Thị giác máy tính (AI Vision), mang đến một không gian xanh tự động hóa cho kỹ sư và người yêu cây.
+            An ecosystem that combines classic hydroponic agriculture with IoT and AI vision to deliver an automated green environment for engineers and plant lovers.
           </p>
           
           <div className="mt-12 flex items-center justify-center animate-bounce opacity-50">
@@ -288,13 +288,13 @@ export default function AboutClient() {
       {/* ── Grid: Core & Tech Stack ── */}
       <section className="container-app py-16 z-10">
         <div className="grid lg:grid-cols-2 gap-8 md:gap-12">
-          {/* Left: Tầm nhìn sứ mệnh */}
+          {/* Left: mission and vision */}
           <div className="flex flex-col gap-5">
             <div className="mb-2">
               <span className="font-mono text-sm font-bold uppercase tracking-widest text-teal-400">
                 // PLATFORM_CORE
               </span>
-              <h2 className="text-3xl md:text-4xl font-extrabold mt-1 text-white tracking-tight">Nền tảng cốt lõi</h2>
+              <h2 className="text-3xl md:text-4xl font-extrabold mt-1 text-white tracking-tight">Core Foundation</h2>
             </div>
             
             <div className="flex flex-col gap-4">
@@ -324,7 +324,7 @@ export default function AboutClient() {
               <span className="font-mono text-sm font-bold uppercase tracking-widest text-teal-400">
                 // SYSTEM_ARCHITECTURE
               </span>
-              <h2 className="text-3xl md:text-4xl font-extrabold mt-1 text-white tracking-tight">Công nghệ tích hợp</h2>
+              <h2 className="text-3xl md:text-4xl font-extrabold mt-1 text-white tracking-tight">Integrated Technology</h2>
             </div>
 
             <div
@@ -359,7 +359,7 @@ export default function AboutClient() {
               
               <div className="mt-6 pt-4 border-t border-[rgba(34,211,238,0.1)]">
                 <p className="font-mono text-[10px] text-[var(--cyan-500)] flex items-center gap-2">
-                  <span className="animate-pulse font-bold">_</span> Cấu trúc vi dịch vụ đảm bảo độ trễ {"<"} 100ms
+                  <span className="animate-pulse font-bold">_</span> Microservice architecture keeps latency under {"<"} 100ms
                 </p>
               </div>
             </div>
@@ -373,7 +373,7 @@ export default function AboutClient() {
           <span className="font-mono text-sm font-bold uppercase tracking-widest text-teal-400">
             // PROJECT_TIMELINE
           </span>
-          <h2 className="text-3xl md:text-4xl font-extrabold mt-2 text-white tracking-tight">Tiến trình phát triển</h2>
+          <h2 className="text-3xl md:text-4xl font-extrabold mt-2 text-white tracking-tight">Development Timeline</h2>
         </div>
 
         <div ref={timelineContainerRef} className="w-full max-w-3xl flex flex-col gap-32 relative py-10">

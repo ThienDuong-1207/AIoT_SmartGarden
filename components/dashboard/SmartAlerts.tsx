@@ -7,11 +7,11 @@ type SmartAlertsProps = {
 /* Classify alert by keywords → severity */
 function classify(alert: string): "warning" | "success" | "info" | "danger" {
   const lower = alert.toLowerCase();
-  if (lower.includes("thấp") || lower.includes("thap") || lower.includes("còn") || lower.includes("con"))
+  if (lower.includes("low") || lower.includes("refill") || lower.includes("minimum"))
     return "warning";
-  if (lower.includes("ổn định") || lower.includes("on dinh") || lower.includes("khỏe") || lower.includes("khoe"))
+  if (lower.includes("normal") || lower.includes("healthy"))
     return "success";
-  if (lower.includes("nhiệt") || lower.includes("nhiet") || lower.includes("lần") || lower.includes("lan"))
+  if (lower.includes("temperature") || lower.includes("detected") || lower.includes("monitor"))
     return "info";
   return "info";
 }

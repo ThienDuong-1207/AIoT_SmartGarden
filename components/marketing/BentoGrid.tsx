@@ -319,7 +319,7 @@ export default function BentoGrid() {
           <h2
             className="text-4xl md:text-6xl font-black leading-none uppercase text-white tracking-tighter"
           >
-            Mạng lưới phân tích <br/><span className="bg-gradient-to-r from-teal-400 to-emerald-400 bg-clip-text text-transparent">Thời gian thực</span>
+            Real-Time <br/><span className="bg-gradient-to-r from-teal-400 to-emerald-400 bg-clip-text text-transparent">Analytics Grid</span>
           </h2>
         </div>
 
@@ -341,7 +341,7 @@ export default function BentoGrid() {
                 <p
                   className="mt-6 text-[14px] leading-relaxed font-medium text-slate-100"
                 >
-                  Liên tục định vị và xử lý nhận diện tín hiệu sinh khối qua phân tích phổ ảnh.
+                  Continuously identifies and processes plant bio-signals through spectral image analysis.
                 </p>
               </div>
 

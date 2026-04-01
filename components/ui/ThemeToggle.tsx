@@ -14,7 +14,7 @@ export default function ThemeToggle() {
     <button
       onClick={toggle}
       className="btn-icon"
-      title={mounted ? (theme === "dark" ? "Chuyển sang Light mode" : "Chuyển sang Dark mode") : "Toggle theme"}
+      title={mounted ? (theme === "dark" ? "Switch to light mode" : "Switch to dark mode") : "Toggle theme"}
       aria-label="Toggle theme"
       suppressHydrationWarning
     >

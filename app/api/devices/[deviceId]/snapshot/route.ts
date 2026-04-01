@@ -1,9 +1,18 @@
 import { NextRequest, NextResponse } from "next/server";
+import { createHash } from "node:crypto";
 import { dbConnect } from "@/lib/mongodb";
 import CameraCaptureModel from "@/models/CameraCapture";
 import { authorizeDevice, authorizeDeviceToken } from "@/lib/deviceAuth";
 
 type Params = { params: Promise<{ deviceId: string }> };
+
+function buildCloudinarySignature(params: Record<string, string>, apiSecret: string): string {
+  const toSign = Object.keys(params)
+    .sort()
+    .map((k) => `${k}=${params[k]}`)
+    .join("&");
+  return createHash("sha1").update(`${toSign}${apiSecret}`).digest("hex");
+}
 
 /*
   GET /api/devices/[deviceId]/snapshot?after=<ISO>
@@ -31,6 +40,7 @@ export async function GET(req: NextRequest, { params }: Params) {
   }
 
   return NextResponse.json({
+    snapshotId:  snapshot._id,
     image:      snapshot.imageUrl,
     capturedAt: snapshot.capturedAt,
   });
@@ -45,7 +55,7 @@ export async function POST(req: NextRequest, { params }: Params) {
   const { deviceId } = await params;
 
   // ESP32 dùng Authorization: Bearer {activationCode}
-  const auth = await authorizeDeviceToken(req, deviceId);
+  const auth = await authorizeDeviceToken(req, deviceId, { requireToken: true });
   if (auth.error) return auth.error;
 
   const body = await req.json();
@@ -59,23 +69,41 @@ export async function POST(req: NextRequest, { params }: Params) {
   // Upload ảnh lên Cloudinary
   let imageUrl = "";
   try {
-    const cloudName = process.env.CLOUDINARY_CLOUD_NAME!;
+    const cloudName = process.env.CLOUDINARY_CLOUD_NAME;
+    const apiKey = process.env.CLOUDINARY_API_KEY;
+    const apiSecret = process.env.CLOUDINARY_API_SECRET;
+    if (!cloudName || !apiKey || !apiSecret) {
+      return NextResponse.json({ error: "Cloudinary credentials are missing" }, { status: 500 });
+    }
+
+    const timestamp = Math.floor(Date.now() / 1000).toString();
+    const folder = `AIoT_smartGarden/snapshots/${deviceId}`;
+    const signature = buildCloudinarySignature({ folder, timestamp }, apiSecret);
+
     const formData = new FormData();
     formData.append("file", body.imageBase64);
-    formData.append("upload_preset", process.env.CLOUDINARY_UPLOAD_PRESET ?? "AIoT_smartGarden");
-    formData.append("folder", `AIoT_smartGarden/snapshots/${deviceId}`);
+    formData.append("folder", folder);
+    formData.append("timestamp", timestamp);
+    formData.append("api_key", apiKey);
+    formData.append("signature", signature);
 
     const uploadRes = await fetch(
       `https://api.cloudinary.com/v1_1/${cloudName}/image/upload`,
       { method: "POST", body: formData }
     );
 
-    if (uploadRes.ok) {
-      const uploadData = await uploadRes.json() as { secure_url: string };
-      imageUrl = uploadData.secure_url;
+    if (!uploadRes.ok) {
+      const uploadErr = await uploadRes.text();
+      return NextResponse.json(
+        { error: `Cloudinary upload failed: ${uploadErr}` },
+        { status: 502 }
+      );
     }
+
+    const uploadData = await uploadRes.json() as { secure_url: string };
+    imageUrl = uploadData.secure_url;
   } catch {
-    // upload thất bại → vẫn lưu record với imageUrl rỗng
+    return NextResponse.json({ error: "Cloudinary upload failed" }, { status: 502 });
   }
 
   await CameraCaptureModel.create({

@@ -3,7 +3,6 @@
 import { FormEvent, useState } from "react";
 import { signIn } from "next-auth/react";
 import { Leaf, UserCog, LogIn, Mail, KeyRound, Globe, ChevronRight } from "lucide-react";
-import GalaxyBackground from "@/components/ui/GalaxyBackground";
 
 export default function LoginPage() {
   const [mode, setMode] = useState<"customer" | "admin">("customer");
@@ -29,7 +28,7 @@ export default function LoginPage() {
     setIsSubmitting(false);
 
     if (!result || result.error) {
-      setAdminError("Đăng nhập admin thất bại. Kiểm tra email/password.");
+      setAdminError("Admin sign-in failed. Check your email/password.");
       return;
     }
 
@@ -38,8 +37,6 @@ export default function LoginPage() {
 
   return (
     <main className="relative min-h-screen w-full bg-[#030508] text-white overflow-hidden grid md:grid-cols-2">
-      <GalaxyBackground />
-
       {/* ── LEFT PANEL: Visual / Ecosystem Atmosphere ── */}
       <div className="relative hidden md:flex flex-col justify-center p-12 lg:p-20 overflow-hidden border-r border-white/5 pb-32">
         {/* Background Visual Layer */}
@@ -63,12 +60,12 @@ export default function LoginPage() {
         {/* Content Layer */}
         <div className="relative z-10">
            <h2 className="text-6xl lg:text-7xl font-black uppercase tracking-tighter leading-[0.85]">
-             CÔNG NGHỆ<br/>
-             <span className="text-emerald-400">XANH</span> TRONG<br/>
-             TẦM TAY
+             GREEN<br/>
+             <span className="text-emerald-400">TECH</span> AT<br/>
+             YOUR FINGERTIPS
            </h2>
            <p className="mt-12 text-slate-400 text-xl max-w-sm leading-relaxed font-medium">
-             Tự động hóa khu vườn của bạn với trí tuệ nhân tạo và hệ thống IoT thế hệ mới nhất.
+             Automate your garden with next-generation AI and IoT systems.
            </p>
         </div>
       </div>
@@ -88,10 +85,10 @@ export default function LoginPage() {
              </div>
 
              <h1 className="text-4xl md:text-5xl font-black uppercase tracking-tighter mb-2">
-                <span className="text-white">ĐĂNG</span> <span className="text-emerald-400">NHẬP</span>
+                <span className="text-white">SIGN</span> <span className="text-emerald-400">IN</span>
              </h1>
              <p className="text-slate-400 text-sm mb-10 leading-relaxed">
-               Tiếp tục hành trình xây dựng khu vườn thông minh của bạn.
+               Continue your journey to build a smarter garden.
              </p>
 
              {/* Mode Toggle Switch (Full Pill Style) */}
@@ -100,13 +97,13 @@ export default function LoginPage() {
                  onClick={() => setMode("customer")}
                  className={`py-2.5 rounded-full text-[10px] font-black uppercase tracking-widest transition-all duration-300 ${!isAdminMode ? "bg-emerald-500/20 text-emerald-400 border border-emerald-500/30 shadow-[0_0_15px_rgba(16,185,129,0.2)]" : "text-slate-500 hover:text-white"}`}
                >
-                 TÀI KHOẢN
+                 ACCOUNT
                </button>
                <button
                  onClick={() => setMode("admin")}
                  className={`py-2.5 rounded-full text-[10px] font-black uppercase tracking-widest transition-all duration-300 ${isAdminMode ? "bg-emerald-500/20 text-emerald-400 border border-emerald-500/30 shadow-[0_0_15px_rgba(16,185,129,0.2)]" : "text-slate-500 hover:text-white"}`}
                >
-                 QUẢN TRỊ VIÊN
+                 ADMIN
                </button>
              </div>
 
@@ -123,14 +120,14 @@ export default function LoginPage() {
                       <path fill="#34A853" d="M24 48c6.48 0 11.93-2.13 15.89-5.81l-7.73-6c-2.15 1.45-4.92 2.3-8.16 2.3-6.26 0-11.57-4.22-13.47-9.91l-7.98 6.19C6.51 42.62 14.62 48 24 48z"/>
                       <path fill="none" d="M0 0h48v48H0z"/>
                     </svg>
-                    <span className="text-xs uppercase tracking-widest font-bold">TIẾP TỤC VỚI GOOGLE</span>
+                      <span className="text-xs uppercase tracking-widest font-bold">CONTINUE WITH GOOGLE</span>
                  </button>
                  
                  <button
                     onClick={() => signIn("google", { callbackUrl: "/auth/redirect" })}
                     className="flex w-full items-center justify-center gap-2 py-4 rounded-2xl bg-emerald-500 text-white font-black text-xs uppercase tracking-[0.2em] shadow-[0_0_20px_rgba(16,185,129,0.3)] transition-all duration-300 hover:bg-emerald-400 hover:shadow-[0_0_30px_rgba(16,185,129,0.5)] hover:-translate-y-1"
                  >
-                    ĐĂNG NHẬP NGAY
+                    SIGN IN NOW
                     <ChevronRight size={14} className="animate-pulse" />
                  </button>
                </div>
@@ -158,7 +155,7 @@ export default function LoginPage() {
                       type="password"
                       value={password}
                       onChange={(e) => setPassword(e.target.value)}
-                      placeholder="Mật khẩu bảo mật"
+                      placeholder="Secure password"
                       className="w-full pl-12 pr-6 py-4 rounded-2xl bg-white/[0.03] border border-white/10 text-sm font-medium focus:outline-none focus:border-emerald-500/50 focus:bg-white/[0.06] transition-all"
                       required
                     />
@@ -175,14 +172,14 @@ export default function LoginPage() {
                     disabled={isSubmitting}
                     className="flex w-full items-center justify-center gap-2 py-4 rounded-2xl bg-emerald-500 disabled:bg-slate-700 text-white font-black text-xs uppercase tracking-[0.2em] shadow-[0_0_20px_rgba(16,185,129,0.3)] transition-all duration-300 hover:bg-emerald-400 hover:shadow-[0_0_30px_rgba(16,185,129,0.5)] hover:-translate-y-1"
                  >
-                    {isSubmitting ? "ĐANG XỬ LÝ..." : "XÁC NHẬN ADMIN"}
+                    {isSubmitting ? "PROCESSING..." : "CONFIRM ADMIN"}
                  </button>
                </form>
              )}
 
              <p className="mt-8 text-center text-[10px] text-slate-500 uppercase tracking-widest leading-relaxed">
-               Bằng cách đăng nhập, bạn đồng ý với <br/>
-               <span className="text-slate-300 hover:text-emerald-400 cursor-pointer transition-colors underline underline-offset-4">điều khoản sử dụng</span> của hệ thống.
+               By signing in, you agree to the <br/>
+               <span className="text-slate-300 hover:text-emerald-400 cursor-pointer transition-colors underline underline-offset-4">terms of use</span> of the platform.
              </p>
           </div>
         </div>

@@ -25,7 +25,7 @@ export default async function DeviceLayout({ children, params }: Props) {
             className="link-muted-emerald flex items-center gap-1.5 text-xs transition-colors duration-100"
           >
             <ArrowLeft size={12} />
-            Chậu cây
+            Plant pots
           </Link>
 
           <span style={{ color: "var(--border-normal)" }}>/</span>

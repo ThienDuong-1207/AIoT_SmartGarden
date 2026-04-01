@@ -15,6 +15,7 @@ const SensorReadingSchema = new Schema(
   {
     timestamps: false,
     versionKey: false,
+    collection: "sensordata",
   }
 );
 

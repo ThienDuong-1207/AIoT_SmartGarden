@@ -17,17 +17,17 @@ export default async function AdminPage() {
   ]);
 
   const stats = [
-    { icon: Users, label: "Tổng users", value: String(users), color: "var(--blue-400)", bg: "rgba(59,130,246,0.10)" },
-    { icon: Cpu, label: "Thiết bị", value: String(devices), color: "var(--emerald-400)", bg: "rgba(16,185,129,0.10)" },
-    { icon: Package, label: "Đơn hàng", value: String(orders), color: "var(--gold-400)", bg: "rgba(245,158,11,0.10)" },
-    { icon: ShieldAlert, label: "Cảnh báo hệ thống", value: "0", color: "#F87171", bg: "rgba(239,68,68,0.10)" },
+    { icon: Users, label: "Total users", value: String(users), color: "var(--blue-400)", bg: "rgba(59,130,246,0.10)" },
+    { icon: Cpu, label: "Devices", value: String(devices), color: "var(--emerald-400)", bg: "rgba(16,185,129,0.10)" },
+    { icon: Package, label: "Orders", value: String(orders), color: "var(--gold-400)", bg: "rgba(245,158,11,0.10)" },
+    { icon: ShieldAlert, label: "System alerts", value: "0", color: "#F87171", bg: "rgba(239,68,68,0.10)" },
   ];
 
   const modules = [
-    { label: "Quản lý Users", href: "/admin/users", desc: "Xem danh sách, role, ban/unban, hồ sơ chi tiết" },
-    { label: "Quản lý Orders", href: "/admin/orders", desc: "Theo dõi đơn hàng và cập nhật trạng thái nhanh" },
-    { label: "Quản lý Products", href: "/admin/products", desc: "Xem catalog và xóa/chỉnh sửa sản phẩm" },
-    { label: "Diagnostics", href: "/admin/diagnostics", desc: "Theo dõi log AI/system và export CSV" },
+    { label: "Manage Users", href: "/admin/users", desc: "View list, roles, ban/unban, and detailed profiles" },
+    { label: "Manage Orders", href: "/admin/orders", desc: "Track orders and update statuses quickly" },
+    { label: "Manage Products", href: "/admin/products", desc: "Review catalog and delete/edit products" },
+    { label: "Diagnostics", href: "/admin/diagnostics", desc: "Monitor AI/system logs and export CSV" },
   ];
 
   return (
@@ -40,7 +40,7 @@ export default async function AdminPage() {
           Admin Dashboard
         </h1>
         <p className="mt-1 text-sm" style={{ color: "var(--text-secondary)" }}>
-          Quản trị users, đơn hàng, sản phẩm và giám sát hệ thống.
+          Manage users, orders, products, and system health in one place.
         </p>
       </div>
 
@@ -65,7 +65,7 @@ export default async function AdminPage() {
         <Activity size={18} style={{ color: "var(--emerald-500)" }} />
         <div className="flex-1">
           <p className="text-sm font-semibold" style={{ color: "var(--emerald-400)" }}>
-            Hệ thống đang hoạt động bình thường
+            System is operating normally
           </p>
           <p className="mt-0.5 font-mono text-xs" style={{ color: "var(--text-muted)" }}>
             MongoDB Atlas · HiveMQ MQTT · Vercel · Cloudinary
@@ -83,7 +83,7 @@ export default async function AdminPage() {
             <p className="font-semibold" style={{ color: "var(--text-primary)" }}>{module.label}</p>
             <p className="text-xs leading-relaxed" style={{ color: "var(--text-muted)" }}>{module.desc}</p>
             <span className="mt-auto inline-flex items-center gap-1 text-xs font-semibold" style={{ color: "var(--emerald-400)" }}>
-              Mở module
+              Open module
               <ArrowRight size={13} />
             </span>
           </Link>

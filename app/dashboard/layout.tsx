@@ -4,6 +4,7 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useEffect, useState } from "react";
 import { LayoutGrid, Bell, ShoppingBag, Settings2, Leaf } from "lucide-react";
+import { useFcmToken } from "@/hooks/useFcmToken";
 
 const NAV_GROUPS = [
   {
@@ -33,6 +34,7 @@ const ACCENT: Record<string, { text: string; bg: string; border: string }> = {
 export default function DashboardLayout({ children }: { children: React.ReactNode }) {
   const pathname       = usePathname();
   const [alertCount, setAlertCount] = useState(0);
+  useFcmToken();
 
   /* Fetch unread alert count */
   useEffect(() => {

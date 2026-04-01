@@ -11,6 +11,7 @@ type DeviceView = {
   name: string;
   plantType: string;
   isOnline: boolean;
+  lastSeenAt?: string | null;
   image?: string;
 };
 
@@ -18,32 +19,50 @@ type LiveData = {
   tds: number | null;
   ph: number | null;
   temp: number | null;
+  isOnline: boolean | null;
 };
 
-function useLiveData(deviceId: string, isOnline: boolean) {
-  const [data, setData] = useState<LiveData>({ tds: null, ph: null, temp: null });
+function useLiveData(deviceId: string) {
+  const [data, setData] = useState<LiveData>({ tds: null, ph: null, temp: null, isOnline: null });
 
   useEffect(() => {
-    if (!isOnline) return;
-    fetch(`/api/devices/${deviceId}/latest`)
-      .then((r) => r.ok ? r.json() : null)
-      .then((json) => {
-        if (json?.reading) {
+    const fetchLatest = () => {
+      if (typeof document !== "undefined" && document.visibilityState === "hidden") return;
+      fetch(`/api/devices/${deviceId}/latest`)
+        .then((r) => r.ok ? r.json() : null)
+        .then((json) => {
           setData({
-            tds:  json.reading.tds_ppm  ?? null,
-            ph:   json.reading.ph       ?? null,
-            temp: json.reading.temp     ?? null,
+            tds:  json?.reading?.tds_ppm ?? null,
+            ph:   json?.reading?.ph      ?? null,
+            temp: json?.reading?.temp    ?? null,
+            isOnline: typeof json?.device?.isOnline === "boolean" ? json.device.isOnline : null,
           });
-        }
-      })
-      .catch(() => {});
-  }, [deviceId, isOnline]);
+        })
+        .catch(() => {});
+    };
+
+    fetchLatest();
+
+    const onVisibilityChange = () => {
+      if (document.visibilityState === "visible") {
+        fetchLatest();
+      }
+    };
+    document.addEventListener("visibilitychange", onVisibilityChange);
+
+    const interval = setInterval(fetchLatest, 30_000);
+    return () => {
+      clearInterval(interval);
+      document.removeEventListener("visibilitychange", onVisibilityChange);
+    };
+  }, [deviceId]);
 
   return data;
 }
 
 export default function DeviceCard({ device, index }: { device: DeviceView; index: number }) {
-  const live = useLiveData(device.deviceId, device.isOnline);
+  const live = useLiveData(device.deviceId);
+  const isOnline = live.isOnline ?? device.isOnline;
 
   const metrics = [
     { icon: Droplets,    value: live.tds  !== null ? `${live.tds} ppm` : "—", label: "TDS",   color: "#60A5FA"            },
@@ -63,8 +82,8 @@ export default function DeviceCard({ device, index }: { device: DeviceView; inde
       }}
       onMouseEnter={(e) => {
         const el = e.currentTarget as HTMLElement;
-        el.style.borderColor = device.isOnline ? "rgba(16,185,129,0.35)" : "rgba(255,255,255,0.12)";
-        el.style.boxShadow   = device.isOnline ? "0 8px 32px rgba(16,185,129,0.10)" : "0 8px 24px rgba(0,0,0,0.3)";
+        el.style.borderColor = isOnline ? "rgba(16,185,129,0.35)" : "rgba(255,255,255,0.12)";
+        el.style.boxShadow   = isOnline ? "0 8px 32px rgba(16,185,129,0.10)" : "0 8px 24px rgba(0,0,0,0.3)";
         el.style.transform   = "translateY(-2px)";
       }}
       onMouseLeave={(e) => {
@@ -105,7 +124,7 @@ export default function DeviceCard({ device, index }: { device: DeviceView; inde
             className="flex items-center gap-1.5 rounded-full px-2.5 py-1 text-xs font-semibold"
             style={{
               backdropFilter: "blur(8px)",
-              ...(device.isOnline
+              ...(isOnline
                 ? { background: "rgba(16,185,129,0.20)", color: "var(--emerald-400)", border: "1px solid rgba(16,185,129,0.35)" }
                 : { background: "rgba(0,0,0,0.40)",      color: "rgba(255,255,255,0.50)", border: "1px solid rgba(255,255,255,0.10)" }),
             }}
@@ -113,11 +132,11 @@ export default function DeviceCard({ device, index }: { device: DeviceView; inde
             <span
               className="h-1.5 w-1.5 rounded-full"
               style={{
-                background: device.isOnline ? "var(--emerald-500)" : "rgba(255,255,255,0.25)",
-                animation: device.isOnline ? "pulseDot 2s ease-in-out infinite" : "none",
+                background: isOnline ? "var(--emerald-500)" : "rgba(255,255,255,0.25)",
+                animation: isOnline ? "pulseDot 2s ease-in-out infinite" : "none",
               }}
             />
-            {device.isOnline ? "Online" : "Offline"}
+            {isOnline ? "Online" : "Offline"}
           </span>
         </div>
       </div>
@@ -137,11 +156,11 @@ export default function DeviceCard({ device, index }: { device: DeviceView; inde
           <div
             className="flex h-7 w-7 shrink-0 items-center justify-center rounded-full transition-transform duration-150 group-hover:translate-x-0.5"
             style={{
-              background: device.isOnline ? "rgba(16,185,129,0.12)" : "var(--bg-base)",
-              border: device.isOnline ? "1px solid rgba(16,185,129,0.25)" : "1px solid var(--border-subtle)",
+              background: isOnline ? "rgba(16,185,129,0.12)" : "var(--bg-base)",
+              border: isOnline ? "1px solid rgba(16,185,129,0.25)" : "1px solid var(--border-subtle)",
             }}
           >
-            <ChevronRight size={13} style={{ color: device.isOnline ? "var(--emerald-400)" : "var(--text-muted)" }} />
+            <ChevronRight size={13} style={{ color: isOnline ? "var(--emerald-400)" : "var(--text-muted)" }} />
           </div>
         </div>
 
@@ -152,10 +171,10 @@ export default function DeviceCard({ device, index }: { device: DeviceView; inde
         >
           {metrics.map(({ icon: Icon, value, label, color }) => (
             <div key={label} className="flex flex-col items-center gap-1">
-              <Icon size={12} style={{ color: device.isOnline ? color : "var(--text-muted)" }} />
+              <Icon size={12} style={{ color: isOnline ? color : "var(--text-muted)" }} />
               <span
                 className="font-mono text-[11px] font-bold"
-                style={{ color: device.isOnline ? color : "var(--text-muted)" }}
+                style={{ color: isOnline ? color : "var(--text-muted)" }}
               >
                 {value}
               </span>

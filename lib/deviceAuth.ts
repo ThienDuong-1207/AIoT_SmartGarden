@@ -75,10 +75,12 @@ export async function authorizeDevice(
  */
 export async function authorizeDeviceToken(
   req: NextRequest,
-  deviceId: string
+  deviceId: string,
+  options?: { requireToken?: boolean }
 ): Promise<AuthOk | AuthFail> {
   const authHeader = req.headers.get("authorization");
   const token = authHeader?.replace(/^Bearer\s+/i, "").trim();
+  const requireToken = options?.requireToken ?? false;
 
   await dbConnect();
   const device = await DeviceModel.findOne({ deviceId }).lean();
@@ -86,6 +88,14 @@ export async function authorizeDeviceToken(
   if (!device) {
     return {
       error: NextResponse.json({ error: "Device not found" }, { status: 404 }),
+      device: null,
+      userId: null,
+    };
+  }
+
+  if (requireToken && !token) {
+    return {
+      error: NextResponse.json({ error: "Token required" }, { status: 401 }),
       device: null,
       userId: null,
     };

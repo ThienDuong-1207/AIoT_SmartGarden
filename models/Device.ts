@@ -15,6 +15,7 @@ const DeviceSchema = new Schema(
     wifiMAC: { type: String },
     isOnline: { type: Boolean, default: false },
     lastSeenAt: { type: Date },
+    mutePushUntil: { type: Date, default: null },
     activationCode: { type: String, required: true, unique: true, index: true },
     config: {
       cameraInterval: { type: Number, default: 21600 },

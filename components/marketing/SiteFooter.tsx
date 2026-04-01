@@ -4,17 +4,17 @@ import Link from "next/link";
 import { Mail, Phone, MapPin, Leaf, Code2, MessageSquare, Briefcase } from "lucide-react";
 
 const EXPLORE_LINKS = [
-  { href: "/",          label: "Trang chủ" },
-  { href: "/products",  label: "Sản phẩm" },
+  { href: "/",          label: "Home" },
+  { href: "/products",  label: "Products" },
   { href: "/dashboard", label: "Dashboard" },
   { href: "/about",     label: "About Us" },
 ];
 
 const SUPPORT_LINKS = [
-  { href: "/about",   label: "Về chúng tôi" },
-  { href: "/auth/login", label: "Đăng nhập" },
-  { href: "/cart",    label: "Giỏ hàng" },
-  { href: "/profile", label: "Tài khoản" },
+  { href: "/about",   label: "About Us" },
+  { href: "/auth/login", label: "Sign In" },
+  { href: "/cart",    label: "Cart" },
+  { href: "/profile", label: "Account" },
 ];
 
 const SOCIAL_LINKS = [
@@ -60,7 +60,7 @@ export default function SiteFooter() {
             className="mt-4 max-w-sm text-sm leading-relaxed"
             style={{ color: "var(--text-muted)" }}
           >
-            Nền tảng AIoT thủy canh thông minh — giám sát thời gian thực, cảnh báo tự động và quản lý cây trồng hiệu quả từ mọi nơi.
+            Smart hydroponic AIoT platform with real-time monitoring, automatic alerts, and efficient crop management from anywhere.
           </p>
 
           {/* Social links */}
@@ -85,7 +85,7 @@ export default function SiteFooter() {
             className="mb-4 text-xs font-semibold uppercase tracking-[0.12em]"
             style={{ color: "var(--text-muted)" }}
           >
-            Khám phá
+            Explore
           </p>
           <ul className="space-y-3">
             {EXPLORE_LINKS.map(({ href, label }) => (
@@ -114,7 +114,7 @@ export default function SiteFooter() {
             className="mb-4 text-xs font-semibold uppercase tracking-[0.12em]"
             style={{ color: "var(--text-muted)" }}
           >
-            Liên hệ
+            Contact
           </p>
           <ul className="space-y-3">
             <li className="flex items-center gap-2.5">
@@ -160,7 +160,7 @@ export default function SiteFooter() {
           >
             <span className="status-dot status-online" style={{ width: 6, height: 6, backgroundColor: "var(--cyan-500)" }} />
             <span className="text-xs font-medium" style={{ color: "var(--cyan-400)" }}>
-              Hệ thống mạng đồng bộ
+              Network synchronized
             </span>
           </div>
         </div>

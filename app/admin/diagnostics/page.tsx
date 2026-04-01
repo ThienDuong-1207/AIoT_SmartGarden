@@ -46,7 +46,7 @@ export default async function AdminDiagnosticsPage() {
     <div className="space-y-6">
       <div>
         <h2 className="text-2xl font-bold" style={{ color: "var(--text-primary)" }}>Diagnostics</h2>
-        <p className="text-sm" style={{ color: "var(--text-secondary)" }}>Log AI hệ thống và thống kê nhanh</p>
+        <p className="text-sm" style={{ color: "var(--text-secondary)" }}>AI system logs and quick metrics</p>
       </div>
 
       <div className="grid gap-4 md:grid-cols-3">
@@ -88,7 +88,7 @@ export default async function AdminDiagnosticsPage() {
                   {log.level}
                 </span>
                 <span className="font-medium" style={{ color: "var(--text-primary)" }}>{log.module}</span>
-                <span className="text-xs" style={{ color: "var(--text-muted)" }}>{new Date(log.timestamp).toLocaleString("vi-VN")}</span>
+                <span className="text-xs" style={{ color: "var(--text-muted)" }}>{new Date(log.timestamp).toLocaleString("en-US")}</span>
               </div>
               <p className="mt-1" style={{ color: "var(--text-secondary)" }}>{log.message}</p>
             </div>

@@ -156,7 +156,7 @@ export default function ProductCard({ product }: { product: Product }) {
         </h3>
 
         <p className="mt-1 line-clamp-2 text-xs leading-relaxed" style={{ color: "var(--text-muted)" }}>
-          Hỗ trợ kỹ thuật canh tác chất lượng cao.
+          Premium cultivation support for better yields.
         </p>
 
         <div className="flex-1" />
@@ -196,7 +196,7 @@ export default function ProductCard({ product }: { product: Product }) {
                 border: "1px solid var(--border-subtle)",
                 color: "var(--text-muted)",
               }}
-              title="Xem chi tiết"
+              title="View details"
             >
               <ArrowRight size={13} />
             </Link>

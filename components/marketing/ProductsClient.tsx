@@ -72,7 +72,7 @@ export default function ProductsClient({ products }: { products: Product[] }) {
   const countOf = (cat: string) =>
     cat === "all" ? products.length : products.filter((p) => p.category === cat).length;
 
-  const activeSortLabel = SORT_OPTIONS.find((o) => o.value === sortBy)?.label ?? "Mặc định";
+  const activeSortLabel = SORT_OPTIONS.find((o) => o.value === sortBy)?.label ?? "Default";
 
   return (
     <>

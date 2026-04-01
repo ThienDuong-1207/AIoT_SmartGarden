@@ -13,7 +13,6 @@ import {
   BadgeCheck,
 } from "lucide-react";
 import SiteFooter from "@/components/marketing/SiteFooter";
-import GalaxyBackground from "@/components/ui/GalaxyBackground";
 
 export default function ProfilePage() {
   const { data: session, status } = useSession();
@@ -22,7 +21,6 @@ export default function ProfilePage() {
   if (status === "loading") {
     return (
       <main className="relative flex flex-col bg-transparent min-h-dvh overflow-hidden">
-        <GalaxyBackground />
         <div className="container-app py-24 relative z-10">
           <div className="grid gap-8 lg:grid-cols-[300px_1fr]">
             <div className="skeleton h-64 rounded-2xl" />
@@ -46,7 +44,6 @@ export default function ProfilePage() {
 
   return (
     <main className="relative flex flex-col bg-transparent min-h-dvh overflow-hidden">
-      <GalaxyBackground />
       {/* ── Page header ── */}
       <div className="relative z-10 pt-24 pb-12">
         <div className="container-app">
@@ -54,7 +51,7 @@ export default function ProfilePage() {
             {"// ACCOUNT"}
           </p>
           <h1 className="text-4xl md:text-5xl font-black uppercase tracking-tighter">
-            <span className="text-white">THÔNG TIN</span> <span className="text-emerald-400">TÀI KHOẢN</span>
+            <span className="text-white">ACCOUNT</span> <span className="text-emerald-400">PROFILE</span>
           </h1>
         </div>
       </div>
@@ -103,8 +100,8 @@ export default function ProfilePage() {
               {/* Quick stats */}
               <div className="grid w-full grid-cols-2 gap-4">
                 {[
-                  { value: "0", label: "Đơn hàng" },
-                  { value: "0", label: "Thiết bị" },
+                  { value: "0", label: "Orders" },
+                  { value: "0", label: "Devices" },
                 ].map(({ value, label }) => (
                   <div key={label} className="rounded-2xl py-4 bg-white/5 border border-white/10 group-hover:border-emerald-500/20 transition-all">
                     <p className="text-3xl font-black text-emerald-400 mb-0.5">
@@ -141,7 +138,7 @@ export default function ProfilePage() {
             <div className="overflow-hidden rounded-[2.5rem] bg-white/[0.02] backdrop-blur-xl border border-white/10 shadow-2xl transition-all duration-300 hover:bg-white/[0.04]">
               <div className="px-8 py-6 border-b border-white/5">
                 <h2 className="text-xl font-black uppercase tracking-tight text-white">
-                  Thông tin cá nhân
+                  Personal Information
                 </h2>
               </div>
 
@@ -181,7 +178,7 @@ export default function ProfilePage() {
               <div className="px-8 py-6 bg-emerald-500/[0.01]">
                 <p className="font-mono text-[10px] text-slate-500 uppercase tracking-widest leading-relaxed">
                   {"> "}
-                  Dữ liệu được bảo vệ bởi <span className="text-emerald-400">OAuth 2.0</span>. Mọi thay đổi sẽ được đồng bộ trực tiếp từ nền tảng 
+                  Data is protected by <span className="text-emerald-400">OAuth 2.0</span>. Any changes are synchronized directly from 
                   {" "}<a href="https://myaccount.google.com" target="_blank" rel="noopener noreferrer" className="text-emerald-400 underline underline-offset-4 hover:text-emerald-300">Google Cloud</a>.
                 </p>
               </div>
@@ -190,7 +187,7 @@ export default function ProfilePage() {
             {/* Actions */}
             <div className="rounded-[2.5rem] bg-white/[0.02] backdrop-blur-xl border border-white/10 p-8 shadow-2xl transition-all duration-300 hover:border-emerald-500/10">
               <h2 className="text-xl font-black uppercase tracking-tight text-white mb-8">
-                Thao tác hệ thống
+                System Actions
               </h2>
               <div className="flex flex-wrap gap-4">
                 <Link
@@ -198,14 +195,14 @@ export default function ProfilePage() {
                   className="flex-1 justify-center gap-3 py-4 rounded-2xl border border-emerald-500/40 text-emerald-400 hover:bg-emerald-500/10 transition-all font-black text-xs uppercase tracking-widest flex items-center lg:flex-none lg:px-10"
                 >
                   <LayoutDashboard size={16} />
-                  VÀO DASHBOARD
+                  OPEN DASHBOARD
                 </Link>
                 <button
                   onClick={() => signOut({ callbackUrl: "/" })}
                   className="flex-1 justify-center gap-3 py-4 rounded-2xl border border-rose-500/30 text-rose-400 hover:bg-rose-500/10 transition-all font-black text-xs uppercase tracking-widest flex items-center lg:flex-none lg:px-10"
                 >
                   <LogOut size={16} />
-                  ĐĂNG XUẤT
+                  SIGN OUT
                 </button>
               </div>
             </div>

@@ -26,7 +26,7 @@ export default function TerminalCta() {
         <h2
           className="text-3xl md:text-5xl font-black leading-tight uppercase text-white"
         >
-          Mở khóa <br/><span className="text-emerald-400">truy cập toàn diện</span>
+          Unlock <br/><span className="text-emerald-400">full access</span>
         </h2>
       </div>
 
@@ -72,10 +72,10 @@ export default function TerminalCta() {
             </p>
             <div className="mt-4 pt-4 border-t border-white/5">
               <p className="text-emerald-400 font-bold">
-                Khu vực sinh thái số đã trực tuyến hoàn toàn.
+                The digital ecosystem is now fully online.
               </p>
               <p className="text-slate-400 mt-1">
-                Nhập địa chỉ truy cập:
+                Enter your access address:
               </p>
             </div>
           </div>
@@ -90,7 +90,7 @@ export default function TerminalCta() {
               <span className="text-emerald-500 font-bold">&gt;</span>
               <input
                 type="email"
-                placeholder="Nhập email của bạn..."
+                placeholder="Enter your email..."
                 className="w-full bg-transparent text-sm text-white focus:outline-none placeholder:text-slate-500"
               />
             </div>
@@ -99,7 +99,7 @@ export default function TerminalCta() {
               type="button"
               className="group flex items-center justify-center gap-2 rounded-xl bg-gradient-to-r from-emerald-500 to-teal-500 px-8 py-4 font-mono text-sm font-bold uppercase tracking-widest text-white transition-all hover:opacity-90 active:scale-95 shadow-lg shadow-emerald-500/20"
             >
-              KÍCH HOẠT
+              ACTIVATE
               <ArrowRight size={16} className="transition-transform group-hover:translate-x-1" />
             </button>
           </div>
@@ -108,7 +108,7 @@ export default function TerminalCta() {
           <p
             className="mt-6 text-xs text-slate-500 italic"
           >
-            // Xác thực quyền khởi tạo không gian sinh trưởng.
+            // Verifying initialization rights for the growing space.
           </p>
         </div>
       </div>

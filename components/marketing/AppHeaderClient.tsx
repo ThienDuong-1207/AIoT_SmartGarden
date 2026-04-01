@@ -3,13 +3,13 @@
 import Link from "next/link";
 import { useEffect, useState, useRef } from "react";
 import { useSession, signOut } from "next-auth/react";
-import { ShoppingCart, User, LogOut, LayoutDashboard, ChevronDown, Menu, X } from "lucide-react";
+import { ShoppingCart, Bell, User, LogOut, LayoutDashboard, ChevronDown, Menu, X } from "lucide-react";
 import { usePathname } from "next/navigation";
 import ThemeToggle from "@/components/ui/ThemeToggle";
 
 const NAV_LINKS = [
-  { href: "/",          label: "Trang chủ" },
-  { href: "/products",  label: "Sản phẩm" },
+  { href: "/",          label: "Home" },
+  { href: "/products",  label: "Products" },
   { href: "/dashboard", label: "Dashboard" },
   { href: "/about",     label: "About Us" },
 ];
@@ -18,6 +18,7 @@ export default function AppHeaderClient() {
   const [isScrolled, setIsScrolled]         = useState(false);
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
   const [isMobileOpen, setIsMobileOpen]     = useState(false);
+  const [unreadAlerts, setUnreadAlerts]     = useState(0);
   const { data: session }                   = useSession();
   const pathname                            = usePathname();
   const isAdminRoute                        = pathname.startsWith("/admin");
@@ -41,6 +42,40 @@ export default function AppHeaderClient() {
     document.addEventListener("mousedown", handler);
     return () => document.removeEventListener("mousedown", handler);
   }, []);
+
+  /* ---------- fetch unread alerts count ---------- */
+  useEffect(() => {
+    if (!session?.user?.email) return;
+
+    const fetchAlerts = async () => {
+      if (typeof document !== "undefined" && document.visibilityState === "hidden") return;
+      try {
+        const res = await fetch("/api/alerts/unread-count");
+        if (res.ok) {
+          const data = await res.json();
+          setUnreadAlerts(data.count ?? 0);
+        }
+      } catch {
+        // Silent fail
+      }
+    };
+
+    fetchAlerts();
+
+    const onVisibilityChange = () => {
+      if (document.visibilityState === "visible") {
+        fetchAlerts();
+      }
+    };
+    document.addEventListener("visibilitychange", onVisibilityChange);
+
+    /* Poll every 30 seconds */
+    const interval = setInterval(fetchAlerts, 30000);
+    return () => {
+      clearInterval(interval);
+      document.removeEventListener("visibilitychange", onVisibilityChange);
+    };
+  }, [session]);
 
   const isActive = (href: string) =>
     href === "/" ? pathname === "/" : pathname.startsWith(href);
@@ -133,10 +168,29 @@ export default function AppHeaderClient() {
               <Link
                 href="/cart"
                 className="btn-icon relative hidden md:inline-flex"
-                title="Giỏ hàng"
+                title="Cart"
               >
                 <ShoppingCart size={17} />
               </Link>
+
+              {/* Notifications icon */}
+              {session && (
+                <Link
+                  href="/dashboard/alerts"
+                  className="btn-icon relative hidden md:inline-flex"
+                  title="Alerts"
+                >
+                  <Bell size={17} />
+                  {unreadAlerts > 0 && (
+                    <span
+                      className="absolute -right-1 -top-1 flex h-5 w-5 items-center justify-center rounded-full text-[10px] font-bold"
+                      style={{ background: "var(--danger)", color: "#fff" }}
+                    >
+                      {unreadAlerts > 99 ? "99+" : unreadAlerts}
+                    </span>
+                  )}
+                </Link>
+              )}
 
               {/* Auth */}
               {session ? (
@@ -237,7 +291,7 @@ export default function AppHeaderClient() {
                         }}
                       >
                         <User size={14} />
-                        Tài khoản
+                        Account
                       </Link>
 
                       <div style={{ borderTop: "1px solid var(--border-subtle)" }} className="mt-1 pt-1">
@@ -253,7 +307,7 @@ export default function AppHeaderClient() {
                           }}
                         >
                           <LogOut size={14} />
-                          Đăng xuất
+                          Sign out
                         </button>
                       </div>
                     </div>
@@ -262,7 +316,7 @@ export default function AppHeaderClient() {
               ) : (
                 /* Login button */
                 <Link href="/auth/login" className="btn-emerald text-sm">
-                  Đăng nhập
+                  Sign in
                 </Link>
               )}
 
@@ -312,11 +366,11 @@ export default function AppHeaderClient() {
 
             <div className="mt-4" style={{ borderTop: "1px solid var(--border-subtle)", paddingTop: "1rem" }}>
               <Link href="/cart" className="flex items-center gap-3 rounded-xl px-4 py-3.5 text-base font-medium" style={{ color: "var(--text-secondary)" }}>
-                <ShoppingCart size={18} /> Giỏ hàng
+                <ShoppingCart size={18} /> Cart
               </Link>
               {!session && (
                 <Link href="/auth/login" className="btn-emerald mt-3 w-full justify-center text-base">
-                  Đăng nhập
+                  Sign in
                 </Link>
               )}
               {session && (
@@ -325,7 +379,7 @@ export default function AppHeaderClient() {
                   className="mt-2 flex w-full items-center gap-3 rounded-xl px-4 py-3.5 text-base font-medium"
                   style={{ color: "var(--danger)" }}
                 >
-                  <LogOut size={18} /> Đăng xuất
+                  <LogOut size={18} /> Sign out
                 </button>
               )}
             </div>

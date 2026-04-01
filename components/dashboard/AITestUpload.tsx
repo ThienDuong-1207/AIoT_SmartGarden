@@ -18,6 +18,7 @@ type PredictResult = {
   topConfidence: number;
   detections: Detection[];
   recommendation: string;
+  fusedDiagnosis?: string;
   aiModel: string;
   processingMs: number;
   device: string;
@@ -94,6 +95,15 @@ function drawBBoxes(canvas: HTMLCanvasElement, img: HTMLImageElement, detections
 type SensorContext = { tds?: number | null; ph?: number | null; temperature?: number | null; humidity?: number | null };
 type Props = { deviceId: string; sensorContext?: SensorContext; onSaved?: () => void };
 
+function normalizeSensorContext(input?: SensorContext): { tds: number | null; ph: number | null; temperature: number | null; humidity: number | null } {
+  return {
+    tds: typeof input?.tds === "number" ? input.tds : null,
+    ph: typeof input?.ph === "number" ? input.ph : null,
+    temperature: typeof input?.temperature === "number" ? input.temperature : null,
+    humidity: typeof input?.humidity === "number" ? input.humidity : null,
+  };
+}
+
 type CapturePhase = "idle" | "sending_command" | "waiting_image" | "analyzing";
 
 export default function AITestUpload({ deviceId, sensorContext, onSaved }: Props) {
@@ -132,7 +142,7 @@ export default function AITestUpload({ deviceId, sensorContext, onSaved }: Props
   }, [redrawBoxes]);
 
   /* ── Run AI predict + save ── */
-  async function runPredict(imageDataUrl: string) {
+  async function runPredict(imageDataUrl: string, snapshotId?: string) {
     setLoading(true);
     setError(null);
     setResult(null);
@@ -150,15 +160,36 @@ export default function AITestUpload({ deviceId, sensorContext, onSaved }: Props
       if (data.originalWidth && data.originalHeight) {
         setOrigSize({ w: data.originalWidth, h: data.originalHeight });
       }
-      setResult(data);
+
+      let finalSensorContext = normalizeSensorContext(sensorContext);
+      try {
+        const latestRes = await fetch(`/api/devices/${deviceId}/latest`);
+        if (latestRes.ok) {
+          const latestData = await latestRes.json() as {
+            reading?: { tds_ppm?: number; ph?: number; temp?: number; humi?: number } | null;
+          };
+          const reading = latestData.reading;
+          if (reading) {
+            finalSensorContext = {
+              tds: typeof reading.tds_ppm === "number" ? reading.tds_ppm : finalSensorContext.tds,
+              ph: typeof reading.ph === "number" ? reading.ph : finalSensorContext.ph,
+              temperature: typeof reading.temp === "number" ? reading.temp : finalSensorContext.temperature,
+              humidity: typeof reading.humi === "number" ? reading.humi : finalSensorContext.humidity,
+            };
+          }
+        }
+      } catch {
+        // Non-critical: keep fallback sensorContext from props
+      }
 
       // Lưu vào MongoDB
-      await fetch(`/api/devices/${deviceId}/diagnostics`, {
+      const saveRes = await fetch(`/api/devices/${deviceId}/diagnostics`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
+          snapshotId,
           imageBase64:    imageDataUrl,
-          sensorContext:  sensorContext ?? {},
+          sensorContext:  finalSensorContext,
           detections:     data.detections,
           status:         data.status,
           topDisease:     data.topDisease,
@@ -169,6 +200,22 @@ export default function AITestUpload({ deviceId, sensorContext, onSaved }: Props
           processingMs:   data.processingMs,
         }),
       });
+      if (!saveRes.ok) {
+        const saveData = await saveRes.json().catch(() => ({}));
+        throw new Error(saveData.error ?? "Failed to save diagnostic record");
+      }
+
+      const savedData = await saveRes.json().catch(() => ({})) as {
+        recommendation?: string;
+        fusedDiagnosis?: string;
+      };
+
+      setResult({
+        ...data,
+        recommendation: savedData.recommendation ?? data.recommendation,
+        fusedDiagnosis: savedData.fusedDiagnosis ?? data.fusedDiagnosis,
+      });
+
       onSaved?.();
     } catch (e) {
       setError(e instanceof Error ? e.message : String(e));
@@ -212,7 +259,7 @@ export default function AITestUpload({ deviceId, sensorContext, onSaved }: Props
       const cmdRes = await fetch(`/api/devices/${deviceId}/command`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ command: "capture_now" }),
+        body: JSON.stringify({ command: "capture_now", suppressPushMs: 90_000 }),
       });
       if (!cmdRes.ok) throw new Error("Failed to send command to device");
     } catch (e) {
@@ -253,7 +300,7 @@ export default function AITestUpload({ deviceId, sensorContext, onSaved }: Props
             setCapturePhase("analyzing");
             setCaptureMsg("Analyzing image with plantAI.pt…");
             resolve();
-            runPredict(src);
+            runPredict(src, snap.snapshotId);
           }
         } catch { /* tiếp tục poll */ }
       }, POLL_INTERVAL);
@@ -279,6 +326,7 @@ export default function AITestUpload({ deviceId, sensorContext, onSaved }: Props
     <div
       className="overflow-hidden rounded-2xl"
       style={{ background: "var(--bg-elevated)", border: "1px solid var(--border-subtle)" }}
+      suppressHydrationWarning
     >
       {/* Header */}
       <div

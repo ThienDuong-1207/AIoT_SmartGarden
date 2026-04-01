@@ -35,6 +35,6 @@ export async function GET(req: Request) {
     return NextResponse.json({ data: products });
   } catch (err) {
     console.error("[products] db error:", err);
-    return NextResponse.json({ error: "Không thể tải sản phẩm" }, { status: 500 });
+    return NextResponse.json({ error: "Failed to load products" }, { status: 500 });
   }
 }

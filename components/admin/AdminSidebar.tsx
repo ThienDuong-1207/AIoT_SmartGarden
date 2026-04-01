@@ -6,11 +6,11 @@ import { LayoutDashboard, Users, Package, ShoppingCart, Zap, LogOut } from "luci
 import { signOut } from "next-auth/react";
 
 const navigationItems = [
-  { label: "Bảng điều khiển", href: "/admin", icon: LayoutDashboard },
-  { label: "Người dùng", href: "/admin/users", icon: Users },
-  { label: "Sản phẩm", href: "/admin/products", icon: Package },
-  { label: "Đơn hàng", href: "/admin/orders", icon: ShoppingCart },
-  { label: "Chẩn đoán AI", href: "/admin/diagnostics", icon: Zap },
+  { label: "Dashboard", href: "/admin", icon: LayoutDashboard },
+  { label: "Users", href: "/admin/users", icon: Users },
+  { label: "Products", href: "/admin/products", icon: Package },
+  { label: "Orders", href: "/admin/orders", icon: ShoppingCart },
+  { label: "AI Diagnostics", href: "/admin/diagnostics", icon: Zap },
 ];
 
 export default function AdminSidebar() {
@@ -69,7 +69,7 @@ export default function AdminSidebar() {
           style={{ color: "var(--danger)", border: "1px solid rgba(239,68,68,0.25)" }}
         >
           <LogOut className="h-4 w-4" />
-          Đăng xuất
+          Sign out
         </button>
       </div>
     </aside>

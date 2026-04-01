@@ -61,26 +61,26 @@ def classify_health(detections: list) -> str:
 def get_recommendation(top_class: str | None, status: str) -> str:
     """Rule-based recommendation theo tên class từ model."""
     recs = {
-        "healthy":              "Cây đang phát triển tốt. Duy trì lịch tưới và dinh dưỡng hiện tại.",
-        "healthy_leaf":         "Cây đang phát triển tốt. Duy trì lịch tưới và dinh dưỡng hiện tại.",
-        "powdery_mildew":       "Phát hiện nấm phấn trắng. Giảm độ ẩm, tăng thông gió. Phun dung dịch baking soda 1% hoặc sulfur fungicide, loại bỏ lá bệnh.",
-        "aphid":                "Phun dung dịch neem oil 0.5%, kiểm tra mặt dưới lá mỗi ngày.",
-        "yellow_leaf":          "Kiểm tra pH (mục tiêu 6.0–6.5) và TDS. Có thể thiếu sắt (Fe) hoặc đạm (N).",
-        "brown_spot":           "Giảm độ ẩm, cải thiện thông gió. Kiểm tra mầm bệnh nấm Cercospora.",
-        "nutrient_deficiency":  "Bổ sung dung dịch A+B, điều chỉnh TDS lên 1000–1400 ppm.",
-        "spider_mite":          "Tăng độ ẩm không khí, phun thuốc diệt nhện hữu cơ (neem oil).",
-        "whitefly":             "Đặt bẫy dính vàng, phun insecticidal soap.",
-        "blight":               "Loại bỏ lá bệnh ngay, phun dung dịch đồng (copper fungicide).",
-        "rot":                  "Kiểm tra hệ thống tưới, giảm độ ẩm gốc rễ, cắt bỏ phần thối.",
-        "wilting":              "Kiểm tra mực nước, EC dung dịch và nhiệt độ nước (tối ưu 18–22°C).",
+        "healthy":              "Plant is healthy. Maintain current watering and nutrient schedule.",
+        "healthy_leaf":         "Plant is healthy. Maintain current watering and nutrient schedule.",
+        "powdery_mildew":       "Powdery mildew detected. Reduce humidity, improve airflow, apply 1% baking soda solution or sulfur fungicide, and remove infected leaves.",
+        "aphid":                "Apply 0.5% neem oil solution and inspect the underside of leaves daily.",
+        "yellow_leaf":          "Check pH (target 6.0-6.5) and TDS. Possible iron (Fe) or nitrogen (N) deficiency.",
+        "brown_spot":           "Reduce humidity and improve ventilation. Check for Cercospora fungal infection.",
+        "nutrient_deficiency":  "Increase A+B nutrient solution and adjust TDS to 1000-1400 ppm.",
+        "spider_mite":          "Increase ambient humidity and apply an organic miticide (e.g., neem oil).",
+        "whitefly":             "Use yellow sticky traps and apply insecticidal soap.",
+        "blight":               "Remove infected leaves immediately and apply a copper-based fungicide.",
+        "rot":                  "Inspect irrigation settings, reduce root-zone moisture, and trim rotten tissue.",
+        "wilting":              "Check water level, nutrient EC, and water temperature (optimal 18-22C).",
     }
     if top_class:
         key = top_class.lower().replace(" ", "_")
         if key in recs:
             return recs[key]
         # Fallback: class không có trong dict nhưng là bệnh
-        return f"Phát hiện {top_class}. Theo dõi cây trong 24h, chụp lại để xác nhận và tham khảo chuyên gia."
-    return "Cây khỏe mạnh. Tiếp tục duy trì điều kiện hiện tại."
+        return f"Detected: {top_class}. Monitor the plant for 24 hours, retake an image to confirm progression, and consult an expert if symptoms worsen."
+    return "Plant is healthy. Continue maintaining current environmental conditions."
 
 
 @app.get("/health")
@@ -95,13 +95,25 @@ def health():
 
 @app.post("/predict")
 async def predict(file: UploadFile = File(...)):
-    # Validate file type
-    if not file.content_type.startswith("image/"):
-        raise HTTPException(status_code=400, detail="File phải là ảnh (JPEG/PNG)")
+    # Validate file type (allow common image MIME types and fallback to content sniffing)
+    allowed_mimes = {
+        "image/jpeg",
+        "image/jpg",
+        "image/png",
+        "image/webp",
+        "image/bmp",
+        "image/tiff",
+        "application/octet-stream",  # some clients upload with generic content-type
+    }
+    if file.content_type and file.content_type not in allowed_mimes and not file.content_type.startswith("image/"):
+        raise HTTPException(status_code=400, detail="Unsupported image format. Use JPG, PNG, WEBP, BMP, or TIFF")
 
-    # Đọc ảnh
+    # Đọc ảnh + validate nội dung thực tế
     contents = await file.read()
-    image = Image.open(io.BytesIO(contents)).convert("RGB")
+    try:
+        image = Image.open(io.BytesIO(contents)).convert("RGB")
+    except Exception:
+        raise HTTPException(status_code=400, detail="Invalid image file. Use JPG, PNG, WEBP, BMP, or TIFF")
 
     # Inference
     # conf=0.50 → chỉ giữ box có confidence >= 50%, giảm false positive

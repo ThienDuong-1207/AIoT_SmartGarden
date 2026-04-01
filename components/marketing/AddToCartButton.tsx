@@ -31,7 +31,7 @@ export default function AddToCartButton({ item, buyNow = false, className }: Pro
     return (
       <button onClick={handle} className={className ?? "btn-emerald gap-2.5 px-6 py-3"}>
         <ShoppingCart size={15} />
-        Mua ngay
+        Buy now
       </button>
     );
   }
@@ -43,7 +43,7 @@ export default function AddToCartButton({ item, buyNow = false, className }: Pro
       style={added ? { background: "rgba(34,197,94,0.20)", color: "var(--emerald-400)" } : undefined}
     >
       {added ? <Check size={15} /> : <ShoppingCart size={15} />}
-      {added ? "Đã thêm vào giỏ!" : "Thêm vào giỏ hàng"}
+      {added ? "Added to cart!" : "Add to cart"}
     </button>
   );
 }

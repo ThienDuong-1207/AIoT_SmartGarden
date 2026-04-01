@@ -31,7 +31,7 @@ export default function AdminOrderActions({
 
       if (!res.ok) {
         const data = await res.json();
-        alert(data.error || "Cập nhật đơn hàng thất bại");
+        alert(data.error || "Failed to update order");
         return;
       }
 

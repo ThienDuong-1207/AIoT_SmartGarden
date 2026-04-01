@@ -2,7 +2,7 @@
 
 **Database:** MongoDB Atlas
 **Database name:** `AIoT`
-**Collections:** 8
+**Collections:** 9
 **ODM:** Mongoose 9.x
 
 ---
@@ -25,15 +25,17 @@
          │                                                         │
     deviceId (1:N)                                                 │
          │                                                         │
-    ┌────┼──────────────────────────────────┐                     │
-    │    │                │                 │                     │
-    ▼    ▼                ▼                 ▼                     │
-sensorreadings  alerts  aidiagnostics  cameracaptures            │
-                                                                  │
-                                          items[].productId       │
-                                               ▼                  │
-                                          products                 │
-└─────────────────────────────────────────────────────────────────┘
+    ┌────┼──────────────────────────────────┬──────────┐          │
+    │    │                │                 │          │          │
+    ▼    ▼                ▼                 ▼          ▼          │
+sensorreadings  alerts  aidiagnostics  cameracaptures commands   │
+                                          │                       │
+                                          └──► aidiagnostics._id  │
+                                                                   │
+                                          items[].productId        │
+                                               ▼                   │
+                                          products                  │
+└──────────────────────────────────────────────────────────────────┘
 ```
 
 ---
@@ -170,14 +172,14 @@ Cảnh báo tự động khi sensor vượt ngưỡng hoặc thiết bị offlin
 
 **Enum `type`:**
 ```
-"tds_low"       TDS dưới ngưỡng tối thiểu
-"tds_high"      TDS trên ngưỡng tối đa
-"ph_low"        pH quá thấp
-"ph_high"       pH quá cao
-"temp_low"      Nhiệt độ quá thấp
-"temp_high"     Nhiệt độ quá cao
-"water_low"     Mực nước dưới 20%
-"ai_disease"    AI phát hiện bệnh cây
+"tds_low"        TDS dưới ngưỡng tối thiểu
+"tds_high"       TDS trên ngưỡng tối đa
+"ph_low"         pH quá thấp
+"ph_high"        pH quá cao
+"temp_low"       Nhiệt độ quá thấp
+"temp_high"      Nhiệt độ quá cao
+"water_low"      Mực nước dưới 20%
+"ai_disease"     AI phát hiện bệnh cây
 "device_offline" Thiết bị mất kết nối
 ```
 
@@ -205,19 +207,14 @@ Mực nước:   < 20%         → water_low (danger)
 
 Kết quả phân tích ảnh cây bằng YOLOv8 model. Kết hợp với dữ liệu sensor tại thời điểm chụp.
 
-> ⚠️ **Bug hiện tại:** Model đang ghi vào collection `"sample"`. Cần sửa `models/AIdiagnostic.ts` dòng 62:
-> ```ts
-> // Xóa tham số thứ 3 "sample"
-> export default mongoose.model("AIdiagnostic", AIdiagnosticSchema);
-> ```
-
 ```js
 {
   _id:         ObjectId,
   deviceId:    String,    // required, ref: devices.deviceId
+  userId:      String,    // ref: users._id — lưu string để query trực tiếp không cần join
   capturedAt:  Date,      // default: Date.now
 
-  imageBase64: String,    // data:image/jpeg;base64,... (tạm thời, xem ghi chú)
+  imageUrl:    String,    // Cloudinary URL (thay thế imageBase64)
 
   sensorContext: {        // snapshot sensor tại thời điểm chụp
     tds:         Number | null,
@@ -237,7 +234,7 @@ Kết quả phân tích ảnh cây bằng YOLOv8 model. Kết hợp với dữ l
   topConfidence:  Number, // 0.0 – 1.0
   fusedDiagnosis: String, // nhận xét kết hợp AI + sensor
   recommendation: String, // hướng dẫn xử lý
-  aiModel:        String, // "YOLOv8-plantAI"
+  aiModel:        String, // default: "YOLOv8-plantAI"
   processingMs:   Number, // thời gian inference (ms)
 
   createdAt: Date,
@@ -247,36 +244,44 @@ Kết quả phân tích ảnh cây bằng YOLOv8 model. Kết hợp với dữ l
 
 **Indexes:**
 ```
-{ deviceId: 1, capturedAt: -1 }   // compound
+{ deviceId: 1, capturedAt: -1 }   // compound — query chính
 { deviceId: 1, status: 1 }        // filter theo trạng thái
+{ userId: 1, capturedAt: -1 }     // query lịch sử theo user
 ```
 
-**Ghi chú — imageBase64:**
-Hiện tại lưu base64 thẳng vào MongoDB. Mỗi ảnh ~300–600KB → document ~800KB.
-Khi có nhiều thiết bị nên chuyển sang **Cloudinary hoặc S3**, chỉ lưu URL.
+**Ghi chú — imageUrl:**
+Ảnh upload lên Cloudinary, chỉ lưu URL trong MongoDB (~100B/doc thay vì ~600KB).
+Mỗi lần AI phân tích, ảnh được upload qua `/api/ai/predict` → Cloudinary → URL lưu vào field này.
 
 ---
 
 ## Collection 6 — `cameracaptures`
 
-Snapshot tạm thời từ camera ESP32. Chỉ dùng để frontend polling lấy ảnh sau lệnh `capture_now`. Tự động xóa khi quá 10 ảnh/thiết bị.
+Snapshot từ camera ESP32. Lưu lịch sử ảnh chụp và liên kết tới kết quả AI nếu đã phân tích.
 
 ```js
 {
   _id:         ObjectId,
-  deviceId:    String,  // required, ref: devices.deviceId
-  imageBase64: String,  // data:image/jpeg;base64,...
-  capturedAt:  Date,    // required, default: Date.now
+  deviceId:    String,    // required, ref: devices.deviceId
+  userId:      ObjectId,  // required, ref: users._id
+  imageUrl:    String,    // required — Cloudinary URL
+  capturedAt:  Date,      // required, default: Date.now
+  triggeredBy: String,    // "manual" | "schedule" | "alert", default: "manual"
+  diagId:      ObjectId,  // ref: aidiagnostics._id — null nếu chưa phân tích AI
 }
 ```
 
 **Indexes:**
 ```
-{ deviceId: 1, capturedAt: -1 }   // compound
+{ deviceId: 1, capturedAt: -1 }   // compound — query chính
+{ userId: 1, capturedAt: -1 }     // query lịch sử theo user
 ```
 
-**Retention policy:**
-Mỗi lần ESP32 upload ảnh mới, server giữ tối đa 10 snapshot gần nhất và xóa các ảnh cũ hơn.
+**Ghi chú:**
+- `triggeredBy: "manual"` — user nhấn Capture trên dashboard
+- `triggeredBy: "schedule"` — ESP32 chụp theo lịch `config.cameraInterval`
+- `triggeredBy: "alert"` — tự động chụp khi phát hiện bất thường sensor
+- `diagId` được cập nhật sau khi AI phân tích xong ảnh đó
 
 ---
 
@@ -333,9 +338,9 @@ Sản phẩm bán trên cửa hàng (hạt giống, dinh dưỡng, chậu thông
   slug:        String,   // required, unique — URL-friendly, VD: "hat-giong-rau-cai"
   name:        String,   // required
   category:    String,   // "seeds" | "nutrients" | "smart-pots"
-  price:       Number,   // required — giá gốc (VND)
+  price:       Number,   // required — giá gốc (USD)
   salePrice:   Number,   // giá khuyến mãi (optional)
-  images:      [String], // mảng URL ảnh
+  images:      [String], // mảng URL ảnh (Cloudinary)
   description: String,
   specs:       Mixed,    // thông số kỹ thuật dạng key-value
   stock:       Number,   // default: 0
@@ -357,6 +362,57 @@ Sản phẩm bán trên cửa hàng (hạt giống, dinh dưỡng, chậu thông
 
 ---
 
+## Collection 9 — `commands`
+
+Lịch sử lệnh gửi xuống ESP32 qua MQTT. Dùng để track trạng thái thực thi và debug.
+
+**Luồng:**
+```
+User/Schedule → POST /api/devices/{id}/command
+  → lưu Command (status: "sent")
+  → publish MQTT topic garden/{deviceId}/command
+  → ESP32 nhận lệnh, thực thi, ACK qua MQTT
+  → backend cập nhật status → "acknowledged"
+```
+
+```js
+{
+  _id:      ObjectId,
+  deviceId: String,    // required, ref: devices.deviceId
+  userId:   ObjectId,  // required, ref: users._id
+
+  command: String,     // enum — xem bên dưới
+  payload: Mixed,      // optional — VD: { duration: 30 } cho pump_on
+
+  source: String,      // "user" | "schedule" | "automation", default: "user"
+
+  status: String,      // "sent" | "acknowledged" | "failed" | "timeout"
+
+  sentAt:         Date,  // default: Date.now
+  acknowledgedAt: Date,  // null cho đến khi ESP32 ACK
+}
+```
+
+**Enum `command`:**
+```
+"light_on"      Bật đèn grow light
+"light_off"     Tắt đèn grow light
+"pump_on"       Bật bơm tưới
+"pump_off"      Tắt bơm tưới
+"capture_now"   Chụp ảnh ngay lập tức
+"reboot"        Khởi động lại ESP32
+"update_config" Cập nhật config xuống thiết bị
+```
+
+**Indexes:**
+```
+{ deviceId: 1, sentAt: -1 }     // compound — query lịch sử lệnh
+{ userId: 1 }
+{ sentAt: 1 } expireAfterSeconds: 2592000  // TTL: tự xóa sau 30 ngày
+```
+
+---
+
 ## Tổng hợp indexes theo collection
 
 ```
@@ -364,10 +420,11 @@ users:           email(unique), role, status
 devices:         deviceId(unique), userId, activationCode(unique)
 sensorreadings:  {deviceId,timestamp}(compound), timestamp(TTL 90d)
 alerts:          {deviceId,triggeredAt}, {userId,isRead}, isRead
-aidiagnostics:   {deviceId,capturedAt}, {deviceId,status}
-cameracaptures:  {deviceId,capturedAt}
+aidiagnostics:   {deviceId,capturedAt}, {deviceId,status}, {userId,capturedAt}
+cameracaptures:  {deviceId,capturedAt}, {userId,capturedAt}
 orders:          userId, orderCode(unique), orderStatus
 products:        slug(unique), category, tags
+commands:        {deviceId,sentAt}, userId, sentAt(TTL 30d)
 ```
 
 ---
@@ -380,12 +437,13 @@ products:        slug(unique), category, tags
 | `devices` | ~50 | 2 KB | < 1 MB |
 | `sensorreadings` | ~10M (TTL 90d) | 200 B | ~2 GB |
 | `alerts` | ~50K | 300 B | ~15 MB |
-| `aidiagnostics` | ~5K | 600 KB | ~3 GB |
-| `cameracaptures` | ~500 (max 10×50) | 400 KB | ~200 MB |
+| `aidiagnostics` | ~5K | 2 KB | ~10 MB |
+| `cameracaptures` | ~10K | 1 KB | ~10 MB |
 | `orders` | ~1K | 2 KB | ~2 MB |
 | `products` | ~50 | 5 KB | < 1 MB |
+| `commands` | ~100K (TTL 30d) | 300 B | ~30 MB |
 
-> `aidiagnostics` và `cameracaptures` chiếm nhiều nhất do lưu imageBase64.
-> Khi scale lên nên dùng Cloudinary/S3 để giảm còn < 10 MB.
+> `aidiagnostics` và `cameracaptures` đã chuyển sang Cloudinary URL thay vì lưu imageBase64 trực tiếp,
+> giảm từ ~3 GB xuống còn ~20 MB tổng cộng.
 
 ---

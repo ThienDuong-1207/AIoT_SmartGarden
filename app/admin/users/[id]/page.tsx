@@ -27,14 +27,14 @@ export default async function AdminUserDetailPage({ params }: { params: Promise<
   return (
     <div className="space-y-6">
       <div>
-        <h2 className="text-2xl font-bold" style={{ color: "var(--text-primary)" }}>Hồ sơ người dùng</h2>
-        <p className="text-sm" style={{ color: "var(--text-secondary)" }}>Quản lý quyền, trạng thái và tài sản liên quan</p>
+        <h2 className="text-2xl font-bold" style={{ color: "var(--text-primary)" }}>User Profile</h2>
+        <p className="text-sm" style={{ color: "var(--text-secondary)" }}>Manage permissions, status, and related assets</p>
       </div>
 
       <section className="rounded-xl p-6" style={{ border: "1px solid var(--border-subtle)", background: "var(--bg-elevated)" }}>
         <div className="grid gap-4 sm:grid-cols-2">
           <div>
-            <p className="text-xs uppercase tracking-wide" style={{ color: "var(--text-muted)" }}>Tên</p>
+            <p className="text-xs uppercase tracking-wide" style={{ color: "var(--text-muted)" }}>Name</p>
             <p className="mt-1 font-semibold" style={{ color: "var(--text-primary)" }}>{user.name}</p>
           </div>
           <div>
@@ -61,7 +61,7 @@ export default async function AdminUserDetailPage({ params }: { params: Promise<
       </section>
 
       <section className="rounded-xl p-6" style={{ border: "1px solid var(--border-subtle)", background: "var(--bg-elevated)" }}>
-        <h3 className="text-lg font-semibold" style={{ color: "var(--text-primary)" }}>Danh sách chậu</h3>
+        <h3 className="text-lg font-semibold" style={{ color: "var(--text-primary)" }}>Device List</h3>
         <div className="mt-4 space-y-3">
           {devices.map((device) => (
             <div key={String(device._id)} className="rounded-lg p-3 text-sm" style={{ border: "1px solid var(--border-subtle)" }}>
@@ -69,21 +69,21 @@ export default async function AdminUserDetailPage({ params }: { params: Promise<
               <p style={{ color: "var(--text-secondary)" }}>Device ID: {device.deviceId}</p>
             </div>
           ))}
-          {devices.length === 0 && <p className="text-sm" style={{ color: "var(--text-muted)" }}>User chưa có thiết bị</p>}
+          {devices.length === 0 && <p className="text-sm" style={{ color: "var(--text-muted)" }}>This user has no devices yet</p>}
         </div>
       </section>
 
       <section className="rounded-xl p-6" style={{ border: "1px solid var(--border-subtle)", background: "var(--bg-elevated)" }}>
-        <h3 className="text-lg font-semibold" style={{ color: "var(--text-primary)" }}>Đơn hàng của user</h3>
+        <h3 className="text-lg font-semibold" style={{ color: "var(--text-primary)" }}>User Orders</h3>
         <div className="mt-4 space-y-3">
           {orders.map((order) => (
             <div key={String(order._id)} className="rounded-lg p-3 text-sm" style={{ border: "1px solid var(--border-subtle)" }}>
-              <p className="font-medium" style={{ color: "var(--text-primary)" }}>Mã đơn: {order.orderCode}</p>
-              <p style={{ color: "var(--text-secondary)" }}>Tổng tiền: {order.totalAmount.toLocaleString("vi-VN")}đ</p>
-              <p style={{ color: "var(--text-secondary)" }}>Trạng thái: {order.orderStatus}</p>
+              <p className="font-medium" style={{ color: "var(--text-primary)" }}>Order code: {order.orderCode}</p>
+              <p style={{ color: "var(--text-secondary)" }}>Total: {order.totalAmount.toLocaleString("en-US")} VND</p>
+              <p style={{ color: "var(--text-secondary)" }}>Status: {order.orderStatus}</p>
             </div>
           ))}
-          {orders.length === 0 && <p className="text-sm" style={{ color: "var(--text-muted)" }}>User chưa có đơn hàng</p>}
+          {orders.length === 0 && <p className="text-sm" style={{ color: "var(--text-muted)" }}>This user has no orders yet</p>}
         </div>
       </section>
     </div>

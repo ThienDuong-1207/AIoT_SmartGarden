@@ -19,6 +19,7 @@ const UserSchema = new Schema(
       default: "active",
       index: true,
     },
+    fcmToken: { type: String, default: null }, // Firebase Cloud Messaging token (browser/device)
   },
   { timestamps: true }
 );

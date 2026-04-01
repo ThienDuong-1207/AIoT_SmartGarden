@@ -15,20 +15,20 @@ export default async function AdminUsersPage() {
   return (
     <div className="space-y-6">
       <div>
-        <h2 className="text-2xl font-bold" style={{ color: "var(--text-primary)" }}>Quản lý người dùng</h2>
-        <p className="text-sm" style={{ color: "var(--text-secondary)" }}>Danh sách user, role, trạng thái tài khoản</p>
+        <h2 className="text-2xl font-bold" style={{ color: "var(--text-primary)" }}>User Management</h2>
+        <p className="text-sm" style={{ color: "var(--text-secondary)" }}>User list, roles, and account statuses</p>
       </div>
 
       <div className="overflow-hidden rounded-xl" style={{ border: "1px solid var(--border-subtle)", background: "var(--bg-elevated)" }}>
         <table className="min-w-full text-sm">
           <thead style={{ background: "var(--bg-overlay)", borderBottom: "1px solid var(--border-subtle)" }}>
             <tr>
-              <th className="px-4 py-3 text-left font-semibold" style={{ color: "var(--text-secondary)" }}>Họ tên</th>
+              <th className="px-4 py-3 text-left font-semibold" style={{ color: "var(--text-secondary)" }}>Full name</th>
               <th className="px-4 py-3 text-left font-semibold" style={{ color: "var(--text-secondary)" }}>Email</th>
               <th className="px-4 py-3 text-left font-semibold" style={{ color: "var(--text-secondary)" }}>Role</th>
               <th className="px-4 py-3 text-left font-semibold" style={{ color: "var(--text-secondary)" }}>Status</th>
               <th className="px-4 py-3 text-left font-semibold" style={{ color: "var(--text-secondary)" }}>Provider</th>
-              <th className="px-4 py-3 text-left font-semibold" style={{ color: "var(--text-secondary)" }}>Chi tiết</th>
+              <th className="px-4 py-3 text-left font-semibold" style={{ color: "var(--text-secondary)" }}>Details</th>
             </tr>
           </thead>
           <tbody>
@@ -57,7 +57,7 @@ export default async function AdminUsersPage() {
                   <td className="px-4 py-3" style={{ color: "var(--text-secondary)" }}>{user.provider || "google"}</td>
                   <td className="px-4 py-3">
                     <Link href={`/admin/users/${id}`} className="text-sm font-medium" style={{ color: "var(--emerald-400)" }}>
-                      Xem hồ sơ
+                      View profile
                     </Link>
                   </td>
                 </tr>
@@ -66,7 +66,7 @@ export default async function AdminUsersPage() {
             {users.length === 0 && (
               <tr>
                 <td className="px-4 py-8 text-center" style={{ color: "var(--text-muted)" }} colSpan={6}>
-                  Chưa có user nào
+                  No users yet
                 </td>
               </tr>
             )}

@@ -19,7 +19,7 @@ export const authOptions: NextAuthOptions = {
       },
       async authorize(credentials) {
         if (!credentials?.email || !credentials?.password) {
-          throw new Error("Thiếu email hoặc mật khẩu");
+          throw new Error("Missing email or password");
         }
 
         const normalizedEmail = credentials.email.trim().toLowerCase();
@@ -31,19 +31,19 @@ export const authOptions: NextAuthOptions = {
           email: { $regex: `^${normalizedEmail.replace(/[.*+?^${}()|[\]\\]/g, "\\$&")}$`, $options: "i" },
         });
         if (!user) {
-          throw new Error("Không tìm thấy tài khoản");
+          throw new Error("Account not found");
         }
 
         if (user.role !== "admin") {
-          throw new Error("Chỉ tài khoản admin mới được đăng nhập theo cách này");
+          throw new Error("Only admin accounts can sign in this way");
         }
 
         if (user.status === "banned") {
-          throw new Error("Tài khoản đang bị khóa");
+          throw new Error("Account is currently locked");
         }
 
         if (!user.password) {
-          throw new Error("Tài khoản admin chưa có mật khẩu");
+          throw new Error("Admin account has no password set");
         }
 
         const passwordValue = String(user.password);
@@ -53,7 +53,7 @@ export const authOptions: NextAuthOptions = {
           : normalizedPassword === passwordValue;
 
         if (!isPasswordValid) {
-          throw new Error("Sai mật khẩu");
+          throw new Error("Incorrect password");
         }
 
         return {
