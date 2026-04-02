@@ -63,6 +63,7 @@ export default function IoTControlsPage() {
   const router = useRouter();
   const [config, setConfig] = useState<DeviceConfig | null>(null);
   const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
     async function fetchConfig() {
@@ -71,9 +72,14 @@ export default function IoTControlsPage() {
         if (res.ok) {
           const data = await res.json();
           setConfig(normalizeConfig(data.config));
+          setError(null);
+        } else {
+          const data = await res.json().catch(() => ({}));
+          setError(data?.error || `Failed to load device config (${res.status})`);
         }
       } catch (error) {
         console.error("Failed to fetch config:", error);
+        setError(error instanceof Error ? error.message : "Failed to load device config");
       } finally {
         setLoading(false);
       }
@@ -84,10 +90,29 @@ export default function IoTControlsPage() {
     }
   }, [deviceId]);
 
-  if (loading || !config) {
+  if (loading) {
     return (
       <div className="flex items-center justify-center py-20">
         <Loader2 size={24} className="animate-spin" style={{ color: "var(--emerald-400)" }} />
+      </div>
+    );
+  }
+
+  if (error) {
+    return (
+      <div className="rounded-2xl p-6" style={{ background: "rgba(239,68,68,0.08)", border: "1px solid rgba(239,68,68,0.18)" }}>
+        <h2 className="text-sm font-semibold" style={{ color: "#F87171" }}>Sensor Control unavailable</h2>
+        <p className="mt-2 text-xs" style={{ color: "var(--text-secondary)" }}>
+          {error}
+        </p>
+      </div>
+    );
+  }
+
+  if (!config) {
+    return (
+      <div className="rounded-2xl p-6" style={{ background: "rgba(255,255,255,0.03)", border: "1px solid var(--border-subtle)" }}>
+        <p className="text-xs" style={{ color: "var(--text-muted)" }}>No device configuration found.</p>
       </div>
     );
   }

@@ -3,6 +3,7 @@ import { getServerSession } from "next-auth/next";
 import { dbConnect } from "@/lib/mongodb";
 import DeviceModel from "@/models/Device";
 import UserModel from "@/models/User";
+import { authOptions } from "@/lib/auth";
 import { getMqttClient } from "@/lib/mqtt";
 
 export async function PATCH(
@@ -12,7 +13,7 @@ export async function PATCH(
   try {
     const { deviceId } = await params;
 
-    const session = await getServerSession();
+    const session = await getServerSession(authOptions);
     if (!session?.user?.email) {
       return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
     }
@@ -147,7 +148,7 @@ export async function GET(
   try {
     const { deviceId } = await params;
 
-    const session = await getServerSession();
+    const session = await getServerSession(authOptions);
     if (!session?.user?.email) {
       return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
     }
