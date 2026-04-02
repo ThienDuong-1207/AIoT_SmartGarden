@@ -16,6 +16,25 @@ type DeviceView = {
   image?: string;
 };
 
+const SAMPLE_DEVICES: DeviceView[] = [
+  {
+    _id: "demo-1",
+    deviceId: "SG-DEMO-001",
+    name: "Demo Basil Pot",
+    plantType: "Basil",
+    isOnline: false,
+    image: "/images/chaucay.webp",
+  },
+  {
+    _id: "demo-2",
+    deviceId: "SG-DEMO-002",
+    name: "Demo Lettuce Pot",
+    plantType: "Lettuce",
+    isOnline: false,
+    image: "/images/chau1.png",
+  },
+];
+
 async function getDevices(userId: string): Promise<DeviceView[]> {
   try {
     await dbConnect();
@@ -60,25 +79,10 @@ export default async function DashboardPage() {
         </p>
 
         {devices.length === 0 ? (
-          <div
-            className="flex flex-col items-center justify-center rounded-2xl py-20 text-center"
-            style={{ background: "var(--bg-elevated)", border: "1px dashed var(--border-normal)" }}
-          >
-            <div className="mb-5 flex h-14 w-14 items-center justify-center rounded-2xl" style={{ background: "rgba(16,185,129,0.08)" }}>
-              <Cpu size={24} style={{ color: "var(--emerald-400)" }} />
-            </div>
-            <p className="font-semibold" style={{ color: "var(--text-primary)" }}>
-              No devices yet
-            </p>
-            <p className="mt-2 max-w-xs text-sm" style={{ color: "var(--text-muted)" }}>
-              Use an activation code to link your Smart Pot to your account.
-            </p>
-            <p
-              className="mt-4 rounded-lg px-4 py-2 font-mono text-xs"
-              style={{ background: "var(--bg-base)", border: "1px solid var(--border-subtle)", color: "var(--text-muted)" }}
-            >
-              {">"} POST /api/devices · {"{"} activationCode {"}"}
-            </p>
+          <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+            {SAMPLE_DEVICES.map((device, i) => (
+              <DeviceCard key={device._id} device={device} index={i} />
+            ))}
           </div>
         ) : (
           <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">

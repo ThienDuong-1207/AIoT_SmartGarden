@@ -66,7 +66,7 @@ export default function ProductCard({ product }: { product: Product }) {
 
   return (
     <article
-      className="group relative flex flex-col overflow-hidden rounded-2xl transition-all duration-200"
+      className="group relative flex h-[430px] flex-col overflow-hidden rounded-2xl transition-all duration-200 sm:h-[450px] lg:h-[460px]"
       style={{
         background: "var(--bg-elevated)",
         border: "1px solid var(--border-subtle)",
@@ -89,87 +89,98 @@ export default function ProductCard({ product }: { product: Product }) {
         title="View details"
       />
 
-      {/* ── Visual zone ── */}
-      <div
-        className="relative z-10 flex items-center justify-center overflow-hidden"
-        style={{ height: 160, background: cfg.accentBg }}
-      >
-        {/* Category badge */}
+      <div className="relative z-10 flex min-h-0 flex-1 flex-col">
+        {/* ── Visual zone ── */}
         <div
-          className="absolute left-3 top-3 z-10 flex items-center gap-1.5 rounded-full px-2.5 py-1"
-          style={{
-            background: "var(--bg-elevated)",
-            border: "1px solid var(--border-subtle)",
-          }}
+          className="relative flex-1 overflow-hidden"
+          style={{ background: cfg.accentBg }}
         >
-          <span className="h-1.5 w-1.5 rounded-full" style={{ background: cfg.accent }} />
-          <span className="font-mono text-[10px] font-semibold uppercase tracking-wider" style={{ color: cfg.accent }}>
-            {cfg.label}
-          </span>
-        </div>
+          {product.images?.[0] ? (
+            <Image
+              src={product.images[0]}
+              alt={product.name}
+              fill
+              className="object-cover transition-transform duration-300 group-hover:scale-105"
+              sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 25vw"
+            />
+          ) : (
+            <div className="absolute inset-0 flex items-center justify-center">
+              <div
+                className="flex h-16 w-16 items-center justify-center rounded-2xl transition-transform duration-300 group-hover:scale-110"
+                style={{ background: "var(--bg-elevated)", border: `1px solid ${cfg.accentBorder}` }}
+              >
+                <Icon size={28} style={{ color: cfg.accent }} />
+              </div>
+            </div>
+          )}
 
-        {/* Discount badge */}
-        {hasDiscount && (
           <div
-            className="absolute right-3 top-3 z-10 flex items-center gap-1 rounded-full px-2 py-1"
-            style={{ background: "rgba(239,68,68,0.12)", border: "1px solid rgba(239,68,68,0.25)" }}
+            className="absolute inset-0"
+            style={{
+              background: "linear-gradient(to top, rgba(0,0,0,0.70) 0%, rgba(0,0,0,0.22) 42%, rgba(0,0,0,0.10) 100%)",
+            }}
+          />
+
+          {/* Category badge */}
+          <div
+            className="absolute left-3 top-3 z-20 flex items-center gap-1.5 rounded-full px-2.5 py-1"
+            style={{
+              background: "rgba(0,0,0,0.40)",
+              border: "1px solid rgba(255,255,255,0.12)",
+              backdropFilter: "blur(10px)",
+            }}
           >
-            <Tag size={9} style={{ color: "#F87171" }} />
-            <span className="font-mono text-[10px] font-bold" style={{ color: "#F87171" }}>
-              -{discountPct}%
+            <span className="h-1.5 w-1.5 rounded-full" style={{ background: cfg.accent }} />
+            <span className="font-mono text-[10px] font-semibold uppercase tracking-wider" style={{ color: "#fff" }}>
+              {cfg.label}
             </span>
           </div>
-        )}
 
-        {/* Image or Icon */}
-        {product.images?.[0] ? (
-          <Image
-            src={product.images[0]}
-            alt={product.name}
-            fill
-            className="object-cover transition-transform duration-300 group-hover:scale-105"
-            sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 25vw"
-          />
-        ) : (
-          <div
-            className="flex h-16 w-16 items-center justify-center rounded-2xl transition-transform duration-300 group-hover:scale-110"
-            style={{ background: "var(--bg-elevated)", border: `1px solid ${cfg.accentBorder}` }}
-          >
-            <Icon size={28} style={{ color: cfg.accent }} />
+          {/* Discount badge */}
+          {hasDiscount && (
+            <div
+              className="absolute right-3 top-3 z-20 flex items-center gap-1 rounded-full px-2 py-1"
+              style={{
+                background: "rgba(0,0,0,0.40)",
+                border: "1px solid rgba(239,68,68,0.35)",
+                backdropFilter: "blur(10px)",
+              }}
+            >
+              <Tag size={9} style={{ color: "#F87171" }} />
+              <span className="font-mono text-[10px] font-bold" style={{ color: "#F87171" }}>
+                -{discountPct}%
+              </span>
+            </div>
+          )}
+
+          {/* Overlaid components */}
+          <div className="absolute inset-x-0 bottom-0 z-20 p-4 text-white">
+            <div className="mb-2 flex items-center gap-1">
+              {Array.from({ length: 5 }).map((_, i) => (
+                <Star
+                  key={i}
+                  size={10}
+                  fill={(product.rating ?? 0) > i ? "currentColor" : "none"}
+                  style={{ color: (product.rating ?? 0) > i ? cfg.accent : "rgba(255,255,255,0.35)" }}
+                />
+              ))}
+              <span className="ml-1 font-mono text-[10px]" style={{ color: "rgba(255,255,255,0.70)" }}>
+                {(product.rating ?? 0).toFixed(1)}
+              </span>
+            </div>
+
+            <h3 className="line-clamp-2 text-sm font-bold leading-snug text-white drop-shadow-sm">
+              {product.name}
+            </h3>
+
+            <p className="mt-1 line-clamp-2 text-xs leading-relaxed text-white/75">
+              Premium cultivation support for better yields.
+            </p>
           </div>
-        )}
-      </div>
-
-      {/* ── Content zone ── */}
-      <div className="relative z-10 flex flex-1 flex-col p-4 pointer-events-none">
-        {/* Rating */}
-        <div className="mb-2.5 flex items-center gap-1">
-          {Array.from({ length: 5 }).map((_, i) => (
-            <Star
-              key={i}
-              size={10}
-              fill={(product.rating ?? 0) > i ? "currentColor" : "none"}
-              style={{ color: (product.rating ?? 0) > i ? cfg.accent : "var(--border-normal)" }}
-            />
-          ))}
-          <span className="ml-1 font-mono text-[10px]" style={{ color: "var(--text-muted)" }}>
-            {(product.rating ?? 0).toFixed(1)}
-          </span>
         </div>
 
-        {/* Name */}
-        <h3 className="line-clamp-2 text-sm font-bold leading-snug" style={{ color: "var(--text-primary)" }}>
-          {product.name}
-        </h3>
-
-        <p className="mt-1 line-clamp-2 text-xs leading-relaxed" style={{ color: "var(--text-muted)" }}>
-          Premium cultivation support for better yields.
-        </p>
-
-        <div className="flex-1" />
-
-        {/* Price + CTA */}
-        <div className="mt-4 pt-3" style={{ borderTop: "1px solid var(--border-subtle)" }}>
+        {/* ── Footer zone ── */}
+        <div className="relative z-10 flex flex-none flex-col p-4 pointer-events-none">
           <div className="mb-3 flex items-baseline gap-2">
             <span className="text-xl font-black" style={{ color: cfg.accent }}>
               ${displayedPrice.toLocaleString("en-US", { minimumFractionDigits: 2, maximumFractionDigits: 2 })}

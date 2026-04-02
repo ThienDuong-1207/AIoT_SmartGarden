@@ -126,6 +126,10 @@ const SUGGESTIONS = [
   "When should I change the hydroponic reservoir water?",
 ];
 
+const DEFAULT_ENDPOINT = "https://api.groq.com/openai/v1";
+const DEFAULT_MODEL = GROQ_MODELS[0].id;
+const DEFAULT_CUSTOM_MODEL = "qwen2.5:3b";
+
 const SENSOR_CONTEXT = [
   { label: "TDS",         value: "1150 ppm", icon: Droplets,     color: "#60A5FA"            },
   { label: "pH",          value: "6.2",      icon: FlaskConical,  color: "var(--emerald-400)" },
@@ -214,24 +218,13 @@ export default function PlantDoctorPage() {
   const [catFilter, setCatFilter] = useState("All");
   const [openGuide, setOpenGuide] = useState<string | null>(null);
 
-  const [endpoint, setEndpoint] = useState(() =>
-    typeof window !== "undefined" ? localStorage.getItem("ai_endpoint") ?? "https://api.groq.com/openai/v1" : "https://api.groq.com/openai/v1"
-  );
-  const [apiKey, setApiKey] = useState(() => {
-    if (typeof window === "undefined") return "";
-    return localStorage.getItem("openrouter_api_key") ?? "";
-  });
-  const [model, setModel] = useState(() => {
-    if (typeof window === "undefined") return GROQ_MODELS[0].id;
-    const saved = localStorage.getItem("openrouter_model") ?? "";
-    const allModels = [...GROQ_MODELS, ...OPENROUTER_MODELS];
-    return allModels.some((m) => m.id === saved) ? saved : GROQ_MODELS[0].id;
-  });
-  const [customModel, setCustomModel] = useState(() =>
-    typeof window !== "undefined" ? localStorage.getItem("local_model") ?? "qwen2.5:3b" : "qwen2.5:3b"
-  );
+  const [endpoint, setEndpoint] = useState(DEFAULT_ENDPOINT);
+  const [apiKey, setApiKey] = useState("");
+  const [model, setModel] = useState(DEFAULT_MODEL);
+  const [customModel, setCustomModel] = useState(DEFAULT_CUSTOM_MODEL);
   const [showKey, setShowKey]           = useState(false);
   const [keyPanelOpen, setKeyPanelOpen] = useState(false);
+  const [hydrated, setHydrated] = useState(false);
 
   const isLocal = endpoint.includes("localhost") || endpoint.includes("127.0.0.1");
   const isGroq  = endpoint.includes("groq.com");
@@ -246,6 +239,27 @@ export default function PlantDoctorPage() {
   useEffect(() => {
     bottomRef.current?.scrollIntoView({ behavior: "smooth" });
   }, [messages, loading]);
+
+  useEffect(() => {
+    if (typeof window === "undefined") return;
+
+    const savedEndpoint = localStorage.getItem("ai_endpoint");
+    const savedApiKey = localStorage.getItem("openrouter_api_key");
+    const savedModel = localStorage.getItem("openrouter_model");
+    const savedCustomModel = localStorage.getItem("local_model");
+
+    if (savedEndpoint) setEndpoint(savedEndpoint);
+    if (savedApiKey) setApiKey(savedApiKey);
+    if (savedCustomModel) setCustomModel(savedCustomModel);
+    if (savedModel) {
+      const allModels = [...GROQ_MODELS, ...OPENROUTER_MODELS];
+      if (allModels.some((m) => m.id === savedModel)) {
+        setModel(savedModel);
+      }
+    }
+
+    setHydrated(true);
+  }, []);
 
   function saveEndpoint(url: string) {
     setEndpoint(url);
@@ -299,7 +313,6 @@ export default function PlantDoctorPage() {
       let res: Response;
 
       if (isLocal) {
-        // Ollama: gọi trực tiếp từ browser (localhost, không có CORS issue)
         res = await fetch(`${endpoint.replace(/\/$/, "")}/chat/completions`, {
           method: "POST",
           headers: { "Content-Type": "application/json" },
@@ -311,7 +324,6 @@ export default function PlantDoctorPage() {
           }),
         });
       } else {
-        // Groq / OpenRouter: proxy qua Next.js API để tránh CORS và bảo vệ key
         const provider = isGroq ? "groq" : "openrouter";
         res = await fetch("/api/ai/chat", {
           method: "POST",
@@ -327,14 +339,19 @@ export default function PlantDoctorPage() {
 
       if (!res.ok) {
         const err = await res.json().catch(() => ({}));
-        throw new Error((err as { error?: string | { message?: string } }).error instanceof Object
-          ? ((err as { error: { message?: string } }).error.message ?? `HTTP ${res.status}`)
-          : ((err as { error?: string }).error ?? `HTTP ${res.status}`));
+        throw new Error(
+          (err as { error?: string | { message?: string } }).error instanceof Object
+            ? ((err as { error: { message?: string } }).error.message ?? `HTTP ${res.status}`)
+            : ((err as { error?: string }).error ?? `HTTP ${res.status}`)
+        );
       }
 
-      const data = await res.json() as { choices?: { message?: { content?: string } }[] };
+      const data = (await res.json()) as { choices?: { message?: { content?: string } }[] };
       const reply = data?.choices?.[0]?.message?.content ?? "No response from AI.";
-      setMessages((prev) => [...prev, { role: "assistant", content: reply, timestamp: new Date().toLocaleTimeString("en-US", { hour: "2-digit", minute: "2-digit" }) }]);
+      setMessages((prev) => [
+        ...prev,
+        { role: "assistant", content: reply, timestamp: new Date().toLocaleTimeString("en-US", { hour: "2-digit", minute: "2-digit" }) },
+      ]);
     } catch (err: unknown) {
       const message = err instanceof Error ? err.message : "Unknown error";
       setApiError(`API Error: ${message}`);
@@ -386,7 +403,7 @@ export default function PlantDoctorPage() {
         </div>
 
         {/* Articles */}
-        <div className="flex-1 overflow-y-auto px-3 py-3 space-y-2">
+        <div className="max-h-72 flex-1 overflow-y-auto px-3 py-3 space-y-2 lg:max-h-none">
           {filteredGuides.map((article) => (
             <GuideCard
               key={article.title}
@@ -420,11 +437,11 @@ export default function PlantDoctorPage() {
 
       {/* ── RIGHT: AI Chat ── */}
       <div
-        className="flex flex-1 min-w-0 flex-col overflow-hidden rounded-2xl"
+        className="flex min-w-0 flex-1 flex-col overflow-hidden rounded-2xl"
         style={{ background: "var(--bg-elevated)", border: "1px solid var(--border-subtle)" }}
       >
         {/* Chat header */}
-        <div className="flex items-center justify-between gap-3 px-4 py-3.5" style={{ borderBottom: "1px solid var(--border-subtle)" }}>
+        <div className="flex flex-col gap-3 px-4 py-3.5 sm:flex-row sm:items-center sm:justify-between" style={{ borderBottom: "1px solid var(--border-subtle)" }}>
           <div className="flex items-center gap-2">
             <div className="flex h-7 w-7 items-center justify-center rounded-full" style={{ background: "rgba(34,197,94,0.12)" }}>
               <Sparkles size={13} style={{ color: "var(--emerald-400)" }} />
@@ -437,7 +454,7 @@ export default function PlantDoctorPage() {
             </div>
           </div>
 
-          <div className="flex items-center gap-2">
+          <div className="flex flex-wrap items-center gap-2 sm:justify-end">
             {/* API key status */}
             <div
               className="flex items-center gap-1.5 rounded-full px-2.5 py-1"
@@ -465,10 +482,10 @@ export default function PlantDoctorPage() {
 
         {/* API key panel (collapsible) */}
         {keyPanelOpen && (
-          <div className="px-4 py-3 space-y-2.5" style={{ borderBottom: "1px solid var(--border-subtle)", background: "rgba(251,191,36,0.04)" }}>
+          <div className="space-y-3 px-4 py-3" style={{ borderBottom: "1px solid var(--border-subtle)", background: "rgba(251,191,36,0.04)" }}>
 
             {/* Endpoint URL */}
-            <div className="flex items-center gap-2">
+            <div className="flex flex-col gap-2 sm:flex-row sm:items-center">
               <span className="text-xs shrink-0 w-16" style={{ color: "var(--text-muted)" }}>Endpoint:</span>
               <input
                 value={endpoint}
@@ -478,7 +495,7 @@ export default function PlantDoctorPage() {
                 style={{ background: "var(--bg-base)", border: "1px solid var(--border-normal)", color: "var(--text-secondary)" }}
               />
             </div>
-            <div className="flex gap-2 flex-wrap">
+            <div className="flex flex-wrap gap-2">
               {[
                 { url: "https://api.groq.com/openai/v1",   label: "Groq ⚡ (fastest)" },
                 { url: "https://openrouter.ai/api/v1",      label: "OpenRouter"        },
@@ -524,7 +541,7 @@ export default function PlantDoctorPage() {
                     </button>
                   </div>
                 </div>
-                <div className="flex items-center gap-2">
+                <div className="flex flex-col gap-2 sm:flex-row sm:items-center">
                   <span className="text-xs shrink-0 w-16" style={{ color: "var(--text-muted)" }}>Model:</span>
                   <select
                     value={model}
@@ -542,7 +559,7 @@ export default function PlantDoctorPage() {
 
             {/* Local model name */}
             {isLocal && (
-              <div className="flex items-center gap-2">
+              <div className="flex flex-col gap-2 sm:flex-row sm:items-center">
                 <span className="text-xs shrink-0 w-16" style={{ color: "var(--text-muted)" }}>Model:</span>
                 <input
                   value={customModel}
@@ -581,7 +598,7 @@ export default function PlantDoctorPage() {
         </div>
 
         {/* Messages */}
-        <div className="flex-1 overflow-y-auto p-4 space-y-3">
+        <div className="flex-1 overflow-y-auto p-3 space-y-3 sm:p-4">
           {messages.map((msg, i) => (
             <div key={i} className={`flex gap-2.5 ${msg.role === "user" ? "flex-row-reverse" : ""}`}>
               <div
@@ -594,7 +611,7 @@ export default function PlantDoctorPage() {
                 }
               </div>
               <div
-                className="max-w-[80%] overflow-hidden rounded-2xl px-3.5 py-2.5 text-xs leading-relaxed"
+                className="max-w-[92%] overflow-hidden rounded-2xl px-3.5 py-2.5 text-xs leading-relaxed sm:max-w-[80%]"
                 style={
                   msg.role === "assistant"
                     ? { background: "var(--bg-base)", border: "1px solid var(--border-subtle)", color: "var(--text-secondary)", borderTopLeftRadius: 6 }
@@ -625,12 +642,12 @@ export default function PlantDoctorPage() {
 
         {/* Suggestions */}
         {messages.length === 1 && (
-          <div className="flex flex-wrap gap-1.5 px-4 pb-2">
+          <div className="flex flex-nowrap gap-1.5 overflow-x-auto px-4 pb-2 sm:flex-wrap sm:overflow-visible">
             {SUGGESTIONS.map((s) => (
               <button
                 key={s}
                 onClick={() => handleSend(s)}
-                className="rounded-full px-3 py-1.5 text-[11px] font-medium transition-all"
+                className="shrink-0 rounded-full px-3 py-1.5 text-[11px] font-medium transition-all"
                 style={{ background: "rgba(34,197,94,0.06)", border: "1px solid rgba(74,222,128,0.18)", color: "var(--emerald-400)" }}
               >
                 {s}
@@ -640,8 +657,8 @@ export default function PlantDoctorPage() {
         )}
 
         {/* Input row */}
-        <div className="flex items-center gap-2 px-4 py-3" style={{ borderTop: "1px solid var(--border-subtle)" }}>
-          <div className="flex flex-1 items-center gap-2 rounded-xl px-3 py-2.5" style={{ background: "var(--bg-base)", border: "1px solid var(--border-normal)" }}>
+        <div className="flex flex-col gap-2 px-4 py-3 sm:flex-row sm:items-center" style={{ borderTop: "1px solid var(--border-subtle)" }}>
+          <div className="flex w-full flex-1 items-center gap-2 rounded-xl px-3 py-2.5" style={{ background: "var(--bg-base)", border: "1px solid var(--border-normal)" }}>
             <Leaf size={12} style={{ color: "var(--emerald-500)", flexShrink: 0 }} />
             <input
               value={input}
@@ -655,7 +672,7 @@ export default function PlantDoctorPage() {
           <button
             onClick={() => handleSend()}
             disabled={!input.trim() || loading}
-            className="btn-emerald shrink-0 gap-2 px-4 py-2.5 text-xs"
+            className="btn-emerald w-full shrink-0 gap-2 px-4 py-2.5 text-xs sm:w-auto"
           >
             <Send size={12} />
             Send
