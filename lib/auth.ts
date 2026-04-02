@@ -6,6 +6,7 @@ import bcrypt from "bcryptjs";
 import UserModel from "@/models/User";
 import { dbConnect } from "@/lib/mongodb";
 
+<<<<<<< HEAD
 const googleClientId = process.env.GOOGLE_CLIENT_ID;
 const googleClientSecret = process.env.GOOGLE_CLIENT_SECRET;
 const enableGoogle = Boolean(googleClientId && googleClientSecret);
@@ -85,6 +86,75 @@ const providers: Provider[] = [
 export const authOptions: NextAuthOptions = {
   debug: process.env.NODE_ENV === "development",
   providers,
+=======
+const authSecret = process.env.NEXTAUTH_SECRET ?? process.env.AUTH_SECRET;
+
+if (process.env.NODE_ENV === "production" && !authSecret) {
+  throw new Error("Missing auth secret: set NEXTAUTH_SECRET or AUTH_SECRET in production environment.");
+}
+
+export const authOptions: NextAuthOptions = {
+  secret: authSecret,
+  providers: [
+    GoogleProvider({
+      clientId: process.env.GOOGLE_CLIENT_ID || "",
+      clientSecret: process.env.GOOGLE_CLIENT_SECRET || "",
+    }),
+    CredentialsProvider({
+      name: "Admin Login",
+      credentials: {
+        email: { label: "Email", type: "email" },
+        password: { label: "Password", type: "password" },
+      },
+      async authorize(credentials) {
+        if (!credentials?.email || !credentials?.password) {
+          throw new Error("Missing email or password");
+        }
+
+        const normalizedEmail = credentials.email.trim().toLowerCase();
+        const normalizedPassword = credentials.password.trim();
+
+        await dbConnect();
+
+        const user = await UserModel.findOne({
+          email: { $regex: `^${normalizedEmail.replace(/[.*+?^${}()|[\]\\]/g, "\\$&")}$`, $options: "i" },
+        });
+        if (!user) {
+          throw new Error("Account not found");
+        }
+
+        if (user.role !== "admin") {
+          throw new Error("Only admin accounts can sign in this way");
+        }
+
+        if (user.status === "banned") {
+          throw new Error("Account is currently locked");
+        }
+
+        if (!user.password) {
+          throw new Error("Admin account has no password set");
+        }
+
+        const passwordValue = String(user.password);
+        const isBcryptHash = /^\$2[aby]\$\d{2}\$/.test(passwordValue);
+        const isPasswordValid = isBcryptHash
+          ? await bcrypt.compare(normalizedPassword, passwordValue)
+          : normalizedPassword === passwordValue;
+
+        if (!isPasswordValid) {
+          throw new Error("Incorrect password");
+        }
+
+        return {
+          id: user._id.toString(),
+          name: user.name,
+          email: user.email,
+          image: user.image,
+        };
+      },
+    }),
+  ],
+>>>>>>> 717b07b (V13?)
   session: {
     strategy: "jwt",
   },
