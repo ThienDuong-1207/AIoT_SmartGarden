@@ -140,10 +140,14 @@ export const authOptions: NextAuthOptions = {
       return session;
     },
     async redirect({ baseUrl, url }) {
-      // Cho phép redirect tới URL cụ thể trong cùng domain
-      if (url.startsWith("/")) return `${baseUrl}${url}`;
-      if (url.startsWith(baseUrl)) return url;
-      // Mặc định sau login → dashboard (middleware sẽ redirect admin sang /admin)
+      // Nếu user là admin → redirect tới /admin
+      // Nếu user là customer → redirect tới /dashboard
+      if (url.startsWith("/")) {
+        return `${baseUrl}${url}`;
+      }
+      if (new URL(url).origin === baseUrl) {
+        return url;
+      }
       return `${baseUrl}/dashboard`;
     },
   },

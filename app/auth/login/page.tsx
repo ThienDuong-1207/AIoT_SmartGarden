@@ -1,10 +1,12 @@
 "use client";
 
 import { FormEvent, useEffect, useState } from "react";
+import { useRouter } from "next/navigation";
 import { getProviders, signIn } from "next-auth/react";
 import { Leaf, UserCog, LogIn, Mail, KeyRound, Globe, ChevronRight } from "lucide-react";
 
 export default function LoginPage() {
+  const router = useRouter();
   const [mode, setMode] = useState<"customer" | "admin">("customer");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
@@ -27,21 +29,12 @@ export default function LoginPage() {
     setCustomerError("");
     setIsSubmitting(true);
 
-    const result = await signIn("credentials", {
+    await signIn("credentials", {
       email: email.trim(),
       password: password.trim(),
+      redirect: true,
       callbackUrl: "/dashboard",
-      redirect: false,
     });
-
-    setIsSubmitting(false);
-
-    if (!result || result.error) {
-      setCustomerError("Customer sign-in failed. Check your email/password.");
-      return;
-    }
-
-    window.location.href = result.url || "/dashboard";
   }
 
   async function handleAdminLogin(event: FormEvent<HTMLFormElement>) {
@@ -49,21 +42,12 @@ export default function LoginPage() {
     setAdminError("");
     setIsSubmitting(true);
 
-    const result = await signIn("credentials", {
+    await signIn("credentials", {
       email: email.trim(),
       password: password.trim(),
+      redirect: true,
       callbackUrl: "/admin",
-      redirect: false,
     });
-
-    setIsSubmitting(false);
-
-    if (!result || result.error) {
-      setAdminError("Admin sign-in failed. Check your email/password.");
-      return;
-    }
-
-    window.location.href = result.url || "/admin";
   }
 
   return (

@@ -1,10 +1,12 @@
 "use client";
 
 import { FormEvent, useEffect, useState } from "react";
+import { useRouter } from "next/navigation";
 import { getProviders, signIn } from "next-auth/react";
 import { Globe, KeyRound, Leaf, Mail, User } from "lucide-react";
 
 export default function RegisterPage() {
+  const router = useRouter();
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
@@ -42,21 +44,12 @@ export default function RegisterPage() {
       return;
     }
 
-    const signInResult = await signIn("credentials", {
+    await signIn("credentials", {
       email: email.trim(),
       password: password.trim(),
+      redirect: true,
       callbackUrl: "/dashboard",
-      redirect: false,
     });
-
-    setIsSubmitting(false);
-
-    if (!signInResult || signInResult.error) {
-      setError("Registered, but sign-in failed. Please login manually.");
-      return;
-    }
-
-    window.location.href = signInResult.url || "/dashboard";
   }
 
   return (
