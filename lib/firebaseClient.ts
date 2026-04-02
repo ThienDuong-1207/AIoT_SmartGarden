@@ -9,6 +9,16 @@ const firebaseConfig = {
   appId: process.env.NEXT_PUBLIC_FIREBASE_APP_ID,
 };
 
+function hasRequiredFirebaseConfig() {
+  return Boolean(
+    firebaseConfig.apiKey &&
+    firebaseConfig.authDomain &&
+    firebaseConfig.projectId &&
+    firebaseConfig.messagingSenderId &&
+    firebaseConfig.appId
+  );
+}
+
 function normalizeVapidKey(value: string | undefined): string | null {
   if (!value) return null;
 
@@ -28,7 +38,8 @@ function normalizeVapidKey(value: string | undefined): string | null {
   return trimmed;
 }
 
-function getFirebaseApp(): FirebaseApp {
+function getFirebaseApp(): FirebaseApp | null {
+  if (!hasRequiredFirebaseConfig()) return null;
   if (getApps().length > 0) return getApps()[0]!;
   return initializeApp(firebaseConfig);
 }
@@ -37,6 +48,10 @@ export function getFirebaseMessagingClient(): Messaging | null {
   if (typeof window === "undefined") return null;
   if (!("serviceWorker" in navigator)) return null;
   const app = getFirebaseApp();
+  if (!app) {
+    console.warn("[fcm-client] Firebase config is incomplete. Skipping messaging setup.");
+    return null;
+  }
   return getMessaging(app);
 }
 

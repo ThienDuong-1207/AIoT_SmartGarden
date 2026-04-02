@@ -2,6 +2,7 @@
 
 import Link from "next/link";
 import { useEffect, useState } from "react";
+import { useSearchParams } from "next/navigation";
 import {
   CheckCircle, ShoppingBag, LayoutDashboard,
   Package, Truck, Leaf,
@@ -18,6 +19,9 @@ const STEPS = [
 
 export default function CheckoutSuccessPage() {
   const [visible, setVisible] = useState(false);
+  const searchParams = useSearchParams();
+  const orderFromQuery = searchParams.get("order");
+  const orderCode = orderFromQuery || ORDER_NUM;
 
   useEffect(() => {
     const t = setTimeout(() => setVisible(true), 100);
@@ -83,7 +87,7 @@ export default function CheckoutSuccessPage() {
               className="font-mono text-sm font-bold"
               style={{ color: "var(--emerald-400)" }}
             >
-              {ORDER_NUM}
+              {orderCode}
             </span>
           </div>
 

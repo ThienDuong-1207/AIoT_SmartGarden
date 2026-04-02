@@ -11,12 +11,23 @@ const firebaseConfig = {
   measurementId: process.env.NEXT_PUBLIC_FIREBASE_MEASUREMENT_ID,
 };
 
+function hasRequiredFirebaseConfig() {
+  return Boolean(
+    firebaseConfig.apiKey &&
+    firebaseConfig.authDomain &&
+    firebaseConfig.projectId &&
+    firebaseConfig.messagingSenderId &&
+    firebaseConfig.appId
+  );
+}
+
 // Initialize Firebase
-const app = initializeApp(firebaseConfig);
+const app = hasRequiredFirebaseConfig() ? initializeApp(firebaseConfig) : null;
 
 // Initialize Messaging only in browser environment
 export function getFirebaseMessaging() {
   if (typeof window === "undefined") return null;
+  if (!app) return null;
   try {
     return getMessaging(app);
   } catch {

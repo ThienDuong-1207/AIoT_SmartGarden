@@ -1,7 +1,7 @@
 "use client";
 
-import { FormEvent, useState } from "react";
-import { signIn } from "next-auth/react";
+import { FormEvent, useEffect, useState } from "react";
+import { getProviders, signIn } from "next-auth/react";
 import { Leaf, UserCog, LogIn, Mail, KeyRound, Globe, ChevronRight } from "lucide-react";
 
 export default function LoginPage() {
@@ -9,9 +9,40 @@ export default function LoginPage() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [adminError, setAdminError] = useState("");
+  const [customerError, setCustomerError] = useState("");
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [isGoogleAvailable, setIsGoogleAvailable] = useState(false);
 
   const isAdminMode = mode === "admin";
+
+  useEffect(() => {
+    void (async () => {
+      const providers = await getProviders();
+      setIsGoogleAvailable(Boolean(providers?.google));
+    })();
+  }, []);
+
+  async function handleCustomerLogin(event: FormEvent<HTMLFormElement>) {
+    event.preventDefault();
+    setCustomerError("");
+    setIsSubmitting(true);
+
+    const result = await signIn("credentials", {
+      email: email.trim(),
+      password: password.trim(),
+      callbackUrl: "/dashboard",
+      redirect: false,
+    });
+
+    setIsSubmitting(false);
+
+    if (!result || result.error) {
+      setCustomerError("Customer sign-in failed. Check your email/password.");
+      return;
+    }
+
+    window.location.href = result.url || "/dashboard";
+  }
 
   async function handleAdminLogin(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
@@ -108,29 +139,70 @@ export default function LoginPage() {
              </div>
 
              {!isAdminMode ? (
-               <div className="space-y-4">
+               <form onSubmit={handleCustomerLogin} className="space-y-4">
+                 <div className="group relative">
+                    <div className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-500 group-focus-within:text-emerald-400 transition-colors">
+                      <Mail size={16} />
+                    </div>
+                    <input
+                      type="email"
+                      value={email}
+                      onChange={(e) => setEmail(e.target.value)}
+                      placeholder="customer@email.com"
+                      className="w-full pl-12 pr-6 py-4 rounded-2xl bg-white/[0.03] border border-white/10 text-sm font-medium focus:outline-none focus:border-emerald-500/50 focus:bg-white/[0.06] transition-all"
+                      required
+                    />
+                 </div>
+
+                 <div className="group relative">
+                    <div className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-500 group-focus-within:text-emerald-400 transition-colors">
+                      <KeyRound size={16} />
+                    </div>
+                    <input
+                      type="password"
+                      value={password}
+                      onChange={(e) => setPassword(e.target.value)}
+                      placeholder="Your password"
+                      className="w-full pl-12 pr-6 py-4 rounded-2xl bg-white/[0.03] border border-white/10 text-sm font-medium focus:outline-none focus:border-emerald-500/50 focus:bg-white/[0.06] transition-all"
+                      required
+                    />
+                 </div>
+
+                 {customerError && (
+                   <p className="p-3 rounded-xl bg-red-500/10 border border-red-500/20 text-red-400 text-[11px] font-bold uppercase tracking-wider text-center">
+                     {customerError}
+                   </p>
+                 )}
+
                  <button
-                   onClick={() => signIn("google", { callbackUrl: "/auth/redirect" })}
-                   className="w-full flex items-center justify-center gap-3 py-3 px-4 bg-white/[0.03] hover:bg-white/[0.08] border border-white/10 rounded-xl text-white font-medium transition-all duration-300 hover:-translate-y-0.5"
+                    type="submit"
+                    disabled={isSubmitting}
+                    className="flex w-full items-center justify-center gap-2 py-4 rounded-2xl bg-emerald-500 disabled:bg-slate-700 text-white font-black text-xs uppercase tracking-[0.2em] shadow-[0_0_20px_rgba(16,185,129,0.3)] transition-all duration-300 hover:bg-emerald-400 hover:shadow-[0_0_30px_rgba(16,185,129,0.5)] hover:-translate-y-1"
                  >
-                    <svg className="w-5 h-5 shrink-0" viewBox="0 0 48 48">
-                      <path fill="#EA4335" d="M24 9.5c3.54 0 6.71 1.22 9.21 3.6l6.85-6.85C35.9 2.38 30.47 0 24 0 14.62 0 6.51 5.38 2.56 13.22l7.98 6.19C12.43 13.72 17.74 9.5 24 9.5z"/>
-                      <path fill="#4285F4" d="M46.98 24.55c0-1.57-.15-3.09-.38-4.55H24v9.02h12.94c-.58 2.96-2.26 5.48-4.78 7.18l7.73 6c4.51-4.18 7.09-10.36 7.09-17.65z"/>
-                      <path fill="#FBBC05" d="M10.53 28.59c-.48-1.45-.76-2.99-.76-4.59s.27-3.14.76-4.59l-7.98-6.19C.92 16.46 0 20.12 0 24c0 3.88.92 7.54 2.56 10.78l7.97-6.19z"/>
-                      <path fill="#34A853" d="M24 48c6.48 0 11.93-2.13 15.89-5.81l-7.73-6c-2.15 1.45-4.92 2.3-8.16 2.3-6.26 0-11.57-4.22-13.47-9.91l-7.98 6.19C6.51 42.62 14.62 48 24 48z"/>
-                      <path fill="none" d="M0 0h48v48H0z"/>
-                    </svg>
-                      <span className="text-xs uppercase tracking-widest font-bold">CONTINUE WITH GOOGLE</span>
-                 </button>
-                 
-                 <button
-                    onClick={() => signIn("google", { callbackUrl: "/auth/redirect" })}
-                    className="flex w-full items-center justify-center gap-2 py-4 rounded-2xl bg-emerald-500 text-white font-black text-xs uppercase tracking-[0.2em] shadow-[0_0_20px_rgba(16,185,129,0.3)] transition-all duration-300 hover:bg-emerald-400 hover:shadow-[0_0_30px_rgba(16,185,129,0.5)] hover:-translate-y-1"
-                 >
-                    SIGN IN NOW
+                    {isSubmitting ? "PROCESSING..." : "SIGN IN NOW"}
                     <ChevronRight size={14} className="animate-pulse" />
                  </button>
-               </div>
+
+                 <a href="/auth/register" className="block text-center text-xs text-slate-400 hover:text-emerald-400 transition-colors">
+                   Create a customer account
+                 </a>
+
+                 <button
+                   type="button"
+                   disabled={!isGoogleAvailable}
+                   onClick={() => signIn("google", { callbackUrl: "/auth/redirect" })}
+                   className="w-full flex items-center justify-center gap-3 py-3 px-4 bg-white/[0.03] border border-white/10 rounded-xl text-white font-medium transition-all duration-300 hover:-translate-y-0.5 disabled:cursor-not-allowed disabled:opacity-50"
+                 >
+                   <Globe size={16} />
+                   <span className="text-xs uppercase tracking-widest font-bold">CONTINUE WITH GOOGLE</span>
+                 </button>
+
+                 {!isGoogleAvailable && (
+                   <p className="rounded-xl border px-3 py-2 text-[11px] text-amber-300" style={{ borderColor: "rgba(245,158,11,0.35)", background: "rgba(245,158,11,0.08)" }}>
+                     Google sign-in is not configured. Add GOOGLE_CLIENT_ID and GOOGLE_CLIENT_SECRET in .env.local, then restart the server.
+                   </p>
+                 )}
+               </form>
              ) : (
                <form onSubmit={handleAdminLogin} className="space-y-4">
                  <div className="group relative">
