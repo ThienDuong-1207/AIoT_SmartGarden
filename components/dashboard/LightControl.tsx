@@ -9,6 +9,7 @@ interface LightControlProps {
   initialBrightness: number;
   initialSchedule: Array<{ startTime: string; endTime: string; brightness: number; enabled: boolean }>;
   onUpdate?: (config: any) => void;
+  disabled?: boolean;
 }
 
 export default function LightControl({
@@ -17,6 +18,7 @@ export default function LightControl({
   initialBrightness,
   initialSchedule,
   onUpdate,
+  disabled = false,
 }: LightControlProps) {
   const [status, setStatus] = useState(initialStatus);
   const [brightness, setBrightness] = useState(initialBrightness);
@@ -28,6 +30,7 @@ export default function LightControl({
     brightness?: number;
     schedule?: Array<{ startTime: string; endTime: string; brightness: number; enabled: boolean }>;
   }) => {
+    if (disabled) return false;
     const res = await fetch(`/api/devices/${deviceId}/config`, {
       method: "PATCH",
       headers: { "Content-Type": "application/json" },
@@ -53,6 +56,7 @@ export default function LightControl({
   };
 
   const handleToggleLight = async () => {
+    if (disabled) return;
     setIsLoading(true);
     try {
       await saveLightConfig({ status: !status });
@@ -64,6 +68,7 @@ export default function LightControl({
   };
 
   const handleBrightnessChange = async (value: number) => {
+    if (disabled) return;
     setBrightness(value);
     try {
       await saveLightConfig({ brightness: value });
@@ -73,6 +78,7 @@ export default function LightControl({
   };
 
   const handlePreset = async (preset: "12h" | "16h" | "custom") => {
+    if (disabled) return;
     const presetMap = {
       "12h": [{ startTime: "06:00", endTime: "18:00", brightness: 100, enabled: true }],
       "16h": [{ startTime: "06:00", endTime: "22:00", brightness: 100, enabled: true }],
@@ -106,7 +112,7 @@ export default function LightControl({
         <span className="text-xs" style={{ color: "var(--text-secondary)" }}>Light Status</span>
         <button
           onClick={handleToggleLight}
-          disabled={isLoading}
+          disabled={isLoading || disabled}
           className="relative inline-flex items-center h-6 w-11 rounded-full transition-colors"
           style={{
             background: status ? "var(--gold-400)" : "var(--border-subtle)",
@@ -136,7 +142,7 @@ export default function LightControl({
           max="100"
           value={brightness}
           onChange={(e) => handleBrightnessChange(parseInt(e.target.value))}
-          disabled={!status}
+          disabled={!status || disabled}
           className="w-full h-2 rounded-lg"
           style={{
             background: `linear-gradient(to right, var(--border-subtle) 0%, var(--gold-400) ${brightness}%, var(--border-subtle) ${brightness}%, var(--border-subtle) 100%)`,
@@ -168,7 +174,7 @@ export default function LightControl({
         <div className="grid grid-cols-3 gap-2">
           <button
             onClick={() => handlePreset("12h")}
-            disabled={isLoading}
+            disabled={isLoading || disabled}
             className="rounded-lg px-2 py-2 text-[11px] font-semibold transition-all"
             style={{
               background: "rgba(250,204,21,0.12)",
@@ -180,7 +186,7 @@ export default function LightControl({
           </button>
           <button
             onClick={() => handlePreset("16h")}
-            disabled={isLoading}
+            disabled={isLoading || disabled}
             className="rounded-lg px-2 py-2 text-[11px] font-semibold transition-all"
             style={{
               background: "rgba(250,204,21,0.12)",
@@ -192,7 +198,7 @@ export default function LightControl({
           </button>
           <button
             onClick={() => handlePreset("custom")}
-            disabled={isLoading}
+            disabled={isLoading || disabled}
             className="rounded-lg px-2 py-2 text-[11px] font-semibold transition-all"
             style={{
               background: "rgba(250,204,21,0.12)",

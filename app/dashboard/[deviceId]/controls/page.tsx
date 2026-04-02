@@ -64,22 +64,37 @@ export default function IoTControlsPage() {
   const [config, setConfig] = useState<DeviceConfig | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+  const [isConnected, setIsConnected] = useState(false);
 
   useEffect(() => {
     async function fetchConfig() {
       try {
-        const res = await fetch(`/api/devices/${deviceId}/config`);
-        if (res.ok) {
-          const data = await res.json();
+        const [configRes, latestRes] = await Promise.all([
+          fetch(`/api/devices/${deviceId}/config`),
+          fetch(`/api/devices/${deviceId}/latest`),
+        ]);
+
+        if (configRes.ok) {
+          const data = await configRes.json();
           setConfig(normalizeConfig(data.config));
           setError(null);
         } else {
-          const data = await res.json().catch(() => ({}));
-          setError(data?.error || `Failed to load device config (${res.status})`);
+          const data = await configRes.json().catch(() => ({}));
+          setError(data?.error || `Failed to load device config (${configRes.status})`);
+          setConfig(normalizeConfig(null));
+        }
+
+        if (latestRes.ok) {
+          const latestData = await latestRes.json();
+          setIsConnected(Boolean(latestData?.device?.isOnline));
+        } else {
+          setIsConnected(false);
         }
       } catch (error) {
         console.error("Failed to fetch config:", error);
         setError(error instanceof Error ? error.message : "Failed to load device config");
+        setConfig(normalizeConfig(null));
+        setIsConnected(false);
       } finally {
         setLoading(false);
       }
@@ -98,24 +113,7 @@ export default function IoTControlsPage() {
     );
   }
 
-  if (error) {
-    return (
-      <div className="rounded-2xl p-6" style={{ background: "rgba(239,68,68,0.08)", border: "1px solid rgba(239,68,68,0.18)" }}>
-        <h2 className="text-sm font-semibold" style={{ color: "#F87171" }}>Sensor Control unavailable</h2>
-        <p className="mt-2 text-xs" style={{ color: "var(--text-secondary)" }}>
-          {error}
-        </p>
-      </div>
-    );
-  }
-
-  if (!config) {
-    return (
-      <div className="rounded-2xl p-6" style={{ background: "rgba(255,255,255,0.03)", border: "1px solid var(--border-subtle)" }}>
-        <p className="text-xs" style={{ color: "var(--text-muted)" }}>No device configuration found.</p>
-      </div>
-    );
-  }
+  if (!config) return null;
 
   return (
     <div className="space-y-6">
@@ -141,6 +139,23 @@ export default function IoTControlsPage() {
         </div>
       </div>
 
+      <div className="rounded-lg p-3 flex items-center justify-between" style={{ background: isConnected ? "rgba(16,185,129,0.10)" : "rgba(239,68,68,0.10)", border: isConnected ? "1px solid rgba(16,185,129,0.20)" : "1px solid rgba(239,68,68,0.20)" }}>
+        <p className="text-xs font-semibold" style={{ color: isConnected ? "var(--emerald-400)" : "#F87171" }}>
+          {isConnected ? "Connected" : "Unconnected"}
+        </p>
+        <p className="text-[11px]" style={{ color: "var(--text-secondary)" }}>
+          {isConnected ? "Device is online. Controls are enabled." : "Device is offline. Controls are disabled."}
+        </p>
+      </div>
+
+      {error && (
+        <div className="rounded-2xl p-4" style={{ background: "rgba(245,158,11,0.08)", border: "1px solid rgba(245,158,11,0.18)" }}>
+          <p className="text-xs" style={{ color: "#FBBF24" }}>
+            {error}
+          </p>
+        </div>
+      )}
+
       {/* Grid of Controls */}
       <div className="grid gap-4 md:grid-cols-2">
         {/* Pump Control */}
@@ -148,6 +163,7 @@ export default function IoTControlsPage() {
           deviceId={deviceId as string}
           initialStatus={config.pump.status}
           initialSchedule={config.pump.schedule}
+          disabled={!isConnected}
           onUpdate={(updated) => setConfig({ ...config, pump: updated.pump })}
         />
 
@@ -157,6 +173,7 @@ export default function IoTControlsPage() {
           initialStatus={config.light.status}
           initialBrightness={config.light.brightness}
           initialSchedule={config.light.schedule}
+          disabled={!isConnected}
           onUpdate={(updated) => setConfig({ ...config, light: updated.light })}
         />
       </div>
@@ -165,12 +182,14 @@ export default function IoTControlsPage() {
         <WateringSchedule
           deviceId={deviceId as string}
           initialWatering={config.watering}
+          disabled={!isConnected}
           onUpdate={(updated) => setConfig({ ...config, watering: updated.watering })}
         />
 
         <SensorCalibrationWizard
           deviceId={deviceId as string}
           initialSensor={config.sensor}
+          disabled={!isConnected}
           onUpdate={(updated) => setConfig({ ...config, sensor: updated.sensor })}
         />
       </div>

@@ -16,12 +16,6 @@ type DeviceView = {
   image?: string;
 };
 
-const MOCK_DEVICES: DeviceView[] = [
-  { _id: "mock-1", deviceId: "SGP-2024-001", name: "Basil Pot", plantType: "Basil", isOnline: true, image: "/images/chaucay.webp" },
-  { _id: "mock-2", deviceId: "SGP-2024-002", name: "Kitchen Greens", plantType: "Mustard green", isOnline: true, image: "/images/chau1.png" },
-  { _id: "mock-3", deviceId: "SGP-2024-003", name: "Strawberry Pot", plantType: "Strawberry", isOnline: false, image: "/images/chau2.png" },
-];
-
 async function getDevices(userId: string): Promise<DeviceView[]> {
   try {
     await dbConnect();
@@ -37,9 +31,9 @@ async function getDevices(userId: string): Promise<DeviceView[]> {
         : false,
       lastSeenAt: d.lastSeenAt ? new Date(d.lastSeenAt).toISOString() : null,
     }));
-    return mapped.length ? mapped : MOCK_DEVICES;
+    return mapped;
   } catch {
-    return MOCK_DEVICES;
+    return [];
   }
 }
 
@@ -53,7 +47,7 @@ function getGreeting() {
 export default async function DashboardPage() {
   const session = await getServerSession(authOptions);
   const userId = session?.user?.id;
-  const devices = userId ? await getDevices(userId) : MOCK_DEVICES;
+  const devices = userId ? await getDevices(userId) : [];
   const firstName = session?.user?.name?.split(" ").at(-1) ?? "there";
   const greeting = getGreeting();
 

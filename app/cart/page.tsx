@@ -283,7 +283,8 @@ export default function CartPage() {
 
             <button
               onClick={handleCheckout}
-              className="btn-emerald mt-5 w-full justify-center gap-2 py-3"
+              className="mt-5 w-full rounded-xl py-3 text-sm font-semibold flex items-center justify-center gap-2 transition-all"
+              style={{ background: "#F97316", color: "#fff" }}
             >
               Checkout
               <ArrowRight size={15} />
@@ -291,8 +292,8 @@ export default function CartPage() {
 
             <Link
               href="/products"
-              className="mt-3 flex w-full items-center justify-center gap-2 rounded-xl py-2.5 text-xs font-semibold"
-              style={{ color: "var(--text-muted)" }}
+              className="mt-3 flex w-full items-center justify-center gap-2 rounded-xl py-2.5 text-xs font-semibold transition-all"
+              style={{ background: "rgba(16,185,129,0.12)", color: "var(--emerald-400)", border: "1px solid rgba(16,185,129,0.25)" }}
             >
               <ArrowLeft size={12} />
               Continue Shopping
