@@ -4,7 +4,7 @@ import DeviceModel from "@/models/Device";
 import { dbConnect } from "@/lib/mongodb";
 import DeviceCard from "@/components/dashboard/DeviceCard";
 import DashboardClient from "@/components/dashboard/DashboardClient";
-import { Cpu } from "lucide-react";
+import { ensureDefaultDevicesForUser, SHARED_DEVICE_IDS } from "@/lib/ensure-default-devices";
 
 type DeviceView = {
   _id: string;
@@ -16,29 +16,15 @@ type DeviceView = {
   image?: string;
 };
 
-const SAMPLE_DEVICES: DeviceView[] = [
-  {
-    _id: "demo-1",
-    deviceId: "SG-DEMO-001",
-    name: "Demo Basil Pot",
-    plantType: "Basil",
-    isOnline: false,
-    image: "/images/chaucay.webp",
-  },
-  {
-    _id: "demo-2",
-    deviceId: "SG-DEMO-002",
-    name: "Demo Lettuce Pot",
-    plantType: "Lettuce",
-    isOnline: false,
-    image: "/images/chau1.png",
-  },
-];
-
 async function getDevices(userId: string): Promise<DeviceView[]> {
   try {
     await dbConnect();
-    const docs = await DeviceModel.find({ userId }).lean();
+    await ensureDefaultDevicesForUser(userId);
+
+    const docs = await DeviceModel.find({
+      $or: [{ userId }, { deviceId: { $in: SHARED_DEVICE_IDS } }],
+    }).lean();
+
     const now = Date.now();
     const mapped = docs.map((d) => ({
       _id: String(d._id),
@@ -78,19 +64,11 @@ export default async function DashboardPage() {
           Devices · {devices.length}
         </p>
 
-        {devices.length === 0 ? (
-          <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
-            {SAMPLE_DEVICES.map((device, i) => (
-              <DeviceCard key={device._id} device={device} index={i} />
-            ))}
-          </div>
-        ) : (
-          <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
-            {devices.map((device, i) => (
-              <DeviceCard key={device._id} device={device} index={i} />
-            ))}
-          </div>
-        )}
+        <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+          {devices.map((device, i) => (
+            <DeviceCard key={device._id} device={device} index={i} />
+          ))}
+        </div>
       </div>
     </DashboardClient>
   );

@@ -298,24 +298,9 @@ Admin:
 
 ---
 
-## 8. Trạng thái triển khai hiện tại
+## 8. Trạng thái triển khai
 
-| Phase | Nội dung | Trạng thái |
-|---|---|---|
-| 0 | Infra: Next.js, MongoDB Atlas, HiveMQ, Cloudinary | ✅ Done |
-| 1 | Auth, UI marketing, e-commerce, dashboard shell | ✅ Done |
-| 2A | AI Lab: YOLOv8 predict, Plant Doctor chatbot | ✅ Done |
-| 2B | MongoDB schemas, toàn bộ API routes | 🔄 In Progress |
-| 2C | MQTT realtime `lib/mqtt.ts` | ⏳ Chờ hardware |
-| 2D | WebSocket dashboard realtime | ⏳ Not started |
-| 3A | Controls & automation (relay, schedule) | ⏳ Not started |
-| 3B | Firebase FCM push notifications | ⏳ Not started |
-| 5 | Admin panel | 🔄 In Progress |
-| 6 | ESP32 firmware | ⏳ Chờ hardware |
-| 7 | Production hardening & monitoring | ⏳ Not started |
-
-> **Nút thắt cổ chai:** Phases 2C, 2D, 3A, 3B, 6 phụ thuộc vào phần cứng ESP32.
-> Toàn bộ cloud infra đã sẵn sàng — cắm board vào là hoạt động.
+> Xem trạng thái chi tiết theo từng phase tại [PROJECT_PHASES.md](./PROJECT_PHASES.md).
 
 ---
 

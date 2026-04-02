@@ -224,7 +224,6 @@ export default function PlantDoctorPage() {
   const [customModel, setCustomModel] = useState(DEFAULT_CUSTOM_MODEL);
   const [showKey, setShowKey]           = useState(false);
   const [keyPanelOpen, setKeyPanelOpen] = useState(false);
-  const [hydrated, setHydrated] = useState(false);
 
   const isLocal = endpoint.includes("localhost") || endpoint.includes("127.0.0.1");
   const isGroq  = endpoint.includes("groq.com");
@@ -258,8 +257,6 @@ export default function PlantDoctorPage() {
         setModel(savedModel);
       }
     }
-
-    setHydrated(true);
   }, []);
 
   function saveEndpoint(url: string) {
@@ -446,7 +443,7 @@ export default function PlantDoctorPage() {
 
       {/* ── RIGHT: AI Chat ── */}
       <div
-        className="flex min-w-0 flex-1 flex-col overflow-hidden rounded-2xl"
+        className="order-1 flex min-w-0 flex-1 flex-col overflow-hidden rounded-2xl xl:order-2"
         style={{ background: "var(--bg-elevated)", border: "1px solid var(--border-subtle)" }}
       >
         {/* Chat header */}

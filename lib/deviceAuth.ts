@@ -12,6 +12,7 @@ import { dbConnect } from "@/lib/mongodb";
 import DeviceModel from "@/models/Device";
 import { NextRequest, NextResponse } from "next/server";
 import type { InferSchemaType } from "mongoose";
+import { SHARED_DEVICE_IDS } from "@/lib/ensure-default-devices";
 
 type DeviceDoc = InferSchemaType<typeof import("@/models/Device").default.schema>;
 
@@ -54,6 +55,10 @@ export async function authorizeDevice(
       device: null,
       userId: null,
     };
+  }
+
+  if (SHARED_DEVICE_IDS.includes(deviceId as (typeof SHARED_DEVICE_IDS)[number])) {
+    return { error: null, device: device as AuthOk["device"], userId: session.user.id };
   }
 
   if (device.userId.toString() !== session.user.id) {
