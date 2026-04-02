@@ -137,11 +137,11 @@ export default function SensorCalibrationWizard({ deviceId, initialSensor, onUpd
         </ol>
       </div>
 
-      <div className="grid grid-cols-3 gap-2">
+      <div className="grid grid-cols-2 gap-2 sm:grid-cols-3">
         <button
           onClick={() => handleAction("start")}
           disabled={loading}
-          className="rounded-lg py-2 text-[11px] font-semibold"
+          className="rounded-lg py-2.5 text-[11px] font-semibold"
           style={{ background: "rgba(59,130,246,0.12)", color: "var(--blue-400)", border: "1px solid rgba(59,130,246,0.25)" }}
         >
           Start
@@ -149,7 +149,7 @@ export default function SensorCalibrationWizard({ deviceId, initialSensor, onUpd
         <button
           onClick={() => handleAction("cancel")}
           disabled={loading}
-          className="rounded-lg py-2 text-[11px] font-semibold"
+          className="rounded-lg py-2.5 text-[11px] font-semibold"
           style={{ background: "rgba(239,68,68,0.12)", color: "#F87171", border: "1px solid rgba(239,68,68,0.25)" }}
         >
           Cancel
@@ -157,7 +157,7 @@ export default function SensorCalibrationWizard({ deviceId, initialSensor, onUpd
         <button
           onClick={() => handleAction("complete")}
           disabled={loading}
-          className="rounded-lg py-2 text-[11px] font-semibold"
+          className="rounded-lg py-2.5 text-[11px] font-semibold sm:col-span-1 col-span-2"
           style={{ background: "rgba(16,185,129,0.12)", color: "var(--emerald-400)", border: "1px solid rgba(16,185,129,0.25)" }}
         >
           Complete

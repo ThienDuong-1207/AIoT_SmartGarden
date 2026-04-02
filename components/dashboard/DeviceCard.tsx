@@ -150,7 +150,7 @@ export default function DeviceCard({ device, index }: { device: DeviceView; inde
               {device.name}
             </p>
             <p className="mt-0.5 text-xs" style={{ color: "var(--text-muted)" }}>
-              {device.plantType || "Hydroponics"} · <span className="font-mono">{device.deviceId}</span>
+              {device.plantType || "Hydroponics"} · <span className="font-mono text-[10px] truncate" title={device.deviceId}>{device.deviceId}</span>
             </p>
           </div>
           <div
@@ -170,15 +170,15 @@ export default function DeviceCard({ device, index }: { device: DeviceView; inde
           style={{ background: "var(--bg-base)", border: "1px solid var(--border-subtle)" }}
         >
           {metrics.map(({ icon: Icon, value, label, color }) => (
-            <div key={label} className="flex flex-col items-center gap-1">
-              <Icon size={12} style={{ color: isOnline ? color : "var(--text-muted)" }} />
+            <div key={label} className="flex flex-col items-center gap-1.5">
+              <Icon size={13} style={{ color: isOnline ? color : "var(--text-muted)" }} />
               <span
-                className="font-mono text-[11px] font-bold"
+                className="font-mono text-[12px] sm:text-[11px] font-bold text-center break-words"
                 style={{ color: isOnline ? color : "var(--text-muted)" }}
               >
                 {value}
               </span>
-              <span className="text-[9px] uppercase tracking-wide" style={{ color: "var(--text-muted)" }}>
+              <span className="text-[10px] sm:text-[9px] uppercase tracking-wide" style={{ color: "var(--text-muted)" }}>
                 {label}
               </span>
             </div>

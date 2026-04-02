@@ -19,7 +19,7 @@ export default async function DeviceLayout({ children, params }: Props) {
         style={{ background: "var(--bg-elevated)", border: "1px solid var(--border-subtle)" }}
       >
         {/* Top row */}
-        <div className="flex items-center gap-3 px-5 py-3">
+        <div className="flex flex-wrap items-center gap-2 px-3 py-3 md:gap-3 md:px-5">
           <Link
             href="/dashboard"
             className="link-muted-emerald flex items-center gap-1.5 text-xs transition-colors duration-100"

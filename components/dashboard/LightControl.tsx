@@ -165,7 +165,7 @@ export default function LightControl({
         <p className="text-[10px] font-semibold uppercase" style={{ color: "var(--text-muted)" }}>
           Schedule Presets
         </p>
-        <div className="grid grid-cols-3 gap-2">
+        <div className="grid grid-cols-2 gap-2 sm:grid-cols-3">
           <button
             onClick={() => handlePreset("12h")}
             disabled={isLoading}
@@ -193,7 +193,7 @@ export default function LightControl({
           <button
             onClick={() => handlePreset("custom")}
             disabled={isLoading}
-            className="rounded-lg px-2 py-2 text-[11px] font-semibold transition-all"
+            className="rounded-lg px-2 py-2 text-[11px] font-semibold transition-all sm:col-span-1 col-span-2"
             style={{
               background: "rgba(250,204,21,0.12)",
               color: "var(--gold-400)",

@@ -242,6 +242,7 @@ export default function PlantDoctorPage() {
   const [loading, setLoading]         = useState(false);
   const [apiError, setApiError]       = useState("");
   const bottomRef                     = useRef<HTMLDivElement>(null);
+  const [mobileGuidesOpen, setMobileGuidesOpen] = useState(false);
 
   useEffect(() => {
     bottomRef.current?.scrollIntoView({ behavior: "smooth" });
@@ -349,11 +350,11 @@ export default function PlantDoctorPage() {
     : GUIDE_ARTICLES.filter((a) => a.category === catFilter);
 
   return (
-    <div className="animate-fade-up flex gap-5" style={{ height: "calc(100dvh - 240px)", minHeight: 560 }}>
+    <div className="animate-fade-up flex flex-col gap-4 lg:flex-row lg:gap-5" style={{ minHeight: 560 }}>
 
       {/* ── LEFT: Knowledge Base ── */}
       <div
-        className="flex w-72 shrink-0 flex-col overflow-hidden rounded-2xl"
+        className={`flex w-full shrink-0 flex-col overflow-hidden rounded-2xl lg:w-72 ${mobileGuidesOpen ? "" : "hidden lg:flex"}`}
         style={{ background: "var(--bg-elevated)", border: "1px solid var(--border-subtle)" }}
       >
         {/* Header */}
@@ -418,26 +419,34 @@ export default function PlantDoctorPage() {
         </div>
       </div>
 
+      <button
+        type="button"
+        onClick={() => setMobileGuidesOpen((v) => !v)}
+        className="btn-ghost w-full justify-center text-xs lg:hidden"
+      >
+        {mobileGuidesOpen ? "Hide Guides" : "Show Guides"}
+      </button>
+
       {/* ── RIGHT: AI Chat ── */}
       <div
-        className="flex flex-1 min-w-0 flex-col overflow-hidden rounded-2xl"
+        className="flex min-w-0 flex-1 flex-col overflow-hidden rounded-2xl"
         style={{ background: "var(--bg-elevated)", border: "1px solid var(--border-subtle)" }}
       >
         {/* Chat header */}
-        <div className="flex items-center justify-between gap-3 px-4 py-3.5" style={{ borderBottom: "1px solid var(--border-subtle)" }}>
-          <div className="flex items-center gap-2">
+        <div className="flex flex-wrap items-center justify-between gap-2 px-4 py-3.5" style={{ borderBottom: "1px solid var(--border-subtle)" }}>
+          <div className="flex min-w-0 items-center gap-2">
             <div className="flex h-7 w-7 items-center justify-center rounded-full" style={{ background: "rgba(34,197,94,0.12)" }}>
               <Sparkles size={13} style={{ color: "var(--emerald-400)" }} />
             </div>
-            <div>
+            <div className="min-w-0">
               <p className="text-sm font-semibold" style={{ color: "var(--text-primary)" }}>Plant Doctor AI</p>
-              <p className="text-[10px]" style={{ color: "var(--text-muted)" }}>
+              <p className="truncate text-[10px]" style={{ color: "var(--text-muted)" }}>
                 {activeModel} · {isLocal ? "Local (Ollama)" : isGroq ? "Groq ⚡" : "OpenRouter"}
               </p>
             </div>
           </div>
 
-          <div className="flex items-center gap-2">
+          <div className="flex w-full items-center gap-2 sm:w-auto">
             {/* API key status */}
             <div
               className="flex items-center gap-1.5 rounded-full px-2.5 py-1"
@@ -581,7 +590,7 @@ export default function PlantDoctorPage() {
         </div>
 
         {/* Messages */}
-        <div className="flex-1 overflow-y-auto p-4 space-y-3">
+        <div className="max-h-[52dvh] overflow-y-auto p-3 space-y-3 sm:p-4 lg:max-h-none lg:flex-1">
           {messages.map((msg, i) => (
             <div key={i} className={`flex gap-2.5 ${msg.role === "user" ? "flex-row-reverse" : ""}`}>
               <div
@@ -594,7 +603,7 @@ export default function PlantDoctorPage() {
                 }
               </div>
               <div
-                className="max-w-[80%] overflow-hidden rounded-2xl px-3.5 py-2.5 text-xs leading-relaxed"
+                className="max-w-[88%] overflow-hidden rounded-2xl px-3.5 py-2.5 text-xs leading-relaxed sm:max-w-[80%]"
                 style={
                   msg.role === "assistant"
                     ? { background: "var(--bg-base)", border: "1px solid var(--border-subtle)", color: "var(--text-secondary)", borderTopLeftRadius: 6 }
@@ -640,7 +649,7 @@ export default function PlantDoctorPage() {
         )}
 
         {/* Input row */}
-        <div className="flex items-center gap-2 px-4 py-3" style={{ borderTop: "1px solid var(--border-subtle)" }}>
+        <div className="flex items-center gap-2 px-3 py-3 sm:px-4" style={{ borderTop: "1px solid var(--border-subtle)" }}>
           <div className="flex flex-1 items-center gap-2 rounded-xl px-3 py-2.5" style={{ background: "var(--bg-base)", border: "1px solid var(--border-normal)" }}>
             <Leaf size={12} style={{ color: "var(--emerald-500)", flexShrink: 0 }} />
             <input
@@ -655,10 +664,10 @@ export default function PlantDoctorPage() {
           <button
             onClick={() => handleSend()}
             disabled={!input.trim() || loading}
-            className="btn-emerald shrink-0 gap-2 px-4 py-2.5 text-xs"
+            className="btn-emerald shrink-0 gap-2 px-3 py-2.5 text-xs sm:px-4"
           >
             <Send size={12} />
-            Send
+            <span className="hidden sm:inline">Send</span>
           </button>
         </div>
       </div>

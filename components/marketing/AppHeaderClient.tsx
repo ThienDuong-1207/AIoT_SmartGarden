@@ -146,7 +146,7 @@ export default function AppHeaderClient() {
                 className="text-sm font-black uppercase tracking-[0.18em] transition-colors duration-200"
                 style={{ color: "var(--text-primary)" }}
               >
-                Smart Garden
+                Eco Tech
               </span>
             </Link>
 

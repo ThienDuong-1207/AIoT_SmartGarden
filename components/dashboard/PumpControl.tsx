@@ -105,7 +105,7 @@ export default function PumpControl({ deviceId, initialStatus, initialSchedule, 
           <p className="text-xs" style={{ color: "var(--text-muted)" }}>No scheduled watering times</p>
         ) : (
           schedule.map((item, idx) => (
-            <div key={idx} className="flex items-center gap-2 rounded-lg p-2" style={{ background: "rgba(255,255,255,0.02)" }}>
+            <div key={idx} className="grid grid-cols-1 gap-2 rounded-lg p-2 sm:flex sm:items-center" style={{ background: "rgba(255,255,255,0.02)" }}>
               <input
                 type="time"
                 value={item.time}
@@ -113,16 +113,18 @@ export default function PumpControl({ deviceId, initialStatus, initialSchedule, 
                 className="text-xs flex-1 rounded px-2 py-1"
                 style={{ background: "var(--bg-base)", color: "var(--text-primary)", border: "1px solid var(--border-subtle)" }}
               />
-              <span className="text-[10px]" style={{ color: "var(--text-secondary)" }}>
-                {item.durationMinutes}min
-              </span>
-              <button
-                onClick={() => handleRemoveSchedule(idx)}
-                className="rounded px-2 py-1 text-[10px]"
-                style={{ background: "rgba(239,68,68,0.2)", color: "#F87171" }}
-              >
-                ✕
-              </button>
+              <div className="flex items-center gap-1.5">
+                <span className="text-[10px] min-w-fit" style={{ color: "var(--text-secondary)" }}>
+                  {item.durationMinutes}m
+                </span>
+                <button
+                  onClick={() => handleRemoveSchedule(idx)}
+                  className="rounded px-1.5 py-0.5 text-[10px] flex-shrink-0"
+                  style={{ background: "rgba(239,68,68,0.2)", color: "#F87171" }}
+                >
+                  ✕
+                </button>
+              </div>
             </div>
           ))
         )}
