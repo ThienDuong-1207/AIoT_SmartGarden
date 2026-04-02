@@ -15,9 +15,10 @@ interface SensorCalibrationWizardProps {
   deviceId: string;
   initialSensor: SensorState;
   onUpdate?: (config: { sensor: SensorState }) => void;
+  disabled?: boolean;
 }
 
-export default function SensorCalibrationWizard({ deviceId, initialSensor, onUpdate }: SensorCalibrationWizardProps) {
+export default function SensorCalibrationWizard({ deviceId, initialSensor, onUpdate, disabled = false }: SensorCalibrationWizardProps) {
   const [sensorType, setSensorType] = useState<SensorType>("TDS");
   const [sensor, setSensor] = useState<SensorState>(initialSensor);
   const [loading, setLoading] = useState(false);
@@ -41,6 +42,7 @@ export default function SensorCalibrationWizard({ deviceId, initialSensor, onUpd
   }, [sensorType]);
 
   const sendCalibrationCommand = async (action: "start" | "cancel" | "complete") => {
+    if (disabled) return;
     const res = await fetch(`/api/devices/${deviceId}/config`, {
       method: "PATCH",
       headers: { "Content-Type": "application/json" },
@@ -69,6 +71,7 @@ export default function SensorCalibrationWizard({ deviceId, initialSensor, onUpd
   };
 
   const handleAction = async (action: "start" | "cancel" | "complete") => {
+    if (disabled) return;
     setLoading(true);
     try {
       await sendCalibrationCommand(action);
@@ -100,6 +103,7 @@ export default function SensorCalibrationWizard({ deviceId, initialSensor, onUpd
         <div className="grid grid-cols-2 gap-2">
           <button
             onClick={() => setSensorType("TDS")}
+            disabled={disabled}
             className="rounded-lg py-2 text-xs font-semibold"
             style={{
               background: sensorType === "TDS" ? "rgba(251,146,60,0.18)" : "rgba(255,255,255,0.04)",
@@ -111,6 +115,7 @@ export default function SensorCalibrationWizard({ deviceId, initialSensor, onUpd
           </button>
           <button
             onClick={() => setSensorType("pH")}
+            disabled={disabled}
             className="rounded-lg py-2 text-xs font-semibold"
             style={{
               background: sensorType === "pH" ? "rgba(251,146,60,0.18)" : "rgba(255,255,255,0.04)",
@@ -140,24 +145,24 @@ export default function SensorCalibrationWizard({ deviceId, initialSensor, onUpd
       <div className="grid grid-cols-2 gap-2 sm:grid-cols-3">
         <button
           onClick={() => handleAction("start")}
-          disabled={loading}
-          className="rounded-lg py-2.5 text-[11px] font-semibold"
+          disabled={loading || disabled}
+          className="rounded-lg py-2 text-[11px] font-semibold"
           style={{ background: "rgba(59,130,246,0.12)", color: "var(--blue-400)", border: "1px solid rgba(59,130,246,0.25)" }}
         >
           Start
         </button>
         <button
           onClick={() => handleAction("cancel")}
-          disabled={loading}
-          className="rounded-lg py-2.5 text-[11px] font-semibold"
+          disabled={loading || disabled}
+          className="rounded-lg py-2 text-[11px] font-semibold"
           style={{ background: "rgba(239,68,68,0.12)", color: "#F87171", border: "1px solid rgba(239,68,68,0.25)" }}
         >
           Cancel
         </button>
         <button
           onClick={() => handleAction("complete")}
-          disabled={loading}
-          className="rounded-lg py-2.5 text-[11px] font-semibold sm:col-span-1 col-span-2"
+          disabled={loading || disabled}
+          className="rounded-lg py-2 text-[11px] font-semibold"
           style={{ background: "rgba(16,185,129,0.12)", color: "var(--emerald-400)", border: "1px solid rgba(16,185,129,0.25)" }}
         >
           Complete

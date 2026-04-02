@@ -8,14 +8,16 @@ interface PumpControlProps {
   initialStatus: boolean;
   initialSchedule: Array<{ time: string; durationMinutes: number; enabled: boolean }>;
   onUpdate?: (config: any) => void;
+  disabled?: boolean;
 }
 
-export default function PumpControl({ deviceId, initialStatus, initialSchedule, onUpdate }: PumpControlProps) {
+export default function PumpControl({ deviceId, initialStatus, initialSchedule, onUpdate, disabled = false }: PumpControlProps) {
   const [status, setStatus] = useState(initialStatus);
   const [schedule, setSchedule] = useState(initialSchedule);
   const [isLoading, setIsLoading] = useState(false);
 
   const handleTogglePump = async () => {
+    if (disabled) return;
     setIsLoading(true);
     try {
       const res = await fetch(`/api/devices/${deviceId}/config`, {
@@ -42,6 +44,7 @@ export default function PumpControl({ deviceId, initialStatus, initialSchedule, 
   };
 
   const handleAddSchedule = () => {
+    if (disabled) return;
     const newSchedule = [
       ...schedule,
       { time: "08:00", durationMinutes: 15, enabled: true },
@@ -50,10 +53,12 @@ export default function PumpControl({ deviceId, initialStatus, initialSchedule, 
   };
 
   const handleRemoveSchedule = (index: number) => {
+    if (disabled) return;
     setSchedule(schedule.filter((_, i) => i !== index));
   };
 
   const handleUpdateScheduleTime = (index: number, time: string) => {
+    if (disabled) return;
     const updated = [...schedule];
     updated[index].time = time;
     setSchedule(updated);
@@ -73,7 +78,7 @@ export default function PumpControl({ deviceId, initialStatus, initialSchedule, 
         <span className="text-xs" style={{ color: "var(--text-secondary)" }}>Pump Status</span>
         <button
           onClick={handleTogglePump}
-          disabled={isLoading}
+          disabled={isLoading || disabled}
           className="relative inline-flex items-center h-6 w-11 rounded-full transition-colors"
           style={{
             background: status ? "var(--emerald-400)" : "var(--border-subtle)",
@@ -110,26 +115,27 @@ export default function PumpControl({ deviceId, initialStatus, initialSchedule, 
                 type="time"
                 value={item.time}
                 onChange={(e) => handleUpdateScheduleTime(idx, e.target.value)}
+                disabled={disabled}
                 className="text-xs flex-1 rounded px-2 py-1"
                 style={{ background: "var(--bg-base)", color: "var(--text-primary)", border: "1px solid var(--border-subtle)" }}
               />
-              <div className="flex items-center gap-1.5">
-                <span className="text-[10px] min-w-fit" style={{ color: "var(--text-secondary)" }}>
-                  {item.durationMinutes}m
-                </span>
-                <button
-                  onClick={() => handleRemoveSchedule(idx)}
-                  className="rounded px-1.5 py-0.5 text-[10px] flex-shrink-0"
-                  style={{ background: "rgba(239,68,68,0.2)", color: "#F87171" }}
-                >
-                  ✕
-                </button>
-              </div>
+              <span className="text-[10px]" style={{ color: "var(--text-secondary)" }}>
+                {item.durationMinutes}min
+              </span>
+              <button
+                onClick={() => handleRemoveSchedule(idx)}
+                disabled={disabled}
+                className="rounded px-2 py-1 text-[10px]"
+                style={{ background: "rgba(239,68,68,0.2)", color: "#F87171" }}
+              >
+                ✕
+              </button>
             </div>
           ))
         )}
         <button
           onClick={handleAddSchedule}
+          disabled={disabled}
           className="w-full rounded-lg py-2 text-xs font-semibold transition-all"
           style={{
             background: "rgba(16,185,129,0.1)",

@@ -1,11 +1,12 @@
 import Image from "next/image";
 import Link from "next/link";
 import { notFound } from "next/navigation";
-import { Star, ShoppingCart, Zap, CheckCircle, ArrowLeft } from "lucide-react";
+import { Star, CheckCircle, ArrowLeft } from "lucide-react";
 import { sampleProductReviews, sampleProducts } from "@/lib/mock-data";
 import ProductModel from "@/models/Product";
 import { dbConnect } from "@/lib/mongodb";
 import SiteFooter from "@/components/marketing/SiteFooter";
+import AddToCartButton from "@/components/marketing/AddToCartButton";
 
 type Params = Promise<{ slug: string }>;
 
@@ -16,15 +17,28 @@ type ProductData = {
   price: number;
   salePrice?: number;
   images?: string[];
+  shortDescription?: string;
   description?: string;
+  highlights?: string[];
+  whatsInTheBox?: string[];
+  compatibility?: string[];
   specs?: Record<string, unknown>;
+  warrantyMonths?: number;
+  shipping?: {
+    weightKg?: number | null;
+    dimensionsCm?: { length?: number | null; width?: number | null; height?: number | null };
+    leadTimeDays?: number | null;
+    origin?: string;
+  };
+  faqs?: Array<{ question: string; answer: string }>;
   stock?: number;
   rating?: number;
   reviewCount?: number;
 };
 
-async function getProduct(slug: string) {
-  const fallback = sampleProducts.find((item) => item.slug === slug) || null;
+async function getProduct(slug: string): Promise<ProductData | null> {
+  const fallbackRaw = sampleProducts.find((item) => item.slug === slug) || null;
+  const fallback = fallbackRaw ? ({ ...fallbackRaw } as ProductData) : null;
   try {
     await dbConnect();
     const product = await ProductModel.findOne({ slug }).lean<ProductData | null>();
@@ -54,7 +68,8 @@ async function getRelatedProducts(product: ProductData) {
       const bScore = b.category === product.category ? 1 : 0;
       return bScore - aScore;
     })
-    .slice(0, 4);
+    .slice(0, 4)
+    .map((item) => ({ ...item } as ProductData));
 }
 
 function formatSpecValue(value: unknown) {
@@ -72,6 +87,20 @@ export default async function ProductDetailPage({ params }: { params: Params }) 
   const relatedProducts = await getRelatedProducts(product);
   const gallery         = product.images && product.images.length > 0 ? product.images : ["/window.svg"];
   const specsEntries    = Object.entries(product.specs || {});
+  const highlights      = Array.isArray(product.highlights) ? product.highlights : [];
+  const whatsInTheBox   = Array.isArray(product.whatsInTheBox) ? product.whatsInTheBox : [];
+  const compatibility   = Array.isArray(product.compatibility) ? product.compatibility : [];
+  const faqs            = Array.isArray(product.faqs) ? product.faqs : [];
+  const shipping        = product.shipping || {};
+  const dimensions      = shipping.dimensionsCm;
+  const shippingRows = [
+    shipping.weightKg != null ? `Weight: ${shipping.weightKg} kg` : null,
+    dimensions?.length != null && dimensions?.width != null && dimensions?.height != null
+      ? `Dimensions: ${dimensions.length} x ${dimensions.width} x ${dimensions.height} cm`
+      : null,
+    shipping.leadTimeDays != null ? `Lead time: ${shipping.leadTimeDays} days` : null,
+    shipping.origin ? `Origin: ${shipping.origin}` : null,
+  ].filter(Boolean) as string[];
   const isSmartPot      = product.category === "smart-pots";
   const activePrice     = Number(product.salePrice || product.price);
   const hasDiscount     = Boolean(product.salePrice);
@@ -306,8 +335,24 @@ export default async function ProductDetailPage({ params }: { params: Params }) 
                 className="mt-3 text-sm leading-relaxed"
                 style={{ color: "var(--text-secondary)" }}
               >
-                {product.description || "High-quality product for your Smart Garden system."}
+                {product.shortDescription || product.description || "High-quality product for your Smart Garden system."}
               </p>
+
+              {highlights.length > 0 && (
+                <div className="mt-4">
+                  <p className="text-xs font-semibold uppercase tracking-wider" style={{ color: "var(--text-muted)" }}>
+                    Highlights
+                  </p>
+                  <ul className="mt-2 space-y-1.5 text-sm" style={{ color: "var(--text-secondary)" }}>
+                    {highlights.slice(0, 5).map((item, idx) => (
+                      <li key={`${item}-${idx}`} className="flex items-start gap-2">
+                        <span style={{ color: "var(--emerald-400)" }}>•</span>
+                        <span>{item}</span>
+                      </li>
+                    ))}
+                  </ul>
+                </div>
+              )}
 
               {/* Rating + stock row */}
               <div
@@ -351,19 +396,93 @@ export default async function ProductDetailPage({ params }: { params: Params }) 
 
               {/* Action buttons */}
               <div className="mt-5 flex flex-col gap-3 sm:flex-row">
-                <button className="btn-gold btn-gold-light-fixed flex flex-1 items-center justify-center gap-2 py-3">
-                  <ShoppingCart size={16} />
-                  Add to Cart
-                </button>
-                <button className="btn-emerald flex flex-1 items-center justify-center gap-2 py-3">
-                  <Zap size={16} />
-                  Buy Now
-                </button>
+                <AddToCartButton
+                  item={{
+                    slug: product.slug,
+                    name: product.name,
+                    category: product.category,
+                    price: Number(product.price),
+                    salePrice: product.salePrice != null ? Number(product.salePrice) : null,
+                  }}
+                  className="btn-gold btn-gold-light-fixed flex flex-1 items-center justify-center gap-2 py-3"
+                />
+                <AddToCartButton
+                  item={{
+                    slug: product.slug,
+                    name: product.name,
+                    category: product.category,
+                    price: Number(product.price),
+                    salePrice: product.salePrice != null ? Number(product.salePrice) : null,
+                  }}
+                  buyNow
+                  className="btn-emerald flex flex-1 items-center justify-center gap-2 py-3"
+                />
               </div>
+
+              {shippingRows.length > 0 && (
+                <div className="mt-5 rounded-xl p-4" style={{ background: "rgba(255,255,255,0.02)", border: "1px solid var(--border-subtle)" }}>
+                  <p className="text-xs font-semibold uppercase tracking-wider" style={{ color: "var(--text-muted)" }}>
+                    Shipping Info
+                  </p>
+                  <div className="mt-2 space-y-1.5 text-sm" style={{ color: "var(--text-secondary)" }}>
+                    {shippingRows.map((row) => (
+                      <p key={row}>{row}</p>
+                    ))}
+                  </div>
+                </div>
+              )}
+
+              {product.warrantyMonths && product.warrantyMonths > 0 && (
+                <p className="mt-3 text-xs" style={{ color: "var(--emerald-400)" }}>
+                  Warranty: {product.warrantyMonths} months
+                </p>
+              )}
             </div>
           </aside>
         </div>
       </article>
+
+      {(whatsInTheBox.length > 0 || compatibility.length > 0 || faqs.length > 0) && (
+        <section className="container-app pb-10">
+          <div className="grid gap-4 md:grid-cols-2">
+            {whatsInTheBox.length > 0 && (
+              <div className="dark-card p-5">
+                <h3 className="text-lg font-bold" style={{ color: "var(--text-primary)" }}>What's In The Box</h3>
+                <ul className="mt-3 space-y-2 text-sm" style={{ color: "var(--text-secondary)" }}>
+                  {whatsInTheBox.map((item, idx) => (
+                    <li key={`${item}-${idx}`} className="flex items-start gap-2"><span style={{ color: "var(--emerald-400)" }}>•</span><span>{item}</span></li>
+                  ))}
+                </ul>
+              </div>
+            )}
+
+            {compatibility.length > 0 && (
+              <div className="dark-card p-5">
+                <h3 className="text-lg font-bold" style={{ color: "var(--text-primary)" }}>Compatibility</h3>
+                <div className="mt-3 flex flex-wrap gap-2">
+                  {compatibility.map((item, idx) => (
+                    <span key={`${item}-${idx}`} className="badge badge-slate">{item}</span>
+                  ))}
+                </div>
+              </div>
+            )}
+          </div>
+
+          {faqs.length > 0 && (
+            <div className="dark-card mt-4 p-5">
+              <h3 className="text-lg font-bold" style={{ color: "var(--text-primary)" }}>FAQ</h3>
+              <div className="mt-3 space-y-3">
+                {faqs.slice(0, 6).map((item, idx) => (
+                  <div key={`${item.question}-${idx}`}>
+                    <p className="text-sm font-semibold" style={{ color: "var(--text-primary)" }}>{item.question}</p>
+                    <p className="mt-1 text-sm" style={{ color: "var(--text-secondary)" }}>{item.answer}</p>
+                  </div>
+                ))}
+              </div>
+            </div>
+          )}
+        </section>
+      )}
 
       {/* ── Reviews ── */}
       <section className="container-app pb-10">
