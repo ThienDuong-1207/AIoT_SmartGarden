@@ -1,5 +1,6 @@
 "use client";
 
+import Image from "next/image";
 import Link from "next/link";
 import { useEffect, useState, useRef } from "react";
 import { useSession, signOut } from "next-auth/react";
@@ -133,17 +134,16 @@ export default function AppHeaderClient() {
 
             {/* ── Logo ── */}
             <Link href="/" className="group flex items-center gap-2.5">
+              <Image
+                src="/products/EcoTech_logo.png"
+                alt="Eco Tech"
+                width={178}
+                height={56}
+                className="h-11 w-auto"
+                priority
+              />
               <span
-                className="flex h-7 w-7 items-center justify-center rounded-lg text-xs font-black"
-                style={{
-                  background: "linear-gradient(135deg, var(--emerald-500), var(--emerald-600))",
-                  color: "#fff",
-                }}
-              >
-                SG
-              </span>
-              <span
-                className="text-sm font-black uppercase tracking-[0.18em] transition-colors duration-200"
+                className="text-base font-black uppercase tracking-[0.16em] transition-colors duration-200"
                 style={{ color: "var(--text-primary)" }}
               >
                 Eco Tech

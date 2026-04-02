@@ -2,38 +2,54 @@
 
 import { createContext, useContext, useEffect, useState } from "react";
 
-type Theme = "dark" | "light";
+export const THEME_OPTIONS = ["forest", "ocean", "sunset"] as const;
+export type Theme = (typeof THEME_OPTIONS)[number];
+
+const LEGACY_THEME_MAP: Record<string, Theme> = {
+  dark: "forest",
+  light: "forest",
+};
+
+const DEFAULT_THEME: Theme = "forest";
 
 const ThemeContext = createContext<{
   theme: Theme;
+  setTheme: (theme: Theme) => void;
   toggle: () => void;
-}>({ theme: "dark", toggle: () => {} });
+}>({ theme: DEFAULT_THEME, setTheme: () => {}, toggle: () => {} });
 
 export function useTheme() {
   return useContext(ThemeContext);
 }
 
 export default function ThemeProvider({ children }: { children: React.ReactNode }) {
-  const [theme, setTheme] = useState<Theme>("dark");
+  const [theme, setThemeState] = useState<Theme>(DEFAULT_THEME);
 
-  // Đọc theme từ localStorage sau khi mount (tránh SSR mismatch)
-  useEffect(() => {
-    const saved = localStorage.getItem("sg-theme") as Theme | null;
-    const preferred = window.matchMedia("(prefers-color-scheme: light)").matches ? "light" : "dark";
-    const initial = saved ?? preferred;
-    setTheme(initial);
-    document.documentElement.setAttribute("data-theme", initial);
-  }, []);
-
-  function toggle() {
-    const next = theme === "dark" ? "light" : "dark";
-    setTheme(next);
+  function applyTheme(next: Theme) {
+    setThemeState(next);
     localStorage.setItem("sg-theme", next);
     document.documentElement.setAttribute("data-theme", next);
   }
 
+  // Đọc theme từ localStorage sau khi mount (tránh SSR mismatch)
+  useEffect(() => {
+    const saved = localStorage.getItem("sg-theme");
+    const preferred = DEFAULT_THEME;
+    const normalized = saved && (THEME_OPTIONS as readonly string[]).includes(saved)
+      ? (saved as Theme)
+      : LEGACY_THEME_MAP[saved ?? ""];
+    const initial = normalized ?? preferred;
+    applyTheme(initial);
+  }, []);
+
+  function toggle() {
+    const currentIndex = THEME_OPTIONS.indexOf(theme);
+    const next = THEME_OPTIONS[(currentIndex + 1) % THEME_OPTIONS.length];
+    applyTheme(next);
+  }
+
   return (
-    <ThemeContext.Provider value={{ theme, toggle }}>
+    <ThemeContext.Provider value={{ theme, setTheme: applyTheme, toggle }}>
       {children}
     </ThemeContext.Provider>
   );

@@ -1,9 +1,10 @@
 "use client";
 
+import Image from "next/image";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useEffect, useState } from "react";
-import { LayoutGrid, Bell, ShoppingBag, Settings2, Leaf, X } from "lucide-react";
+import { LayoutGrid, Bell, ShoppingBag, Settings2, X } from "lucide-react";
 import { useFcmToken } from "@/hooks/useFcmToken";
 
 const NAV_GROUPS = [
@@ -64,21 +65,25 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
         className="flex items-center gap-2.5 px-4 py-4"
         style={{ borderBottom: "1px solid var(--border-subtle)" }}
       >
-        <div
-          className="flex h-7 w-7 shrink-0 items-center justify-center rounded-lg"
-          style={{ background: "linear-gradient(135deg, var(--emerald-500), var(--emerald-600))" }}
-        >
-          <Leaf size={13} color="#fff" />
-        </div>
-        <div>
-          <p className="text-xs font-bold tracking-tight" style={{ color: "var(--text-primary)" }}>
-            Eco Tech
-          </p>
-          <div className="mt-0.5 flex items-center gap-1">
-            <span className="status-dot status-online" style={{ width: 5, height: 5 }} />
-            <span className="font-mono text-[9px] font-semibold" style={{ color: "var(--emerald-400)" }}>
-              ONLINE
-            </span>
+        <div className="flex min-w-0 items-center gap-2">
+          <Image
+            src="/products/EcoTech_logo.png"
+            alt="Eco Tech"
+            width={178}
+            height={56}
+            className="h-11 w-auto"
+            priority
+          />
+          <div className="min-w-0">
+            <p className="text-sm font-bold tracking-tight" style={{ color: "var(--text-primary)" }}>
+              Eco Tech
+            </p>
+            <div className="mt-0.5 flex items-center gap-1">
+              <span className="status-dot status-online" style={{ width: 5, height: 5 }} />
+              <span className="font-mono text-[9px] font-semibold" style={{ color: "var(--emerald-400)" }}>
+                ONLINE
+              </span>
+            </div>
           </div>
         </div>
         <button
