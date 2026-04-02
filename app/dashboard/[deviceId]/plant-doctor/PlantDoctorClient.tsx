@@ -307,18 +307,25 @@ export default function PlantDoctorPage() {
       .filter((m) => m !== INITIAL_MESSAGES[0])
       .map((m) => ({ role: m.role as "user" | "assistant", content: m.content }));
 
+    const buildLocalPrompt = () => [
+      systemPrompt,
+      "",
+      "Conversation history:",
+      ...history.map((m) => `${m.role === "user" ? "User" : "Assistant"}: ${m.content}`),
+      "",
+      "Assistant:",
+    ].join("\n");
+
     try {
       let res: Response;
 
       if (isLocal) {
-        res = await fetch(`${endpoint.replace(/\/$/, "")}/chat/completions`, {
+        res = await fetch("/api/ai/ollama", {
           method: "POST",
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify({
             model: activeModel,
-            messages: [{ role: "system", content: systemPrompt }, ...history],
-            temperature: 0.7,
-            max_tokens: 800,
+            prompt: buildLocalPrompt(),
           }),
         });
       } else {
@@ -344,8 +351,13 @@ export default function PlantDoctorPage() {
         );
       }
 
-      const data = (await res.json()) as { choices?: { message?: { content?: string } }[] };
-      const reply = data?.choices?.[0]?.message?.content ?? "No response from AI.";
+      const data = (await res.json()) as {
+        choices?: { message?: { content?: string } }[];
+        text?: string;
+      };
+      const reply = isLocal
+        ? (data.text ?? "No response from AI.")
+        : (data?.choices?.[0]?.message?.content ?? "No response from AI.");
       setMessages((prev) => [
         ...prev,
         { role: "assistant", content: reply, timestamp: new Date().toLocaleTimeString("en-US", { hour: "2-digit", minute: "2-digit" }) },
