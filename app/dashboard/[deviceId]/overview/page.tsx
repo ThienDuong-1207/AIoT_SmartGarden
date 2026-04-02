@@ -278,7 +278,7 @@ export default function OverviewPage() {
     let interval: NodeJS.Timeout;
     async function fetchCamera() {
       try {
-        const res = await fetch(`/api/devices/${deviceId}/camera/latest`);
+        const res = await fetch(`/api/devices/${deviceId}/camera/latest?t=${Date.now()}`);
         if (res.ok) {
           const json = await res.json();
           if (json.success && json.data?.imageUrl) {
@@ -293,7 +293,7 @@ export default function OverviewPage() {
     }
     
     fetchCamera();
-    interval = setInterval(fetchCamera, 60000); // Tự động refetch mỗi 60s
+    interval = setInterval(fetchCamera, 30000); // Tự động refetch mỗi 30s
     return () => clearInterval(interval);
   }, [deviceId]);
 

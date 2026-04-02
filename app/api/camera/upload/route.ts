@@ -1,14 +1,7 @@
 import { NextResponse } from 'next/server';
-import { v2 as cloudinary } from 'cloudinary';
 import { dbConnect } from '@/lib/mongodb';
 import CameraCapture from '@/models/CameraCapture';
 import Device from '@/models/Device';
-
-cloudinary.config({
-    cloud_name: process.env.CLOUDINARY_CLOUD_NAME,
-    api_key: process.env.CLOUDINARY_API_KEY,
-    api_secret: process.env.CLOUDINARY_API_SECRET,
-});
 
 export async function POST(request: Request) {
     try {
@@ -23,11 +16,24 @@ export async function POST(request: Request) {
         const buffer = Buffer.from(arrayBuffer);
         const base64Image = `data:image/jpeg;base64,${buffer.toString('base64')}`;
 
-        // Upload bằng SDK chính thức
-        const uploadResult = await cloudinary.uploader.upload(base64Image, {
-            folder: 'smart_garden_iot',
-            upload_preset: process.env.CLOUDINARY_UPLOAD_PRESET || 'AIoT_smartGarden',
+        // Chuyển sang Unsigned Upload (Fetch API) để bypass xác thực và tránh timeout 499
+        const formData = new FormData();
+        const blob = new Blob([arrayBuffer], { type: 'image/jpeg' });
+        formData.append("file", blob, "capture.jpg");
+        formData.append("upload_preset", process.env.CLOUDINARY_UPLOAD_PRESET || "AIoT_smartGarden");
+
+        const cloudName = process.env.CLOUDINARY_CLOUD_NAME;
+        const uploadUrl = `https://api.cloudinary.com/v1_1/${cloudName}/image/upload`;
+        
+        const resObj = await fetch(uploadUrl, {
+            method: "POST",
+            body: formData,
         });
+
+        const uploadResult = await resObj.json();
+        if (!resObj.ok) {
+            throw new Error(uploadResult.error?.message || "Upload failed");
+        }
 
         console.log(`✅ Upload OK: ${uploadResult.secure_url}`);
 
