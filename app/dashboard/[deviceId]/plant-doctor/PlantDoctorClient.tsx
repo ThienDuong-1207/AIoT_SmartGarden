@@ -115,7 +115,7 @@ const INITIAL_MESSAGES: Message[] = [
   {
     role: "assistant",
     content: "Hello! I'm **Plant Doctor AI**.\n\nEnter an API key to get started. Options:\n- **Groq** (groq.com/keys) — fastest ⚡, free\n- **OpenRouter** (openrouter.ai/keys) — many models\n- **Ollama** — runs locally, no key needed\n\nI can help you with:\n- Diagnosing leaf diseases & nutrient deficiencies\n- Optimizing pH and TDS levels\n- Hydroponic plant care schedules",
-    timestamp: new Date().toLocaleTimeString("en-US", { hour: "2-digit", minute: "2-digit" }),
+    timestamp: "--:--",
   },
 ];
 
@@ -364,11 +364,14 @@ export default function PlantDoctorPage() {
     : GUIDE_ARTICLES.filter((a) => a.category === catFilter);
 
   return (
-    <div className="animate-fade-up flex flex-col gap-4 lg:flex-row lg:gap-5" style={{ minHeight: 560 }}>
+    <div
+      className="animate-fade-up flex flex-col gap-4 overflow-hidden lg:flex-row lg:gap-5"
+      style={{ height: "calc(100dvh - 240px)", minHeight: 560 }}
+    >
 
       {/* ── LEFT: Knowledge Base ── */}
       <div
-        className={`flex w-full shrink-0 flex-col overflow-hidden rounded-2xl lg:w-72 ${mobileGuidesOpen ? "" : "hidden lg:flex"}`}
+        className={`flex h-full min-h-0 w-full shrink-0 flex-col overflow-hidden rounded-2xl lg:w-72 ${mobileGuidesOpen ? "" : "hidden lg:flex"}`}
         style={{ background: "var(--bg-elevated)", border: "1px solid var(--border-subtle)" }}
       >
         {/* Header */}
@@ -436,14 +439,14 @@ export default function PlantDoctorPage() {
       <button
         type="button"
         onClick={() => setMobileGuidesOpen((v) => !v)}
-        className="btn-ghost w-full justify-center text-xs lg:hidden"
+        className="btn-ghost w-full justify-center text-xs lg:!hidden"
       >
         {mobileGuidesOpen ? "Hide Guides" : "Show Guides"}
       </button>
 
       {/* ── RIGHT: AI Chat ── */}
       <div
-        className="order-1 flex min-w-0 flex-1 flex-col overflow-hidden rounded-2xl xl:order-2"
+        className="order-1 flex min-h-0 min-w-0 flex-1 flex-col overflow-hidden rounded-2xl xl:order-2"
         style={{ background: "var(--bg-elevated)", border: "1px solid var(--border-subtle)" }}
       >
         {/* Chat header */}
@@ -604,7 +607,7 @@ export default function PlantDoctorPage() {
         </div>
 
         {/* Messages */}
-        <div className="flex-1 overflow-y-auto p-3 space-y-3 sm:p-4">
+        <div className="min-h-0 flex-1 overflow-y-auto p-3 space-y-3 sm:p-4">
           {messages.map((msg, i) => (
             <div key={i} className={`flex gap-2.5 ${msg.role === "user" ? "flex-row-reverse" : ""}`}>
               <div
