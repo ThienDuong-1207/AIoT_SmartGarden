@@ -20,7 +20,7 @@ export const authOptions: NextAuthOptions = {
       clientSecret: process.env.GOOGLE_CLIENT_SECRET || "",
     }),
     CredentialsProvider({
-      name: "Admin Login",
+      name: "Credentials Login",
       credentials: {
         email: { label: "Email", type: "email" },
         password: { label: "Password", type: "password" },
@@ -42,16 +42,12 @@ export const authOptions: NextAuthOptions = {
           throw new Error("Account not found");
         }
 
-        if (user.role !== "admin") {
-          throw new Error("Only admin accounts can sign in this way");
-        }
-
         if (user.status === "banned") {
           throw new Error("Account is currently locked");
         }
 
         if (!user.password) {
-          throw new Error("Admin account has no password set");
+          throw new Error("Account has no password set");
         }
 
         const passwordValue = String(user.password);
