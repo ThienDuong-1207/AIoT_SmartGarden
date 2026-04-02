@@ -158,7 +158,7 @@ export default async function ProductDetailPage({ params }: { params: Params }) 
               </div>
 
               {gallery.length > 1 && (
-                <div className="mt-3 grid grid-cols-4 gap-2">
+                <div className="mt-3 grid grid-cols-2 gap-2 sm:grid-cols-4">
                   {gallery.slice(0, 4).map((img, idx) => (
                     <div
                       key={`${img}-${idx}`}
@@ -204,7 +204,7 @@ export default async function ProductDetailPage({ params }: { params: Params }) 
                 specsEntries.map(([key, value], idx) => (
                   <div
                     key={key}
-                    className="grid grid-cols-[0.45fr_0.55fr] gap-3 px-6 py-3 text-sm"
+                    className="grid grid-cols-1 gap-1 px-6 py-3 text-sm sm:grid-cols-[0.45fr_0.55fr] sm:gap-3"
                     style={{
                       background: idx % 2 === 1 ? "rgba(255,255,255,0.02)" : "transparent",
                       borderBottom:
@@ -279,7 +279,7 @@ export default async function ProductDetailPage({ params }: { params: Params }) 
                     Open Dashboard →
                   </Link>
                 </div>
-                <div className="grid grid-cols-2 gap-3 p-5">
+                <div className="grid grid-cols-1 gap-3 p-5 sm:grid-cols-2">
                   {[
                     { label: "TDS",      value: "1180 ppm", color: "var(--blue-400)" },
                     { label: "pH",       value: "6.2",      color: "var(--emerald-400)" },

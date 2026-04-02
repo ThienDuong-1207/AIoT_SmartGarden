@@ -235,6 +235,7 @@ export default function PlantDoctorPage() {
   const [loading, setLoading]         = useState(false);
   const [apiError, setApiError]       = useState("");
   const bottomRef                     = useRef<HTMLDivElement>(null);
+  const [mobileGuidesOpen, setMobileGuidesOpen] = useState(false);
 
   useEffect(() => {
     bottomRef.current?.scrollIntoView({ behavior: "smooth" });
@@ -366,11 +367,11 @@ export default function PlantDoctorPage() {
     : GUIDE_ARTICLES.filter((a) => a.category === catFilter);
 
   return (
-    <div className="animate-fade-up flex gap-5" style={{ height: "calc(100dvh - 240px)", minHeight: 560 }}>
+    <div className="animate-fade-up flex flex-col gap-4 lg:flex-row lg:gap-5" style={{ minHeight: 560 }}>
 
       {/* ── LEFT: Knowledge Base ── */}
       <div
-        className="flex w-72 shrink-0 flex-col overflow-hidden rounded-2xl"
+        className={`flex w-full shrink-0 flex-col overflow-hidden rounded-2xl lg:w-72 ${mobileGuidesOpen ? "" : "hidden lg:flex"}`}
         style={{ background: "var(--bg-elevated)", border: "1px solid var(--border-subtle)" }}
       >
         {/* Header */}
@@ -435,6 +436,14 @@ export default function PlantDoctorPage() {
         </div>
       </div>
 
+      <button
+        type="button"
+        onClick={() => setMobileGuidesOpen((v) => !v)}
+        className="btn-ghost w-full justify-center text-xs lg:hidden"
+      >
+        {mobileGuidesOpen ? "Hide Guides" : "Show Guides"}
+      </button>
+
       {/* ── RIGHT: AI Chat ── */}
       <div
         className="flex min-w-0 flex-1 flex-col overflow-hidden rounded-2xl"
@@ -446,9 +455,9 @@ export default function PlantDoctorPage() {
             <div className="flex h-7 w-7 items-center justify-center rounded-full" style={{ background: "rgba(34,197,94,0.12)" }}>
               <Sparkles size={13} style={{ color: "var(--emerald-400)" }} />
             </div>
-            <div>
+            <div className="min-w-0">
               <p className="text-sm font-semibold" style={{ color: "var(--text-primary)" }}>Plant Doctor AI</p>
-              <p className="text-[10px]" style={{ color: "var(--text-muted)" }}>
+              <p className="truncate text-[10px]" style={{ color: "var(--text-muted)" }}>
                 {activeModel} · {isLocal ? "Local (Ollama)" : isGroq ? "Groq ⚡" : "OpenRouter"}
               </p>
             </div>
@@ -675,7 +684,7 @@ export default function PlantDoctorPage() {
             className="btn-emerald w-full shrink-0 gap-2 px-4 py-2.5 text-xs sm:w-auto"
           >
             <Send size={12} />
-            Send
+            <span className="hidden sm:inline">Send</span>
           </button>
         </div>
       </div>

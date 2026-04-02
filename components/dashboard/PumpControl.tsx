@@ -110,7 +110,7 @@ export default function PumpControl({ deviceId, initialStatus, initialSchedule, 
           <p className="text-xs" style={{ color: "var(--text-muted)" }}>No scheduled watering times</p>
         ) : (
           schedule.map((item, idx) => (
-            <div key={idx} className="flex items-center gap-2 rounded-lg p-2" style={{ background: "rgba(255,255,255,0.02)" }}>
+            <div key={idx} className="grid grid-cols-1 gap-2 rounded-lg p-2 sm:flex sm:items-center" style={{ background: "rgba(255,255,255,0.02)" }}>
               <input
                 type="time"
                 value={item.time}

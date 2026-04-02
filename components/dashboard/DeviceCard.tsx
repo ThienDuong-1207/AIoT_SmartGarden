@@ -148,7 +148,7 @@ function CardBody({ device, index }: { device: DeviceView; index: number }) {
               {device.name}
             </p>
             <p className="mt-0.5 text-xs" style={{ color: "var(--text-muted)" }}>
-              {device.plantType || "Hydroponics"} · <span className="font-mono">{device.deviceId}</span>
+              {device.plantType || "Hydroponics"} · <span className="font-mono text-[10px] truncate" title={device.deviceId}>{device.deviceId}</span>
             </p>
           </div>
           <div
@@ -169,7 +169,7 @@ function CardBody({ device, index }: { device: DeviceView; index: number }) {
               <span className="font-mono text-[11px] font-bold" style={{ color: isOnline ? color : "var(--text-muted)" }}>
                 {value}
               </span>
-              <span className="text-[9px] uppercase tracking-wide" style={{ color: "var(--text-muted)" }}>
+              <span className="text-[10px] sm:text-[9px] uppercase tracking-wide" style={{ color: "var(--text-muted)" }}>
                 {label}
               </span>
             </div>

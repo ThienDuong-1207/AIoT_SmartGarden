@@ -216,8 +216,8 @@ function MultiLineTrendChart({
   return (
     <div className="space-y-3">
       <div className="rounded-lg p-3" style={{ background: "var(--bg-base)", border: "1px solid var(--border-subtle)" }}>
-        <div className="overflow-x-auto">
-          <svg width={width} height={chartHeight} viewBox={`0 0 ${width} ${chartHeight}`} fill="none">
+        <div>
+          <svg className="w-full" height={chartHeight} viewBox={`0 0 ${width} ${chartHeight}`} fill="none" preserveAspectRatio="none">
             <rect x="0" y="0" width={width} height={chartHeight} rx="4" fill="rgba(255,255,255,0.02)" />
             <rect x="0" y={safeTopY} width={width} height={Math.max(1, safeBottomY - safeTopY)} fill="rgba(16,185,129,0.12)" />
             <line x1={0} x2={width} y1={safeTopY} y2={safeTopY} stroke="rgba(16,185,129,0.7)" strokeDasharray="4 4" />
@@ -258,15 +258,15 @@ function MultiLineTrendChart({
               {markerItems.map((m, idx) => (
                 <div key={`${m.type}-${idx}`} className="absolute -translate-x-1/2" style={{ left: `${(m.x / width) * 100}%`, top: 0 }}>
                   <div className="h-3 w-3 rounded-full" style={{ background: m.color }} />
-                  <div className="mt-1 whitespace-nowrap text-[9px]" style={{ color: "var(--text-muted)" }}>{m.label}</div>
-                </div>
-              ))}
-            </div>
+                    <div className="mt-1 whitespace-nowrap text-[10px] sm:text-[9px]" style={{ color: "var(--text-muted)" }}>{m.label}</div>
+                  </div>
+                ))}
+              </div>
 
-            <div className="mt-1 flex justify-between text-[9px]" style={{ color: "var(--text-muted)" }}>
-              <span>{chartReadings[0]?.timestamp ? new Date(chartReadings[0].timestamp).toLocaleTimeString("en-US") : "—"}</span>
-              <span>{chartReadings[chartReadings.length - 1]?.timestamp ? new Date(chartReadings[chartReadings.length - 1].timestamp).toLocaleTimeString("en-US") : "—"}</span>
-            </div>
+              <div className="mt-1 flex justify-between text-[10px] sm:text-[9px]" style={{ color: "var(--text-muted)" }}>
+                <span>{chartReadings[0]?.timestamp ? new Date(chartReadings[0].timestamp).toLocaleTimeString("en-US") : "—"}</span>
+                <span>{chartReadings[chartReadings.length - 1]?.timestamp ? new Date(chartReadings[chartReadings.length - 1].timestamp).toLocaleTimeString("en-US") : "—"}</span>
+              </div>
           </>
         )}
       </div>
@@ -520,7 +520,7 @@ export default function OverviewPage() {
 
         {/* Chart — takes 3/5 width */}
         <div className="dark-card overflow-hidden lg:col-span-3">
-          <div className="flex items-center justify-between px-4 py-3" style={{ borderBottom: "1px solid var(--border-subtle)" }}>
+          <div className="flex flex-wrap items-start justify-between gap-3 px-4 py-3" style={{ borderBottom: "1px solid var(--border-subtle)" }}>
             <div>
               <p className="text-sm font-semibold" style={{ color: "var(--text-primary)" }}>
                 Sensor Trends · {range.toUpperCase()} · {deviceId}
@@ -530,16 +530,16 @@ export default function OverviewPage() {
                   ? `${charts.length} data points from DB · ${safeLocaleDateTime(chartStartTs)} → ${safeLocaleDateTime(chartEndTs)}`
                   : "No data"}
               </p>
-              <p className="mt-1 text-[10px] font-mono" style={{ color: "var(--text-muted)" }}>
+              <p className="mt-1 text-[11px] sm:text-[10px] font-mono" style={{ color: "var(--text-muted)" }}>
                 Valid points · TDS: {validCounts.tds} · pH: {validCounts.ph} · Temp: {validCounts.temp}
               </p>
             </div>
-            <div className="flex items-center gap-2">
+            <div className="flex flex-wrap items-center gap-2">
               {(["6h", "24h", "7d"] as RangeOption[]).map((opt) => (
                 <button
                   key={opt}
                   onClick={() => setRange(opt)}
-                  className="rounded-md px-2 py-1 text-[10px] font-semibold"
+                  className="rounded-md px-2 py-1 text-[11px] sm:text-[10px] font-semibold"
                   style={{
                     color: range === opt ? "var(--emerald-400)" : "var(--text-muted)",
                     background: range === opt ? "rgba(16,185,129,0.10)" : "var(--bg-base)",
@@ -562,7 +562,7 @@ export default function OverviewPage() {
                 <button
                   key={s.key}
                   onClick={() => toggleSeries(s.key)}
-                  className="rounded-full px-2.5 py-1 text-[10px]"
+                  className="rounded-full px-2.5 py-1 text-[11px] sm:text-[10px]"
                   style={{
                     color: visibleSeries[s.key] ? s.color : "var(--text-muted)",
                     background: visibleSeries[s.key] ? "rgba(255,255,255,0.06)" : "var(--bg-base)",
@@ -581,7 +581,7 @@ export default function OverviewPage() {
               markers={eventMarkers}
             />
 
-            <div className="mt-2 flex justify-between text-[9px] font-mono" style={{ color: "var(--text-muted)" }}>
+            <div className="mt-2 flex justify-between text-[10px] sm:text-[9px] font-mono" style={{ color: "var(--text-muted)" }}>
               <span>{range} ago</span>
               <span>Safe zone highlighted</span>
               <span style={{ color: "var(--emerald-400)" }}>Now</span>
@@ -589,7 +589,7 @@ export default function OverviewPage() {
           </div>
 
           {/* Summary stats */}
-          <div className="grid grid-cols-3 divide-x" style={{ borderTop: "1px solid var(--border-subtle)", borderColor: "var(--border-subtle)" }}>
+          <div className="grid grid-cols-1 divide-y sm:grid-cols-3 sm:divide-x sm:divide-y-0" style={{ borderTop: "1px solid var(--border-subtle)", borderColor: "var(--border-subtle)" }}>
             {[
               { label: "TDS TB",  value: avg("tds_ppm") != null ? `${avg("tds_ppm")!.toFixed(0)} ppm` : "—", color: "var(--blue-400)"    },
               { label: "pH TB",   value: avg("ph")      != null ? avg("ph")!.toFixed(2)                 : "—", color: "var(--emerald-400)" },
@@ -682,9 +682,9 @@ export default function OverviewPage() {
           </div>
         </div>
 
-        <div className="flex gap-4 p-4">
+        <div className="flex flex-col gap-4 p-4 sm:flex-row">
           {/* Camera preview */}
-          <div className="relative flex h-40 w-56 shrink-0 items-center justify-center overflow-hidden rounded-lg"
+          <div className="relative flex h-40 w-full shrink-0 items-center justify-center overflow-hidden rounded-lg sm:w-56"
             style={{ background: "#080D14", border: "1px solid var(--border-subtle)" }}>
             <div className="pointer-events-none absolute inset-0 opacity-10"
               style={{ backgroundImage: "radial-gradient(rgba(59,130,246,0.5) 1px, transparent 1px)", backgroundSize: "18px 18px" }} />

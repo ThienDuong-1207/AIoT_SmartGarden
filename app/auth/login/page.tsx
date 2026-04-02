@@ -90,33 +90,33 @@ export default function LoginPage() {
         <div className="w-full max-w-md animate-scale-in">
           
           {/* Integrated Glass Card */}
-          <div className="relative p-10 sm:p-12 rounded-3xl bg-white/[0.02] backdrop-blur-3xl border border-white/10 shadow-2xl overflow-hidden transform-gpu will-change-transform">
+          <div className="relative p-6 sm:p-10 md:p-12 rounded-3xl bg-white/[0.02] backdrop-blur-3xl border border-white/10 shadow-2xl overflow-hidden transform-gpu will-change-transform">
              {/* Subtitle Tag */}
-             <div className="flex items-center gap-2 mb-6">
+             <div className="hidden sm:flex items-center gap-2 mb-6">
                <span className="h-px w-8 bg-emerald-500/50" />
                <p className="font-mono text-xs font-bold uppercase tracking-[0.25em] text-teal-400">
                  // WELCOME BACK
                </p>
              </div>
 
-             <h1 className="text-4xl md:text-5xl font-black uppercase tracking-tighter mb-2">
+             <h1 className="text-2xl sm:text-4xl md:text-5xl font-black uppercase tracking-tighter mb-2">
                 <span className="text-white">SIGN</span> <span className="text-emerald-400">IN</span>
              </h1>
-             <p className="text-slate-400 text-sm mb-10 leading-relaxed">
+             <p className="text-slate-400 text-xs sm:text-sm mb-6 sm:mb-10 leading-relaxed">
                Continue your journey to build a smarter garden.
              </p>
 
              {/* Mode Toggle Switch (Full Pill Style) */}
-             <div className="grid grid-cols-2 gap-1 rounded-full p-1 bg-black/40 border border-white/5 mb-10">
+             <div className="grid grid-cols-2 gap-1 rounded-full p-1 bg-black/40 border border-white/5 mb-6 sm:mb-10">
                <button
                  onClick={() => setMode("customer")}
-                 className={`py-2.5 rounded-full text-[10px] font-black uppercase tracking-widest transition-all duration-300 ${!isAdminMode ? "bg-emerald-500/20 text-emerald-400 border border-emerald-500/30 shadow-[0_0_15px_rgba(16,185,129,0.2)]" : "text-slate-500 hover:text-white"}`}
+                 className={`py-1.5 sm:py-2.5 rounded-full text-[9px] sm:text-[10px] font-black uppercase tracking-widest transition-all duration-300 ${!isAdminMode ? "bg-emerald-500/20 text-emerald-400 border border-emerald-500/30 shadow-[0_0_15px_rgba(16,185,129,0.2)]" : "text-slate-500 hover:text-white"}`}
                >
                  ACCOUNT
                </button>
                <button
                  onClick={() => setMode("admin")}
-                 className={`py-2.5 rounded-full text-[10px] font-black uppercase tracking-widest transition-all duration-300 ${isAdminMode ? "bg-emerald-500/20 text-emerald-400 border border-emerald-500/30 shadow-[0_0_15px_rgba(16,185,129,0.2)]" : "text-slate-500 hover:text-white"}`}
+                 className={`py-1.5 sm:py-2.5 rounded-full text-[9px] sm:text-[10px] font-black uppercase tracking-widest transition-all duration-300 ${isAdminMode ? "bg-emerald-500/20 text-emerald-400 border border-emerald-500/30 shadow-[0_0_15px_rgba(16,185,129,0.2)]" : "text-slate-500 hover:text-white"}`}
                >
                  ADMIN
                </button>
@@ -196,34 +196,34 @@ export default function LoginPage() {
                <form onSubmit={handleAdminLogin} className="space-y-4">
                  <div className="group relative">
                     <div className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-500 group-focus-within:text-emerald-400 transition-colors">
-                      <Mail size={16} />
+                      <Mail size={14} />
                     </div>
                     <input
                       type="email"
                       value={email}
                       onChange={(e) => setEmail(e.target.value)}
                       placeholder="admin@smartgarden.com"
-                      className="w-full pl-12 pr-6 py-4 rounded-2xl bg-white/[0.03] border border-white/10 text-sm font-medium focus:outline-none focus:border-emerald-500/50 focus:bg-white/[0.06] transition-all"
+                      className="w-full pl-12 pr-6 py-3 sm:py-4 rounded-2xl bg-white/[0.03] border border-white/10 text-xs sm:text-sm font-medium focus:outline-none focus:border-emerald-500/50 focus:bg-white/[0.06] transition-all"
                       required
                     />
                  </div>
 
                  <div className="group relative">
                     <div className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-500 group-focus-within:text-emerald-400 transition-colors">
-                      <KeyRound size={16} />
+                      <KeyRound size={14} />
                     </div>
                     <input
                       type="password"
                       value={password}
                       onChange={(e) => setPassword(e.target.value)}
                       placeholder="Secure password"
-                      className="w-full pl-12 pr-6 py-4 rounded-2xl bg-white/[0.03] border border-white/10 text-sm font-medium focus:outline-none focus:border-emerald-500/50 focus:bg-white/[0.06] transition-all"
+                      className="w-full pl-12 pr-6 py-3 sm:py-4 rounded-2xl bg-white/[0.03] border border-white/10 text-xs sm:text-sm font-medium focus:outline-none focus:border-emerald-500/50 focus:bg-white/[0.06] transition-all"
                       required
                     />
                  </div>
 
                  {adminError && (
-                   <p className="p-3 rounded-xl bg-red-500/10 border border-red-500/20 text-red-400 text-[11px] font-bold uppercase tracking-wider text-center">
+                   <p className="p-2 sm:p-3 rounded-xl bg-red-500/10 border border-red-500/20 text-red-400 text-[10px] sm:text-[11px] font-bold uppercase tracking-wider text-center">
                      {adminError}
                    </p>
                  )}
@@ -231,14 +231,14 @@ export default function LoginPage() {
                  <button
                     type="submit"
                     disabled={isSubmitting}
-                    className="flex w-full items-center justify-center gap-2 py-4 rounded-2xl bg-emerald-500 disabled:bg-slate-700 text-white font-black text-xs uppercase tracking-[0.2em] shadow-[0_0_20px_rgba(16,185,129,0.3)] transition-all duration-300 hover:bg-emerald-400 hover:shadow-[0_0_30px_rgba(16,185,129,0.5)] hover:-translate-y-1"
+                    className="flex w-full items-center justify-center gap-2 py-3 sm:py-4 rounded-2xl bg-emerald-500 disabled:bg-slate-700 text-white font-black text-[11px] sm:text-xs uppercase tracking-[0.2em] shadow-[0_0_20px_rgba(16,185,129,0.3)] transition-all duration-300 hover:bg-emerald-400 hover:shadow-[0_0_30px_rgba(16,185,129,0.5)] hover:-translate-y-1"
                  >
                     {isSubmitting ? "PROCESSING..." : "CONFIRM ADMIN"}
                  </button>
                </form>
              )}
 
-             <p className="mt-8 text-center text-[10px] text-slate-500 uppercase tracking-widest leading-relaxed">
+             <p className="mt-6 sm:mt-8 text-center text-[9px] sm:text-[10px] text-slate-500 uppercase tracking-widest leading-relaxed">
                By signing in, you agree to the <br/>
                <span className="text-slate-300 hover:text-emerald-400 cursor-pointer transition-colors underline underline-offset-4">terms of use</span> of the platform.
              </p>

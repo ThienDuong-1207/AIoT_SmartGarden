@@ -171,7 +171,7 @@ export default function LightControl({
         <p className="text-[10px] font-semibold uppercase" style={{ color: "var(--text-muted)" }}>
           Schedule Presets
         </p>
-        <div className="grid grid-cols-3 gap-2">
+        <div className="grid grid-cols-2 gap-2 sm:grid-cols-3">
           <button
             onClick={() => handlePreset("12h")}
             disabled={isLoading || disabled}
