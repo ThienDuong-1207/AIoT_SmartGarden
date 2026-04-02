@@ -1,5 +1,6 @@
 "use client";
 
+import Image from "next/image";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { LayoutDashboard, Users, Package, ShoppingCart, Zap, LogOut, X } from "lucide-react";
@@ -27,15 +28,19 @@ export default function AdminSidebar({ isMobile = false, isOpen = false, onClose
       <div className="p-6" style={{ borderBottom: "1px solid var(--border-subtle)" }}>
         <div className="flex items-center justify-between gap-2">
           <Link href="/admin" className="flex items-center gap-2 flex-1">
-            <div
-              className="flex h-10 w-10 items-center justify-center rounded-lg shrink-0"
-              style={{ background: "linear-gradient(135deg, var(--emerald-500), var(--emerald-600))" }}
-            >
-              <span className="text-sm font-bold text-white">AG</span>
-            </div>
-            <div className="flex flex-col min-w-0">
-              <span className="text-sm font-bold" style={{ color: "var(--text-primary)" }}>Eco Tech</span>
-              <span className="text-xs" style={{ color: "var(--text-muted)" }}>Admin</span>
+            <div className="flex min-w-0 items-center gap-2">
+              <Image
+                src="/products/EcoTech_logo.png"
+                alt="Eco Tech"
+                width={178}
+                height={56}
+                className="h-11 w-auto"
+                priority
+              />
+              <div className="flex min-w-0 flex-col">
+                <span className="text-sm font-bold" style={{ color: "var(--text-primary)" }}>Eco Tech</span>
+                <span className="text-xs" style={{ color: "var(--text-muted)" }}>Admin</span>
+              </div>
             </div>
           </Link>
           {isMobile && (

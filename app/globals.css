@@ -145,6 +145,106 @@
   --header-border:      rgba(208, 215, 222, 0.8);
 }
 
+[data-theme="ocean"] {
+  --bg-base:        #07111E;
+  --bg-elevated:    #0D1B2A;
+  --bg-overlay:     #11263C;
+  --bg-subtle:      #07111E;
+
+  --border-subtle:  #1B344F;
+  --border-normal:  #264663;
+  --border-strong:  #3A5979;
+  --border-emerald: rgba(34, 211, 238, 0.30);
+  --border-cyan:    rgba(96, 165, 250, 0.30);
+  --border-gold:    rgba(125, 211, 252, 0.28);
+
+  --emerald-400:    #22D3EE;
+  --emerald-500:    #06B6D4;
+  --emerald-600:    #0891B2;
+  --emerald-glow:   rgba(6, 182, 212, 0.20);
+
+  --cyan-500:       #38BDF8;
+  --cyan-400:       #7DD3FC;
+  --cyan-600:       #0284C7;
+  --cyan-glow:      rgba(56, 189, 248, 0.20);
+  --cyan-glow-sm:   rgba(56, 189, 248, 0.10);
+
+  --gold-400:       #A5F3FC;
+  --gold-500:       #60A5FA;
+  --gold-600:       #2563EB;
+  --gold-glow:      rgba(96, 165, 250, 0.15);
+
+  --blue-400:       #93C5FD;
+  --blue-500:       #3B82F6;
+  --blue-glow:      rgba(59, 130, 246, 0.15);
+
+  --text-primary:   #EAF4FF;
+  --text-secondary: #9FB4CC;
+  --text-muted:     #7188A3;
+  --text-cyan:      #7DD3FC;
+  --text-gold:      #A5F3FC;
+
+  --shadow-card:    0 1px 3px rgba(0,0,0,0.32), 0 0 0 1px #1B344F;
+  --shadow-elevated:0 8px 32px rgba(0,0,0,0.44), 0 0 0 1px #264663;
+  --glow-emerald:   0 0 24px rgba(6, 182, 212, 0.16);
+  --glow-cyan:      0 0 24px rgba(56, 189, 248, 0.16);
+  --glow-gold:      0 0 20px rgba(96, 165, 250, 0.12);
+
+  --header-bg-scrolled: rgba(7, 17, 30, 0.94);
+  --header-bg-top:      transparent;
+  --header-border:      rgba(27, 52, 79, 0.8);
+}
+
+[data-theme="sunset"] {
+  --bg-base:        #120D0B;
+  --bg-elevated:    #1B1210;
+  --bg-overlay:     #241715;
+  --bg-subtle:      #120D0B;
+
+  --border-subtle:  #39211B;
+  --border-normal:  #53312A;
+  --border-strong:  #71453B;
+  --border-emerald: rgba(245, 158, 11, 0.30);
+  --border-cyan:    rgba(251, 113, 133, 0.26);
+  --border-gold:    rgba(251, 191, 36, 0.32);
+
+  --emerald-400:    #FBBF24;
+  --emerald-500:    #F59E0B;
+  --emerald-600:    #D97706;
+  --emerald-glow:   rgba(245, 158, 11, 0.18);
+
+  --cyan-500:       #FB7185;
+  --cyan-400:       #FDA4AF;
+  --cyan-600:       #E11D48;
+  --cyan-glow:      rgba(251, 113, 133, 0.18);
+  --cyan-glow-sm:   rgba(251, 113, 133, 0.10);
+
+  --gold-400:       #FDE68A;
+  --gold-500:       #FBBF24;
+  --gold-600:       #D97706;
+  --gold-glow:      rgba(251, 191, 36, 0.18);
+
+  --blue-400:       #FDBA74;
+  --blue-500:       #FB923C;
+  --blue-glow:      rgba(251, 146, 60, 0.15);
+
+  --text-primary:   #FFF4EC;
+  --text-secondary: #E1BCA8;
+  --text-muted:     #B78A75;
+  --text-cyan:      #FDA4AF;
+  --text-gold:      #FDE68A;
+
+  --shadow-card:    0 1px 3px rgba(0,0,0,0.34), 0 0 0 1px #39211B;
+  --shadow-elevated:0 8px 32px rgba(0,0,0,0.46), 0 0 0 1px #53312A;
+  --glow-emerald:   0 0 24px rgba(245, 158, 11, 0.16);
+  --glow-cyan:      0 0 24px rgba(251, 113, 133, 0.16);
+  --glow-gold:      0 0 20px rgba(251, 191, 36, 0.14);
+
+  --header-bg-scrolled: rgba(18, 13, 11, 0.94);
+  --header-bg-top:      transparent;
+  --header-border:      rgba(57, 33, 27, 0.8);
+}
+
 /* Light mode: tắt GalaxyBackground */
 [data-theme="light"] #galaxy-bg {
   display: none;
@@ -167,6 +267,118 @@
 /* Light mode: nav-item hover override */
 [data-theme="light"] .nav-item-inactive:hover {
   background: rgba(31, 35, 40, 0.06);
+}
+
+/* Login page: light-mode-only color overrides */
+[data-theme="light"] .auth-login-page {
+  background: linear-gradient(135deg, #F8FAFC 0%, #EFF6FF 100%);
+  color: #1F2328;
+}
+
+[data-theme="light"] .auth-login-hero {
+  border-color: rgba(208, 215, 222, 0.8);
+}
+
+[data-theme="light"] .auth-login-hero-overlay {
+  background: linear-gradient(to bottom right, rgba(5, 150, 105, 0.08), rgba(255, 255, 255, 0.82), rgba(255, 255, 255, 0.92));
+}
+
+[data-theme="light"] .auth-login-hero-glow {
+  background: linear-gradient(to top, rgba(5, 150, 105, 0.12), transparent);
+}
+
+[data-theme="light"] .auth-login-hero-title,
+[data-theme="light"] .auth-login-title-primary {
+  color: #1F2328;
+}
+
+[data-theme="light"] .auth-login-hero-copy,
+[data-theme="light"] .auth-login-copy,
+[data-theme="light"] .auth-login-footer,
+[data-theme="light"] .auth-login-link {
+  color: #636C76;
+}
+
+[data-theme="light"] .auth-login-card {
+  background: rgba(255, 255, 255, 0.88);
+  border-color: #D0D7DE;
+  box-shadow: 0 12px 28px rgba(15, 23, 42, 0.08);
+}
+
+[data-theme="light"] .auth-login-subtitle {
+  color: #0369A1;
+}
+
+[data-theme="light"] .auth-login-toggle {
+  background: #F3F4F6;
+  border-color: #D0D7DE;
+}
+
+[data-theme="light"] .auth-login-toggle-btn-inactive {
+  color: #64748B;
+}
+
+[data-theme="light"] .auth-login-toggle-btn-inactive:hover {
+  color: #1F2328;
+}
+
+[data-theme="light"] .auth-login-toggle-btn-active {
+  background: linear-gradient(135deg, rgba(5, 150, 105, 0.14), rgba(5, 150, 105, 0.10));
+  color: #047857;
+  border-color: rgba(5, 150, 105, 0.22);
+  box-shadow: none;
+}
+
+[data-theme="light"] .auth-login-icon {
+  color: #64748B;
+}
+
+[data-theme="light"] .auth-login-input {
+  background: #FFFFFF;
+  border-color: #D0D7DE;
+  color: #1F2328;
+}
+
+[data-theme="light"] .auth-login-input::placeholder {
+  color: #9198A1;
+}
+
+[data-theme="light"] .auth-login-input:focus {
+  background: #FFFFFF;
+  border-color: rgba(5, 150, 105, 0.50);
+  box-shadow: 0 0 0 3px rgba(5, 150, 105, 0.10);
+}
+
+[data-theme="light"] .auth-login-primary-button {
+  background: linear-gradient(135deg, #059669, #047857);
+  box-shadow: 0 8px 18px rgba(5, 150, 105, 0.18);
+}
+
+[data-theme="light"] .auth-login-primary-button:hover {
+  background: linear-gradient(135deg, #10B981, #059669);
+  box-shadow: 0 10px 22px rgba(5, 150, 105, 0.22);
+}
+
+[data-theme="light"] .auth-login-google-button {
+  background: #FFFFFF;
+  border-color: #D0D7DE;
+  color: #1F2328;
+}
+
+[data-theme="light"] .auth-login-google-button:hover {
+  background: #F6F8FA;
+}
+
+[data-theme="light"] .auth-login-error {
+  background: rgba(207, 34, 46, 0.08);
+  border-color: rgba(207, 34, 46, 0.18);
+  color: #B42318;
+}
+
+[data-theme="light"] .auth-login-warning {
+  background: rgba(245, 158, 11, 0.10);
+  border-color: rgba(180, 83, 9, 0.28);
+  color: #9A3412;
 }
 
 /* ============================================================
