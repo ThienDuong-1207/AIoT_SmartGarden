@@ -1,11 +1,12 @@
 import Image from "next/image";
 import Link from "next/link";
 import { notFound } from "next/navigation";
-import { Star, ShoppingCart, Zap, CheckCircle, ArrowLeft } from "lucide-react";
+import { Star, CheckCircle, ArrowLeft } from "lucide-react";
 import { sampleProductReviews, sampleProducts } from "@/lib/mock-data";
 import ProductModel from "@/models/Product";
 import { dbConnect } from "@/lib/mongodb";
 import SiteFooter from "@/components/marketing/SiteFooter";
+import AddToCartButton from "@/components/marketing/AddToCartButton";
 
 type Params = Promise<{ slug: string }>;
 
@@ -395,14 +396,27 @@ export default async function ProductDetailPage({ params }: { params: Params }) 
 
               {/* Action buttons */}
               <div className="mt-5 flex flex-col gap-3 sm:flex-row">
-                <button className="btn-gold btn-gold-light-fixed flex flex-1 items-center justify-center gap-2 py-3">
-                  <ShoppingCart size={16} />
-                  Add to Cart
-                </button>
-                <button className="btn-emerald flex flex-1 items-center justify-center gap-2 py-3">
-                  <Zap size={16} />
-                  Buy Now
-                </button>
+                <AddToCartButton
+                  item={{
+                    slug: product.slug,
+                    name: product.name,
+                    category: product.category,
+                    price: Number(product.price),
+                    salePrice: product.salePrice != null ? Number(product.salePrice) : null,
+                  }}
+                  className="btn-gold btn-gold-light-fixed flex flex-1 items-center justify-center gap-2 py-3"
+                />
+                <AddToCartButton
+                  item={{
+                    slug: product.slug,
+                    name: product.name,
+                    category: product.category,
+                    price: Number(product.price),
+                    salePrice: product.salePrice != null ? Number(product.salePrice) : null,
+                  }}
+                  buyNow
+                  className="btn-emerald flex flex-1 items-center justify-center gap-2 py-3"
+                />
               </div>
 
               {shippingRows.length > 0 && (
