@@ -82,18 +82,14 @@ export default function ProductCard({ product }: { product: Product }) {
         (e.currentTarget as HTMLElement).style.boxShadow = "none";
       }}
     >
-      <Link
-        href={`/products/${product.slug}`}
-        className="absolute inset-0 z-0"
-        aria-label={`View details for ${product.name}`}
-        title="View details"
-      />
-
       <div className="relative z-10 flex min-h-0 flex-1 flex-col">
         {/* ── Visual zone ── */}
-        <div
-          className="relative flex-1 overflow-hidden"
+        <Link
+          href={`/products/${product.slug}`}
+          className="relative block flex-1 overflow-hidden"
           style={{ background: cfg.accentBg }}
+          aria-label={`View details for ${product.name}`}
+          title="View details"
         >
           {product.images?.[0] ? (
             <Image
@@ -177,7 +173,7 @@ export default function ProductCard({ product }: { product: Product }) {
               Premium cultivation support for better yields.
             </p>
           </div>
-        </div>
+        </Link>
 
         {/* ── Footer zone ── */}
         <div className="relative z-10 flex flex-none flex-col p-4 pointer-events-none">

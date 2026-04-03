@@ -3,7 +3,8 @@
 import { FormEvent, useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import { getProviders, signIn } from "next-auth/react";
-import { Leaf, UserCog, LogIn, Mail, KeyRound, ChevronRight } from "lucide-react";
+import Link from "next/link";
+import { ArrowLeft, Leaf, UserCog, LogIn, Mail, KeyRound, ChevronRight } from "lucide-react";
 
 export default function LoginPage() {
   const router = useRouter();
@@ -88,6 +89,18 @@ export default function LoginPage() {
       {/* ── RIGHT PANEL: Integrated Login Form ── */}
       <div className="relative flex items-center justify-center p-6 sm:p-12 lg:p-20 z-10">
         <div className="w-full max-w-md animate-scale-in">
+          <Link
+            href="/"
+            className="mb-4 inline-flex items-center gap-2 rounded-xl border px-3 py-2 text-xs font-semibold uppercase tracking-[0.14em] transition-all hover:-translate-y-0.5"
+            style={{
+              borderColor: "rgba(16,185,129,0.35)",
+              color: "var(--emerald-400)",
+              background: "rgba(16,185,129,0.08)",
+            }}
+          >
+            <ArrowLeft size={14} />
+            Back Home
+          </Link>
           
           {/* Integrated Glass Card */}
           <div className="relative p-6 sm:p-10 md:p-12 rounded-3xl bg-white/[0.02] backdrop-blur-3xl border border-white/10 shadow-2xl overflow-hidden transform-gpu will-change-transform">
