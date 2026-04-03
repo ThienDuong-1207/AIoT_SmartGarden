@@ -68,6 +68,7 @@ function CardBody({ device, index }: { device: DeviceView; index: number }) {
   const isDemo = device.deviceId.startsWith("SG-DEMO-");
   const live = useLiveData(device.deviceId, !isDemo);
   const isOnline = isDemo ? false : live.isOnline ?? device.isOnline;
+  const displayImage = device.image ?? "/images/chaucay.webp";
 
   const metrics = [
     { icon: Droplets, value: live.tds !== null ? `${live.tds} ppm` : "—", label: "TDS", color: "#60A5FA" },
@@ -78,20 +79,12 @@ function CardBody({ device, index }: { device: DeviceView; index: number }) {
   return (
     <>
       <div className="relative overflow-hidden" style={{ height: 180 }}>
-        {device.image ? (
-          <Image
-            src={device.image}
-            alt={device.name}
-            fill
-            className="object-cover transition-transform duration-500 group-hover:scale-105"
-          />
-        ) : (
-          <div className="absolute inset-0" style={{ background: "var(--bg-base)" }}>
-            <div className="flex h-full items-center justify-center">
-              <Leaf size={40} style={{ color: "var(--border-normal)" }} />
-            </div>
-          </div>
-        )}
+        <Image
+          src={displayImage}
+          alt={device.name}
+          fill
+          className="object-cover transition-transform duration-500 group-hover:scale-105"
+        />
 
         <div
           className="absolute inset-0"
