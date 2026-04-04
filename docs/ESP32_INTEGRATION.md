@@ -358,100 +358,18 @@ Base URL: `https://{domain}/api`
 
 ## 8. MongoDB Collections
 
-### Device
-```js
-{
-  deviceId:        String,   // unique, VD: "sg-001"
-  userId:          ObjectId, // ref User
-  name:            String,
-  plantType:       String,
-  firmwareVersion: String,
-  wifiMAC:         String,
-  isOnline:        Boolean,
-  lastSeenAt:      Date,
-  activationCode:  String,   // unique
-  config: {
-    alertThresholds: {
-      tds:  { min: Number, max: Number },  // ppm
-      ph:   { min: Number, max: Number },
-      temp: { min: Number, max: Number },  // °C
-    }
-  }
-}
-```
+> Schema đầy đủ của tất cả collections xem tại [DATABASE_DESIGN.md](./DATABASE_DESIGN.md).
 
-### SensorReading
-```js
-{
-  deviceId:     String,   // indexed
-  timestamp:    Date,     // indexed
-  temp:         Number,   // °C
-  humi:         Number,   // %
-  tds_ppm:      Number,
-  ph:           Number,
-  light_status: Boolean,
-  water_level:  Number,   // %
-  raw:          Object,   // full payload gốc từ ESP32
-}
-```
+Các collection liên quan đến ESP32:
 
-### Alert
-```js
-{
-  deviceId:    String,
-  userId:      ObjectId,
-  type:        "tds_low"|"tds_high"|"ph_low"|"ph_high"|
-               "temp_low"|"temp_high"|"water_low"|
-               "ai_disease"|"device_offline",
-  severity:    "info"|"warning"|"danger",
-  message:     String,
-  value:       Number,    // giá trị thực tế
-  threshold:   Number,    // ngưỡng bị vượt
-  isRead:      Boolean,
-  triggeredAt: Date,
-}
-```
-
-### Alert Thresholds mặc định
-
-| Cảm biến | Min | Max | Severity |
-|---|---|---|---|
-| TDS | 800 ppm | 1800 ppm | warning |
-| pH | 5.5 | 7.0 | danger |
-| Nhiệt độ | 18°C | 30°C | warning |
-| Mực nước | — | — | danger nếu < 20% |
-
-### CameraCapture
-```js
-{
-  deviceId:    String,  // indexed
-  imageBase64: String,  // data URI
-  capturedAt:  Date,    // indexed
-}
-// Tối đa 10 snapshot / thiết bị, cũ bị xóa tự động
-```
-
-### AIdiagnostic
-```js
-{
-  deviceId:      String,
-  capturedAt:    Date,
-  imageBase64:   String,
-  sensorContext: { tds: Number, ph: Number, temp: Number, humidity: Number },
-  detections: [{
-    class:      String,   // tên bệnh
-    confidence: Number,   // 0.0 - 1.0
-    bbox:       [x1, y1, x2, y2],
-  }],
-  status:        "healthy"|"warning"|"danger",
-  topDisease:    String|null,
-  topConfidence: Number,
-  fusedDiagnosis: String,
-  recommendation: String,
-  aiModel:       String,
-  processingMs:  Number,
-}
-```
+| Collection | Vai trò |
+|---|---|
+| `devices` | Thông tin thiết bị, config, alertThresholds |
+| `sensorreadings` | Dữ liệu cảm biến time-series (TTL: 90 ngày) |
+| `alerts` | Cảnh báo ngưỡng tự động |
+| `cameracaptures` | Ảnh chụp từ ESP32-CAM (giữ tối đa 10/thiết bị) |
+| `aidiagnostics` | Kết quả phân tích YOLOv8 + sensor fusion |
+| `commands` | Lịch sử lệnh điều khiển + trạng thái ACK |
 
 ---
 

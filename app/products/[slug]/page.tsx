@@ -1,11 +1,12 @@
 import Image from "next/image";
 import Link from "next/link";
 import { notFound } from "next/navigation";
-import { Star, ShoppingCart, Zap, CheckCircle, ArrowLeft } from "lucide-react";
+import { Star, CheckCircle, ArrowLeft } from "lucide-react";
 import { sampleProductReviews, sampleProducts } from "@/lib/mock-data";
 import ProductModel from "@/models/Product";
 import { dbConnect } from "@/lib/mongodb";
 import SiteFooter from "@/components/marketing/SiteFooter";
+import AddToCartButton from "@/components/marketing/AddToCartButton";
 
 type Params = Promise<{ slug: string }>;
 
@@ -157,7 +158,7 @@ export default async function ProductDetailPage({ params }: { params: Params }) 
               </div>
 
               {gallery.length > 1 && (
-                <div className="mt-3 grid grid-cols-4 gap-2">
+                <div className="mt-3 grid grid-cols-2 gap-2 sm:grid-cols-4">
                   {gallery.slice(0, 4).map((img, idx) => (
                     <div
                       key={`${img}-${idx}`}
@@ -203,7 +204,7 @@ export default async function ProductDetailPage({ params }: { params: Params }) 
                 specsEntries.map(([key, value], idx) => (
                   <div
                     key={key}
-                    className="grid grid-cols-[0.45fr_0.55fr] gap-3 px-6 py-3 text-sm"
+                    className="grid grid-cols-1 gap-1 px-6 py-3 text-sm sm:grid-cols-[0.45fr_0.55fr] sm:gap-3"
                     style={{
                       background: idx % 2 === 1 ? "rgba(255,255,255,0.02)" : "transparent",
                       borderBottom:
@@ -278,7 +279,7 @@ export default async function ProductDetailPage({ params }: { params: Params }) 
                     Open Dashboard →
                   </Link>
                 </div>
-                <div className="grid grid-cols-2 gap-3 p-5">
+                <div className="grid grid-cols-1 gap-3 p-5 sm:grid-cols-2">
                   {[
                     { label: "TDS",      value: "1180 ppm", color: "var(--blue-400)" },
                     { label: "pH",       value: "6.2",      color: "var(--emerald-400)" },
@@ -395,14 +396,27 @@ export default async function ProductDetailPage({ params }: { params: Params }) 
 
               {/* Action buttons */}
               <div className="mt-5 flex flex-col gap-3 sm:flex-row">
-                <button className="btn-gold btn-gold-light-fixed flex flex-1 items-center justify-center gap-2 py-3">
-                  <ShoppingCart size={16} />
-                  Add to Cart
-                </button>
-                <button className="btn-emerald flex flex-1 items-center justify-center gap-2 py-3">
-                  <Zap size={16} />
-                  Buy Now
-                </button>
+                <AddToCartButton
+                  item={{
+                    slug: product.slug,
+                    name: product.name,
+                    category: product.category,
+                    price: Number(product.price),
+                    salePrice: product.salePrice != null ? Number(product.salePrice) : null,
+                  }}
+                  className="btn-gold btn-gold-light-fixed flex flex-1 items-center justify-center gap-2 py-3"
+                />
+                <AddToCartButton
+                  item={{
+                    slug: product.slug,
+                    name: product.name,
+                    category: product.category,
+                    price: Number(product.price),
+                    salePrice: product.salePrice != null ? Number(product.salePrice) : null,
+                  }}
+                  buyNow
+                  className="btn-emerald flex flex-1 items-center justify-center gap-2 py-3"
+                />
               </div>
 
               {shippingRows.length > 0 && (

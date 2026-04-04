@@ -1,13 +1,5 @@
 import mongoose from "mongoose";
 
-const MONGODB_URI = process.env.MONGODB_URI;
-
-if (!MONGODB_URI) {
-  throw new Error("Please define MONGODB_URI in environment variables");
-}
-
-const MONGODB_URI_SAFE: string = MONGODB_URI;
-
 type MongooseCache = {
   conn: typeof mongoose | null;
   promise: Promise<typeof mongoose> | null;
@@ -25,12 +17,17 @@ const cache: MongooseCache = global.mongooseCache ?? {
 global.mongooseCache = cache;
 
 export async function dbConnect() {
+  const mongoUri = process.env.MONGODB_URI;
+  if (!mongoUri) {
+    throw new Error("Please define MONGODB_URI in environment variables");
+  }
+
   if (cache.conn) {
     return cache.conn;
   }
 
   if (!cache.promise) {
-    cache.promise = mongoose.connect(MONGODB_URI_SAFE, {
+    cache.promise = mongoose.connect(mongoUri, {
       dbName: process.env.MONGODB_DB_NAME || "AIoT",
       bufferCommands: false,
     });
