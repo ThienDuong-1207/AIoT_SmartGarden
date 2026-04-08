@@ -13,18 +13,6 @@
 
 ---
 
-## 🎯 Current Status Summary
-
-| Phase | 🟢 Hoàn thành | 🔴 TODO | Trạng thái |
-|-------|-----------|------|----------|
-| **Phase 0** | ✅ Setup, Next.js, Dependencies | - | ✅ **DONE** |
-| **Phase 1** | ✅ Auth, E-commerce, Dashboard, AI Lab | ❌ Product detail enhancements, About Us | 🔄 **ACTIVE** |
-| **Phase 2** | ✅ Sensor ingestion, Device management | ❌ IoT control (pump/light), Watering schedule | ⏳ **TODO** |
-| **Phase 3** | ✅ YOLOv8 + Ollama, Risk Intelligence | ❌ Plant Doctor page, Push notifications | 🔄 **ACTIVE** |
-| **Phase 4** | ✅ Admin structure | ❌ Payment, Order tracking, Full CRUD | ⏳ **TODO** |
-
----
-
 ## 🟢 ✅ COMPLETED — Phase 0–1
 
 ### Environment Setup

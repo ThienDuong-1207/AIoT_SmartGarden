@@ -17,9 +17,10 @@ interface WateringScheduleProps {
     schedule: WateringItem[];
   };
   onUpdate?: (config: { watering: { autoMode: boolean; intervalHours: number; schedule: WateringItem[] } }) => void;
+  disabled?: boolean;
 }
 
-export default function WateringSchedule({ deviceId, initialWatering, onUpdate }: WateringScheduleProps) {
+export default function WateringSchedule({ deviceId, initialWatering, onUpdate, disabled = false }: WateringScheduleProps) {
   const [autoMode, setAutoMode] = useState(initialWatering.autoMode);
   const [intervalHours, setIntervalHours] = useState(initialWatering.intervalHours ?? 6);
   const [schedule, setSchedule] = useState<WateringItem[]>(initialWatering.schedule || []);
@@ -30,6 +31,7 @@ export default function WateringSchedule({ deviceId, initialWatering, onUpdate }
     intervalHours?: number;
     schedule?: WateringItem[];
   }) => {
+    if (disabled) return;
     const payload = {
       autoMode: next?.autoMode ?? autoMode,
       intervalHours: next?.intervalHours ?? intervalHours,
@@ -63,6 +65,7 @@ export default function WateringSchedule({ deviceId, initialWatering, onUpdate }
   };
 
   const handleSave = async () => {
+    if (disabled) return;
     setSaving(true);
     try {
       await saveWatering();
@@ -74,14 +77,17 @@ export default function WateringSchedule({ deviceId, initialWatering, onUpdate }
   };
 
   const addSchedule = () => {
+    if (disabled) return;
     setSchedule((prev) => [...prev, { time: "08:00", durationMinutes: 15, enabled: true }]);
   };
 
   const updateSchedule = (index: number, patch: Partial<WateringItem>) => {
+    if (disabled) return;
     setSchedule((prev) => prev.map((item, i) => (i === index ? { ...item, ...patch } : item)));
   };
 
   const removeSchedule = (index: number) => {
+    if (disabled) return;
     setSchedule((prev) => prev.filter((_, i) => i !== index));
   };
 
@@ -98,6 +104,7 @@ export default function WateringSchedule({ deviceId, initialWatering, onUpdate }
         <span className="text-xs" style={{ color: "var(--text-secondary)" }}>Auto Mode</span>
         <button
           onClick={() => setAutoMode((v) => !v)}
+          disabled={disabled}
           className="relative inline-flex items-center h-6 w-11 rounded-full transition-colors"
           style={{ background: autoMode ? "var(--emerald-400)" : "var(--border-subtle)" }}
         >
@@ -119,6 +126,7 @@ export default function WateringSchedule({ deviceId, initialWatering, onUpdate }
           max={24}
           value={intervalHours}
           onChange={(e) => setIntervalHours(Math.max(1, Math.min(24, Number(e.target.value) || 1)))}
+          disabled={disabled}
           className="w-full rounded px-2 py-2 text-xs"
           style={{ background: "var(--bg-base)", color: "var(--text-primary)", border: "1px solid var(--border-subtle)" }}
         />
@@ -134,6 +142,7 @@ export default function WateringSchedule({ deviceId, initialWatering, onUpdate }
               type="time"
               value={item.time}
               onChange={(e) => updateSchedule(idx, { time: e.target.value })}
+              disabled={disabled}
               className="col-span-5 rounded px-2 py-1 text-xs"
               style={{ background: "var(--bg-base)", color: "var(--text-primary)", border: "1px solid var(--border-subtle)" }}
             />
@@ -143,11 +152,13 @@ export default function WateringSchedule({ deviceId, initialWatering, onUpdate }
               max={120}
               value={item.durationMinutes}
               onChange={(e) => updateSchedule(idx, { durationMinutes: Math.max(1, Math.min(120, Number(e.target.value) || 1)) })}
+              disabled={disabled}
               className="col-span-4 rounded px-2 py-1 text-xs"
               style={{ background: "var(--bg-base)", color: "var(--text-primary)", border: "1px solid var(--border-subtle)" }}
             />
             <button
               onClick={() => removeSchedule(idx)}
+              disabled={disabled}
               className="col-span-3 rounded px-2 py-1 text-[11px]"
               style={{ background: "rgba(239,68,68,0.2)", color: "#F87171" }}
             >
@@ -158,6 +169,7 @@ export default function WateringSchedule({ deviceId, initialWatering, onUpdate }
 
         <button
           onClick={addSchedule}
+          disabled={disabled}
           className="w-full rounded-lg py-2 text-xs font-semibold"
           style={{ background: "rgba(59,130,246,0.1)", color: "var(--blue-400)", border: "1px solid rgba(59,130,246,0.2)" }}
         >
@@ -167,7 +179,7 @@ export default function WateringSchedule({ deviceId, initialWatering, onUpdate }
 
       <button
         onClick={handleSave}
-        disabled={saving}
+        disabled={saving || disabled}
         className="w-full rounded-lg py-2 text-xs font-semibold flex items-center justify-center gap-2"
         style={{ background: "rgba(16,185,129,0.15)", color: "var(--emerald-400)", border: "1px solid rgba(16,185,129,0.25)" }}
       >

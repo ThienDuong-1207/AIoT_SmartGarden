@@ -88,13 +88,13 @@ export default function SettingsPage() {
         style={{ background: "var(--bg-elevated)", border: "1px solid var(--border-subtle)" }}
       >
         <div
-          className="flex items-center gap-2 px-5 py-4"
+          className="flex items-center gap-2 px-4 py-4 sm:px-5"
           style={{ borderBottom: "1px solid var(--border-subtle)" }}
         >
           <Leaf size={14} style={{ color: "var(--emerald-400)" }} />
           <span className="text-sm font-semibold" style={{ color: "var(--text-primary)" }}>Device Info</span>
         </div>
-        <div className="grid gap-4 p-5 md:grid-cols-2">
+        <div className="grid gap-4 p-4 sm:p-5 md:grid-cols-2">
           <div>
             <label className="mb-1.5 block text-xs font-semibold" style={{ color: "var(--text-muted)" }}>
               Pot name
@@ -153,17 +153,17 @@ export default function SettingsPage() {
         style={{ background: "var(--bg-elevated)", border: "1px solid var(--border-subtle)" }}
       >
         <div
-          className="flex items-center gap-2 px-5 py-4"
+          className="flex items-center gap-2 px-4 py-4 sm:px-5"
           style={{ borderBottom: "1px solid var(--border-subtle)" }}
         >
           <Camera size={14} style={{ color: "var(--text-muted)" }} />
           <span className="text-sm font-semibold" style={{ color: "var(--text-primary)" }}>Camera schedule</span>
         </div>
-        <div className="p-5">
+        <div className="p-4 sm:p-5">
           <p className="mb-3 text-xs" style={{ color: "var(--text-muted)" }}>
             The ESP32 will capture photos on schedule and send them to AI for automatic analysis.
           </p>
-          <div className="grid grid-cols-2 gap-3 md:grid-cols-4">
+          <div className="grid grid-cols-1 gap-3 sm:grid-cols-2 md:grid-cols-4">
             {[
               { value: "1", label: "1 hour" },
               { value: "6", label: "6 hours" },
@@ -196,16 +196,16 @@ export default function SettingsPage() {
         style={{ background: "var(--bg-elevated)", border: "1px solid var(--border-subtle)" }}
       >
         <div
-          className="flex items-center gap-2 px-5 py-4"
+          className="flex items-center gap-2 px-4 py-4 sm:px-5"
           style={{ borderBottom: "1px solid var(--border-subtle)" }}
         >
           <Bell size={14} style={{ color: "var(--gold-400)" }} />
           <span className="text-sm font-semibold" style={{ color: "var(--text-primary)" }}>Notifications</span>
         </div>
-        <div className="divide-y p-5 space-y-0" style={{ borderColor: "var(--border-subtle)" }}>
+        <div className="divide-y p-4 space-y-0 sm:p-5" style={{ borderColor: "var(--border-subtle)" }}>
           {/* Push Notification */}
           <div
-            className="flex items-center justify-between py-4"
+            className="flex flex-col items-start gap-3 py-4 sm:flex-row sm:items-center sm:justify-between"
             style={{ borderBottom: "1px solid var(--border-subtle)" }}
           >
             <div className="flex items-center gap-3">
@@ -236,7 +236,7 @@ export default function SettingsPage() {
 
           {/* Email Alert */}
           <div
-            className="flex items-center justify-between py-4"
+            className="flex flex-col items-start gap-3 py-4 sm:flex-row sm:items-center sm:justify-between"
           >
             <div className="flex items-center gap-3">
               <div
@@ -261,13 +261,13 @@ export default function SettingsPage() {
         style={{ background: "var(--bg-elevated)", border: "1px solid var(--border-subtle)" }}
       >
         <div
-          className="flex items-center gap-2 px-5 py-4"
+          className="flex items-center gap-2 px-4 py-4 sm:px-5"
           style={{ borderBottom: "1px solid var(--border-subtle)" }}
         >
           <Cpu size={14} style={{ color: "var(--text-muted)" }} />
           <span className="text-sm font-semibold" style={{ color: "var(--text-primary)" }}>Hardware Info</span>
         </div>
-        <div className="divide-y px-5" style={{ borderColor: "var(--border-subtle)" }}>
+        <div className="divide-y px-4 sm:px-5" style={{ borderColor: "var(--border-subtle)" }}>
           {[
             { label: "Device ID",       value: "SGP-2024-001",        mono: true },
             { label: "MCU",             value: "ESP32-S3",             mono: true },
@@ -278,7 +278,7 @@ export default function SettingsPage() {
           ].map(({ label, value, mono }) => (
             <div
               key={label}
-              className="flex items-center justify-between py-3"
+              className="flex flex-col items-start gap-1 py-3 sm:flex-row sm:items-center sm:justify-between"
               style={{ borderBottom: "1px solid var(--border-subtle)" }}
             >
               <span className="text-xs" style={{ color: "var(--text-muted)" }}>{label}</span>
@@ -291,17 +291,17 @@ export default function SettingsPage() {
             </div>
           ))}
         </div>
-        <div className="flex items-center gap-3 px-5 py-4">
-          <button className="btn-ghost gap-2 text-xs">
+        <div className="flex flex-col items-stretch gap-2 px-4 py-4 sm:flex-row sm:items-center sm:gap-3 sm:px-5">
+          <button className="btn-ghost w-full gap-2 text-xs sm:w-auto">
             <RefreshCw size={12} />
             OTA Update
           </button>
-          <button className="btn-ghost gap-2 text-xs">
+          <button className="btn-ghost w-full gap-2 text-xs sm:w-auto">
             <Wifi size={12} />
             Reconnect MQTT
           </button>
           <button
-            className="ml-auto flex items-center gap-2 rounded-xl px-3 py-2 text-xs font-semibold transition-all"
+            className="flex w-full items-center justify-center gap-2 rounded-xl px-3 py-2 text-xs font-semibold transition-all sm:ml-auto sm:w-auto"
             style={{
               background: "rgba(239,68,68,0.08)",
               color: "#F87171",
@@ -315,8 +315,8 @@ export default function SettingsPage() {
       </div>
 
       {/* ── Save button ── */}
-      <div className="flex justify-end">
-        <button onClick={handleSave} className="btn-emerald gap-2">
+      <div className="flex justify-stretch sm:justify-end">
+        <button onClick={handleSave} className="btn-emerald w-full gap-2 sm:w-auto">
           {saved ? <CheckCircle size={14} /> : <Save size={14} />}
           {saved ? "Saved!" : "Save settings"}
         </button>

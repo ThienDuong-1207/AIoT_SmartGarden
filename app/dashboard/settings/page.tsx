@@ -28,7 +28,7 @@ function Section({
       style={{ background: "var(--bg-elevated)", border: "1px solid var(--border-subtle)" }}
     >
       <div
-        className="flex items-center gap-2.5 px-5 py-4"
+        className="flex items-center gap-2.5 px-4 py-4 sm:px-5"
         style={{ borderBottom: "1px solid var(--border-subtle)" }}
       >
         <div
@@ -41,7 +41,7 @@ function Section({
           {title}
         </span>
       </div>
-      <div className="p-5">{children}</div>
+      <div className="p-4 sm:p-5">{children}</div>
     </div>
   );
 }
@@ -184,7 +184,7 @@ export default function UserSettingsPage() {
       ══════════════════════════════ */}
       <Section icon={User} iconColor="var(--emerald-400)" title="Profile">
         {/* Avatar */}
-        <div className="mb-6 flex items-center gap-5">
+        <div className="mb-6 flex flex-col items-start gap-4 sm:flex-row sm:items-center sm:gap-5">
           <div className="relative">
             {avatar ? (
               // eslint-disable-next-line @next/next/no-img-element
@@ -301,7 +301,7 @@ export default function UserSettingsPage() {
               on: smsOn, set: setSmsOn, color: "#FBBF24",
             },
           ].map(({ icon: Icon, label, desc, on, set, color }) => (
-            <div key={label} className="flex items-center justify-between py-4">
+            <div key={label} className="flex flex-col items-start gap-3 py-4 sm:flex-row sm:items-center sm:justify-between">
               <div className="flex items-center gap-3">
                 <div
                   className="flex h-8 w-8 shrink-0 items-center justify-center rounded-lg"
@@ -330,7 +330,7 @@ export default function UserSettingsPage() {
             { label: "Sensor threshold exceeded",  desc: "pH, TDS, temperature, water level",     on: sensorAlertOn, set: setSensorAlertOn },
             { label: "Weekly report",              desc: "Weekly summary of plant health status", on: weeklyReport,  set: setWeeklyReport  },
           ].map(({ label, desc, on, set }) => (
-            <div key={label} className="flex items-center justify-between">
+            <div key={label} className="flex flex-col items-start gap-2 sm:flex-row sm:items-center sm:justify-between">
               <div>
                 <p className="text-xs font-medium" style={{ color: "var(--text-primary)" }}>{label}</p>
                 <p className="text-[10px]" style={{ color: "var(--text-muted)" }}>{desc}</p>
@@ -392,8 +392,8 @@ export default function UserSettingsPage() {
       </Section>
 
       {/* ── Save button ── */}
-      <div className="flex justify-end pb-8">
-        <button onClick={handleSave} className="btn-emerald gap-2">
+      <div className="flex justify-stretch pb-8 sm:justify-end">
+        <button onClick={handleSave} className="btn-emerald w-full gap-2 sm:w-auto">
           {saved ? <CheckCircle size={14} /> : <Save size={14} />}
           {saved ? "Saved!" : "Save changes"}
         </button>

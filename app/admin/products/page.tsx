@@ -17,7 +17,63 @@ export default async function AdminProductsPage() {
         <p className="text-sm" style={{ color: "var(--text-secondary)" }}>Product list</p>
       </div>
 
-      <div className="overflow-hidden rounded-xl" style={{ border: "1px solid var(--border-subtle)", background: "var(--bg-elevated)" }}>
+      <div className="space-y-3 md:hidden">
+        <div
+          className="flex items-center justify-end rounded-xl px-4 py-3"
+          style={{ border: "1px solid var(--border-subtle)", background: "var(--bg-elevated)" }}
+        >
+          <Link
+            href="/admin/products/new"
+            className="rounded-md px-3 py-1.5 text-xs font-semibold"
+            style={{
+              border: "1px solid rgba(16,185,129,0.35)",
+              color: "var(--emerald-400)",
+              background: "rgba(16,185,129,0.10)",
+            }}
+          >
+            Add Product
+          </Link>
+        </div>
+
+        {products.map((product) => (
+          <div
+            key={String(product._id)}
+            className="rounded-xl p-4"
+            style={{ border: "1px solid var(--border-subtle)", background: "var(--bg-elevated)" }}
+          >
+            <div className="space-y-2">
+              <p className="text-sm font-semibold" style={{ color: "var(--text-primary)" }}>{product.name}</p>
+              <p className="text-xs break-all" style={{ color: "var(--text-muted)" }}>{product.slug}</p>
+              <p className="text-xs" style={{ color: "var(--text-secondary)" }}>Category: {product.category}</p>
+              <p className="text-xs" style={{ color: "var(--text-secondary)" }}>
+                Price: {product.price.toLocaleString("en-US")} VND · Stock: {product.stock}
+              </p>
+              <div className="flex items-center gap-2">
+                <Link
+                  href={`/admin/products/${String(product._id)}/edit`}
+                  className="rounded-md px-2.5 py-1.5 text-xs font-medium"
+                  style={{
+                    border: "1px solid rgba(59,130,246,0.35)",
+                    color: "#60A5FA",
+                    background: "rgba(59,130,246,0.10)",
+                  }}
+                >
+                  Edit
+                </Link>
+                <AdminProductDeleteButton productId={String(product._id)} />
+              </div>
+            </div>
+          </div>
+        ))}
+
+        {products.length === 0 && (
+          <div className="rounded-xl p-8 text-center text-sm" style={{ border: "1px solid var(--border-subtle)", background: "var(--bg-elevated)", color: "var(--text-muted)" }}>
+            No products yet
+          </div>
+        )}
+      </div>
+
+      <div className="hidden overflow-x-auto rounded-xl md:block" style={{ border: "1px solid var(--border-subtle)", background: "var(--bg-elevated)" }}>
         <div
           className="flex items-center justify-end px-4 py-3"
           style={{ borderBottom: "1px solid var(--border-subtle)", background: "var(--bg-base)" }}

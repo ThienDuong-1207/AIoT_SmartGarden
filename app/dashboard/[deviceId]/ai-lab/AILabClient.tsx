@@ -176,7 +176,7 @@ function DetailModal({ id, deviceId, onClose }: { id: string; deviceId: string; 
             <img src={detail.imageUrl} alt="capture" className="w-full rounded-xl object-contain" style={{ maxHeight: 320, background: "#06080F" }} />
           )}
 
-          <div className="grid grid-cols-4 gap-3">
+          <div className="grid grid-cols-2 gap-3 sm:grid-cols-4">
             {[
               { label: "TDS",   value: s.tds,         unit: "ppm", icon: Droplets,     color: "var(--blue-400)"    },
               { label: "pH",    value: s.ph,           unit: "",    icon: FlaskConical,  color: "var(--emerald-400)" },
@@ -418,7 +418,7 @@ export default function AILabPage() {
       {/* ══════════════════════════════════════════════
           ROW 1 — Upload (50%) | Thông số phân tích (50%)
       ══════════════════════════════════════════════ */}
-      <div className="grid grid-cols-2 gap-6 items-start">
+      <div className="grid grid-cols-1 gap-4 items-start lg:grid-cols-2 lg:gap-6">
 
         {/* ── LEFT 50%: AI Test Upload ── */}
         <div className="space-y-0">
@@ -457,7 +457,7 @@ export default function AILabPage() {
               <span className="ml-auto font-mono text-[10px]" style={{ color: "var(--text-muted)" }}>RF v1.0 · {total} scans</span>
             </div>
 
-            <div className="grid grid-cols-2 gap-3 p-4">
+            <div className="grid grid-cols-1 gap-3 p-4 sm:grid-cols-2">
               {[
                 { label: "Overall Health", value: overallLabel, icon: Activity, color: overallColor, bg: "rgba(255,255,255,0.04)" },
                 { label: "Risk Score", value: `${overallRisk}%`, icon: TrendingUp, color: overallColor, bg: "rgba(59,130,246,0.10)" },

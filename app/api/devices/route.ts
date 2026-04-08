@@ -4,6 +4,7 @@ import { authOptions } from "@/lib/auth";
 import { dbConnect } from "@/lib/mongodb";
 import DeviceModel from "@/models/Device";
 import { Types } from "mongoose";
+import { ensureDefaultDevicesForUser, SHARED_DEVICE_IDS } from "@/lib/ensure-default-devices";
 
 export async function GET() {
   const session = await getServerSession(authOptions);
@@ -13,7 +14,12 @@ export async function GET() {
 
   try {
     await dbConnect();
-    const devices = await DeviceModel.find({ userId: session.user.id }).lean();
+    await ensureDefaultDevicesForUser(session.user.id);
+
+    const devices = await DeviceModel.find({
+      $or: [{ userId: session.user.id }, { deviceId: { $in: SHARED_DEVICE_IDS } }],
+    }).lean();
+
     return NextResponse.json({ data: devices });
   } catch {
     return NextResponse.json({ data: [] });

@@ -3,6 +3,9 @@ import { dbConnect } from "@/lib/mongodb";
 import { requireAdminSession } from "@/lib/require-admin";
 import AdminOrderActions from "@/components/admin/AdminOrderActions";
 
+export const dynamic = "force-dynamic";
+export const revalidate = 0;
+
 export default async function AdminOrdersPage() {
   await requireAdminSession();
   await dbConnect();

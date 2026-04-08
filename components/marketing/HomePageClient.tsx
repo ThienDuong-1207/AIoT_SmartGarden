@@ -5,7 +5,6 @@ import Link from "next/link";
 import dynamic from "next/dynamic";
 import { ArrowRight } from "lucide-react";
 import ProductCard from "@/components/marketing/ProductCard";
-import { sampleProducts } from "@/lib/mock-data";
 import gsap from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 import { useGSAP } from "@gsap/react";
@@ -16,11 +15,21 @@ const TerminalCta = dynamic(() => import("@/components/marketing/TerminalCta"));
 const SiteFooter = dynamic(() => import("@/components/marketing/SiteFooter"));
 const LoadingScreen = dynamic(() => import("@/components/marketing/LoadingScreen"));
 
+type Product = {
+  slug: string;
+  name: string;
+  category: string;
+  price: number;
+  salePrice?: number | null;
+  rating?: number;
+  images?: string[];
+};
+
 if (typeof window !== "undefined") {
   gsap.registerPlugin(ScrollTrigger, useGSAP);
 }
 
-export default function Home() {
+export default function HomePageClient({ products }: { products: Product[] }) {
   const [loadingDone, setLoadingDone] = useState(false);
   const containerRef = useRef<HTMLDivElement>(null);
 
@@ -99,7 +108,7 @@ export default function Home() {
 
           {/* Product cards grid */}
           <div className="grid gap-8 sm:grid-cols-2 lg:grid-cols-3">
-            {sampleProducts.slice(0, 3).map((product) => (
+            {products.slice(0, 3).map((product) => (
               <div key={product.slug} className="hardware-card overflow-hidden h-full flex flex-col" style={{ willChange: "transform, opacity" }}>
                 <ProductCard product={product} />
               </div>

@@ -6,6 +6,7 @@ import CameraCaptureModel from "@/models/CameraCapture";
 import SensorReadingModel from "@/models/SensorReading";
 import { authorizeDevice } from "@/lib/deviceAuth";
 import { fuseDiagnosis } from "@/lib/fuseDiagnosis";
+import { createAlert } from "@/lib/alerts";
 
 type Params = { params: Promise<{ deviceId: string }> };
 
@@ -305,6 +306,26 @@ export async function POST(req: NextRequest, { params }: Params) {
     aiModel:       aiModel       ?? "YOLOv8-plantAI",
     processingMs:  processingMs  ?? 0,
   });
+
+  const hasDetectedIssue = status !== "healthy" || !!topDisease;
+  if (hasDetectedIssue) {
+    const alertSeverity = status === "danger" ? "danger" : status === "warning" ? "warning" : "info";
+    const alertMessageParts = [
+      `AI diagnosis for ${deviceId}:`,
+      finalFusedDiagnosis || topDisease || "Plant health issue detected",
+      `Recommendation: ${finalRecommendation}`,
+    ];
+
+    await createAlert({
+      deviceId,
+      userId: auth.userId,
+      type: "ai_disease",
+      severity: alertSeverity,
+      message: alertMessageParts.join(" "),
+      value: typeof topConfidence === "number" ? Math.round(topConfidence * 100) : undefined,
+      threshold: alertSeverity === "danger" ? 80 : alertSeverity === "warning" ? 60 : undefined,
+    });
+  }
 
   // Link snapshot -> diagnostic for end-to-end traceability
   if (snapshotId) {

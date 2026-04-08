@@ -493,3 +493,80 @@ AIoT_SmartGarden/
 ├── plantAI.pt                   ✅ YOLOv8 model
 └── docker-compose.yml           ✅
 ```
+
+---
+
+## Phụ lục — Chi tiết AI Pipeline hiện tại
+
+### Kiến trúc ứng dụng (tổng quan)
+
+```
+Frontend (Next.js)
+├── Home + Products (E-commerce)
+├── Auth (Google OAuth via NextAuth.js)
+├── Dashboard (Device Management)
+│   ├── Overview (Device cards, metrics)
+│   ├── AI Lab (Disease detection + Environmental Risk Intelligence)
+│   ├── Plant Doctor (Chatbot — Groq/OpenRouter/Ollama)
+│   └── Settings
+└── Admin Panel (User/Product/Order/Diagnostic management)
+
+Backend (API Routes)
+├── /api/devices          — Device CRUD
+├── /api/products         — Product catalog
+├── /api/ai/predict       — YOLOv8 disease detection proxy
+├── /api/ai/chat          — LLM chat proxy (Groq/OpenRouter)
+├── /api/ingest           — Sensor data từ ESP32
+└── /api/admin/*          — Admin operations
+
+AI Services (local)
+├── PlantAI (FastAPI :8000)  — YOLOv8 plant disease detection
+└── Ollama (:11434)          — LLM agronomy recommendations
+```
+
+### Sensor Fusion Pipeline
+
+```
+1. Camera → PlantAI (YOLOv8)
+   ↓
+2. topConfidence < 0.6?
+   ├─ YES → kết hợp sensor context (TDS, pH, temp, humidity)
+   └─ NO  → dùng kết quả YOLO trực tiếp
+   ↓
+3. lib/fuseDiagnosis.ts → fused diagnosis + recommendation
+   ↓
+4. Lưu vào MongoDB (aidiagnostics collection)
+```
+
+### Environmental Risk Intelligence Panel
+
+```
+Latest Sensor Reading
+├── Extract: TDS, pH, Temperature, Humidity
+├── Tính 4 Risk Scores:
+│   ├── Nutrient Risk  (TDS-based)
+│   ├── pH Risk
+│   ├── Heat/Light Risk (temperature-based)
+│   └── Fungal Risk    (humidity-based)
+├── Feature Importance ranking (chỉ từ sensor có dữ liệu)
+├── Dominant Risk Factor
+├── 7-Day Treatment Plan (Ollama LLM)
+└── Hiển thị: Overall Health · Critical Metric · Risk Dials · Immediate Action
+```
+
+### UI Pages đã hoàn thành
+
+| Page | Route | Trạng thái |
+|------|-------|-----------|
+| Home | `/` | ✅ |
+| Products listing | `/products` | ✅ |
+| Product detail (basic) | `/products/[slug]` | ✅ |
+| Cart | `/cart` | ✅ |
+| Checkout (structure) | `/checkout` | ✅ |
+| Dashboard home | `/dashboard` | ✅ |
+| Device overview | `/dashboard/[deviceId]/overview` | ✅ |
+| AI Lab | `/dashboard/[deviceId]/ai-lab` | ✅ |
+| Plant Doctor | `/dashboard/[deviceId]/plant-doctor` | ✅ |
+| Admin (structure) | `/admin/*` | ✅ |
+| About Us | `/about` | ⬜ |
+| Settings | `/dashboard/[deviceId]/settings` | ⬜ |

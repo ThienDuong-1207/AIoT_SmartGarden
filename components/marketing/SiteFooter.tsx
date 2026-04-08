@@ -1,5 +1,6 @@
 "use client";
 
+import Image from "next/image";
 import Link from "next/link";
 import { Mail, Phone, MapPin, Leaf, Code2, MessageSquare, Briefcase } from "lucide-react";
 
@@ -39,19 +40,19 @@ export default function SiteFooter() {
         <div className="md:col-span-2">
           {/* Logo */}
           <Link href="/" className="inline-flex items-center gap-2.5">
-            <span
-              className="flex h-8 w-8 items-center justify-center rounded-xl"
-              style={{
-                background: "linear-gradient(135deg, var(--cyan-500), var(--cyan-600))",
-              }}
-            >
-              <Leaf size={16} color="#fff" />
-            </span>
+            <Image
+              src="/products/EcoTech_logo.png"
+              alt="Eco Tech"
+              width={178}
+              height={56}
+              className="h-11 w-auto"
+              priority
+            />
             <span
               className="text-sm font-black uppercase tracking-[0.18em]"
               style={{ color: "var(--text-primary)" }}
             >
-              Smart Garden
+              Eco Tech
             </span>
           </Link>
 
@@ -173,7 +174,7 @@ export default function SiteFooter() {
       >
         <div className="mx-auto flex w-full max-w-7xl flex-col items-center justify-between gap-3 md:flex-row">
           <p className="text-xs" style={{ color: "var(--text-muted)" }}>
-            © 2026 Smart Garden AIoT. All rights reserved.
+            © 2026 Eco Tech AIoT. All rights reserved.
           </p>
           <div className="flex items-center gap-5">
             {SUPPORT_LINKS.slice(0, 2).map(({ href, label }) => (

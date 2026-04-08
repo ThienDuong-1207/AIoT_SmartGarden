@@ -32,9 +32,37 @@ export default function CartPage() {
   const shipping   = total >= 50 ? 0 : 4.99;
   const grandTotal = total + shipping;
 
-  function handleCheckout() {
-    clear();
-    router.push("/checkout/success");
+  async function handleCheckout() {
+    try {
+      const res = await fetch("/api/orders", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          items: items.map((item) => ({ slug: item.slug, qty: item.qty })),
+        }),
+      });
+
+      const data = (await res.json()) as {
+        error?: string;
+        data?: { orderCode?: string };
+      };
+
+      if (!res.ok) {
+        alert(data.error || "Checkout failed. Please try again.");
+        return;
+      }
+
+      clear();
+      const orderCode = data.data?.orderCode;
+      if (orderCode) {
+        router.push(`/checkout/success?order=${encodeURIComponent(orderCode)}`);
+        return;
+      }
+
+      router.push("/checkout/success");
+    } catch {
+      alert("Checkout failed. Please try again.");
+    }
   }
 
   /* ── Empty state ── */
@@ -255,7 +283,8 @@ export default function CartPage() {
 
             <button
               onClick={handleCheckout}
-              className="btn-emerald mt-5 w-full justify-center gap-2 py-3"
+              className="mt-5 w-full rounded-xl py-3 text-sm font-semibold flex items-center justify-center gap-2 transition-all"
+              style={{ background: "#F97316", color: "#fff" }}
             >
               Checkout
               <ArrowRight size={15} />
@@ -263,8 +292,8 @@ export default function CartPage() {
 
             <Link
               href="/products"
-              className="mt-3 flex w-full items-center justify-center gap-2 rounded-xl py-2.5 text-xs font-semibold"
-              style={{ color: "var(--text-muted)" }}
+              className="mt-3 flex w-full items-center justify-center gap-2 rounded-xl py-2.5 text-xs font-semibold transition-all"
+              style={{ background: "rgba(16,185,129,0.12)", color: "var(--emerald-400)", border: "1px solid rgba(16,185,129,0.25)" }}
             >
               <ArrowLeft size={12} />
               Continue Shopping
