@@ -6,7 +6,7 @@ const AlertSchema = new Schema(
     userId:      { type: Schema.Types.ObjectId, ref: "User", index: true },
     type:        {
       type: String,
-      enum: ["tds_low", "tds_high", "ph_low", "ph_high", "temp_low", "temp_high", "water_low", "ai_disease", "device_offline"],
+      enum: ["tds_low", "tds_high", "temp_low", "temp_high", "water_low", "ai_disease", "device_offline"],
       required: true,
     },
     severity:    { type: String, enum: ["info", "warning", "danger"], default: "warning" },

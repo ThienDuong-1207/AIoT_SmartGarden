@@ -3,7 +3,8 @@
 import { FormEvent, useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import { getProviders, signIn } from "next-auth/react";
-import { KeyRound, Leaf, Mail, User } from "lucide-react";
+import Link from "next/link";
+import { ArrowLeft, KeyRound, Leaf, Mail, User } from "lucide-react";
 
 export default function RegisterPage() {
   const router = useRouter();
@@ -57,13 +58,27 @@ export default function RegisterPage() {
       className="flex min-h-dvh w-full items-center justify-center px-4"
       style={{ background: "var(--bg-base)" }}
     >
-      <div
-        className="flex w-full max-w-sm flex-col items-center gap-6 rounded-2xl p-10 text-center"
-        style={{
-          background: "var(--bg-elevated)",
-          border: "1px solid var(--border-subtle)",
-        }}
-      >
+      <div className="w-full max-w-sm">
+        <Link
+          href="/"
+          className="mb-4 inline-flex items-center gap-2 rounded-xl border px-3 py-2 text-xs font-semibold uppercase tracking-[0.14em] transition-all hover:-translate-y-0.5"
+          style={{
+            borderColor: "rgba(16,185,129,0.35)",
+            color: "var(--emerald-400)",
+            background: "rgba(16,185,129,0.08)",
+          }}
+        >
+          <ArrowLeft size={14} />
+          Back Home
+        </Link>
+
+        <div
+          className="flex w-full flex-col items-center gap-6 rounded-2xl p-10 text-center"
+          style={{
+            background: "var(--bg-elevated)",
+            border: "1px solid var(--border-subtle)",
+          }}
+        >
         {/* Spinning logo */}
         <div
           className="flex h-12 w-12 items-center justify-center rounded-xl"
@@ -164,6 +179,7 @@ export default function RegisterPage() {
             </p>
           )}
         </form>
+        </div>
       </div>
     </main>
   );

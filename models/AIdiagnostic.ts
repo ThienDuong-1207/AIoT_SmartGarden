@@ -7,7 +7,6 @@ export interface IAIdiagnostic extends Document {
   imageUrl: string;             // Cloudinary URL (thay thế imageBase64)
   sensorContext: {
     tds: number | null;
-    ph: number | null;
     temperature: number | null;
     humidity: number | null;
   };
@@ -33,7 +32,6 @@ const AIdiagnosticSchema = new Schema<IAIdiagnostic>(
     imageUrl:    { type: String, default: "" },   // Cloudinary URL
     sensorContext: {
       tds:         { type: Number, default: null },
-      ph:          { type: Number, default: null },
       temperature: { type: Number, default: null },
       humidity:    { type: Number, default: null },
     },

@@ -17,13 +17,12 @@ type DeviceView = {
 
 type LiveData = {
   tds: number | null;
-  ph: number | null;
   temp: number | null;
   isOnline: boolean | null;
 };
 
-function useLiveData(deviceId: string, enabled = true) {
-  const [data, setData] = useState<LiveData>({ tds: null, ph: null, temp: null, isOnline: null });
+function useLiveData(deviceId: string) {
+  const [data, setData] = useState<LiveData>({ tds: null, temp: null, isOnline: null });
 
   useEffect(() => {
     if (!enabled) return;
@@ -36,12 +35,11 @@ function useLiveData(deviceId: string, enabled = true) {
         .then((json) => {
           setData({
             tds: json?.reading?.tds_ppm ?? null,
-            ph: json?.reading?.ph ?? null,
             temp: json?.reading?.temp ?? null,
             isOnline: typeof json?.device?.isOnline === "boolean" ? json.device.isOnline : null,
           });
         })
-        .catch(() => {});
+        .catch(() => { });
     };
 
     fetchLatest();
@@ -72,12 +70,33 @@ function CardBody({ device, index }: { device: DeviceView; index: number }) {
 
   const metrics = [
     { icon: Droplets, value: live.tds !== null ? `${live.tds} ppm` : "—", label: "TDS", color: "#60A5FA" },
-    { icon: FlaskConical, value: live.ph !== null ? `${live.ph}` : "—", label: "pH", color: "var(--emerald-400)" },
     { icon: Thermometer, value: live.temp !== null ? `${live.temp}°C` : "—", label: "Temp", color: "var(--gold-400)" },
   ];
 
   return (
-    <>
+    <Link
+      href={`/dashboard/${device.deviceId}/overview`}
+      className="group relative flex flex-col overflow-hidden rounded-2xl animate-fade-up"
+      style={{
+        animationDelay: `${index * 80}ms`,
+        border: "1px solid var(--border-subtle)",
+        background: "var(--bg-elevated)",
+        transition: "border-color 0.2s ease, box-shadow 0.2s ease, transform 0.2s ease",
+      }}
+      onMouseEnter={(e) => {
+        const el = e.currentTarget as HTMLElement;
+        el.style.borderColor = isOnline ? "rgba(16,185,129,0.35)" : "rgba(255,255,255,0.12)";
+        el.style.boxShadow = isOnline ? "0 8px 32px rgba(16,185,129,0.10)" : "0 8px 24px rgba(0,0,0,0.3)";
+        el.style.transform = "translateY(-2px)";
+      }}
+      onMouseLeave={(e) => {
+        const el = e.currentTarget as HTMLElement;
+        el.style.borderColor = "var(--border-subtle)";
+        el.style.boxShadow = "none";
+        el.style.transform = "translateY(0)";
+      }}
+    >
+      {/* ── Image zone ── */}
       <div className="relative overflow-hidden" style={{ height: 180 }}>
         <Image
           src={displayImage}
@@ -99,16 +118,8 @@ function CardBody({ device, index }: { device: DeviceView; index: number }) {
             style={{
               backdropFilter: "blur(8px)",
               ...(isOnline
-                ? {
-                    background: "rgba(16,185,129,0.20)",
-                    color: "var(--emerald-400)",
-                    border: "1px solid rgba(16,185,129,0.35)",
-                  }
-                : {
-                    background: "rgba(0,0,0,0.40)",
-                    color: "rgba(255,255,255,0.50)",
-                    border: "1px solid rgba(255,255,255,0.10)",
-                  }),
+                ? { background: "rgba(16,185,129,0.20)", color: "var(--emerald-400)", border: "1px solid rgba(16,185,129,0.35)" }
+                : { background: "rgba(0,0,0,0.40)", color: "rgba(255,255,255,0.50)", border: "1px solid rgba(255,255,255,0.10)" }),
             }}
           >
             <span
@@ -155,7 +166,11 @@ function CardBody({ device, index }: { device: DeviceView; index: number }) {
           </div>
         </div>
 
-        <div className="mt-3 grid grid-cols-3 gap-2 rounded-xl p-3" style={{ background: "var(--bg-base)", border: "1px solid var(--border-subtle)" }}>
+        {/* Live data row */}
+        <div
+          className="mt-3 grid grid-cols-2 gap-2 rounded-xl p-3"
+          style={{ background: "var(--bg-base)", border: "1px solid var(--border-subtle)" }}
+        >
           {metrics.map(({ icon: Icon, value, label, color }) => (
             <div key={label} className="flex flex-col items-center gap-1">
               <Icon size={12} style={{ color: isOnline ? color : "var(--text-muted)" }} />

@@ -122,6 +122,9 @@ export default function AITestUpload({ deviceId, sensorContext, onSaved }: Props
   const [capturePhase, setCapturePhase] = useState<CapturePhase>("idle");
   const [captureMsg,   setCaptureMsg]   = useState("");
 
+  const isBusy = loading || capturePhase !== "idle";
+  console.log("Trạng thái bận hiện tại:", isBusy, " | loading:", loading, " | capturePhase:", capturePhase);
+
   /* ── Redraw bounding boxes ── */
   const redrawBoxes = useCallback(() => {
     if (!result || !imgRef.current || !canvasRef.current || !origSize) return;
@@ -246,65 +249,118 @@ export default function AITestUpload({ deviceId, sensorContext, onSaved }: Props
 
   /* ── Capture from device camera ── */
   async function handleCapture() {
-    if (capturePhase !== "idle") return;
+    console.log("🚀 Đã nhấn nút Capture!");
+    if (capturePhase !== "idle") {
+      console.log("❌ Bị chặn vì capturePhase đang là:", capturePhase);
+      return;
+    }
     setError(null);
     setResult(null);
 
-    const startedAt = new Date().toISOString();
-
-    // 1. Send capture_now command to ESP32
-    setCapturePhase("sending_command");
-    setCaptureMsg("Sending capture command to ESP32…");
-    try {
-      const cmdRes = await fetch(`/api/devices/${deviceId}/command`, {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ command: "capture_now", suppressPushMs: 90_000 }),
-      });
-      if (!cmdRes.ok) throw new Error("Failed to send command to device");
-    } catch (e) {
-      setError(e instanceof Error ? e.message : String(e));
+    // Cài đặt một cờ chặn để không cho UI quay vĩnh viễn (max 15s sau khi nhấn hoặc đợi)
+    // Nếu quá 15s mà mọi thứ chưa xong, ta bắt buộc cancel.
+    const controller = new AbortController();
+    const safetyTimeout = setTimeout(() => {
+      controller.abort();
       setCapturePhase("idle");
-      return;
-    }
+      setLoading(false);
+      setError("Quá thời gian 15s. Hệ thống xử lý quá lâu, vui lòng thử lại.");
+    }, 15000);
 
-    // 2. Poll snapshot API waiting for image (max 30s)
-    setCapturePhase("waiting_image");
-    setCaptureMsg("Waiting for ESP32 to capture and send image…");
-
-    let elapsed = 0;
-    const POLL_INTERVAL = 1500;
-    const MAX_WAIT = 30_000;
-
-    await new Promise<void>((resolve) => {
-      pollRef.current = setInterval(async () => {
-        elapsed += POLL_INTERVAL;
-        if (elapsed > MAX_WAIT) {
-          clearInterval(pollRef.current!);
-          setError("Device did not respond within 30 seconds. Check camera connection.");
-          setCapturePhase("idle");
-          resolve();
-          return;
+    try {
+      // 0. Lấy mốc thời gian của ảnh hiện tại để làm mốc so sánh
+      let oldTimestamp = 0;
+      try {
+        const preRes = await fetch(`/api/devices/${deviceId}/camera/latest?t=${Date.now()}`);
+        if (preRes.ok) {
+           const preData = await preRes.json();
+           if (preData.success && preData.data?.timestamp) {
+              oldTimestamp = new Date(preData.data.timestamp).getTime();
+           }
         }
+      } catch {}
+
+      // 1. Send capture to ESP32 via API
+      setCapturePhase("sending_command");
+      setCaptureMsg("Đang chụp ảnh...");
+      
+      const captureUrl = `/api/devices/${deviceId}/camera/capture`;
+      console.log("🛠 Sẽ fetch tới URL:", captureUrl);
+      
+      const cmdRes = await fetch(captureUrl, {
+        method: "POST",
+      });
+      
+      if (!cmdRes.ok) {
+        let serverErrorMsg = "Lỗi khi gửi lệnh chụp ảnh tới ESP32.";
         try {
-          const snapRes = await fetch(`/api/devices/${deviceId}/snapshot?after=${encodeURIComponent(startedAt)}`);
-          const snap    = await snapRes.json();
-          if (snap.image) {
-            clearInterval(pollRef.current!);
-            const src = snap.image as string;
-            setPreview(src);
-            const tmp = new Image();
-            tmp.onload = () => setOrigSize({ w: tmp.naturalWidth, h: tmp.naturalHeight });
-            tmp.src = src;
-            // 3. Auto-analyze
-            setCapturePhase("analyzing");
-            setCaptureMsg("Analyzing image with plantAI.pt…");
-            resolve();
-            runPredict(src, snap.snapshotId);
+          const errData = await cmdRes.json();
+          if (errData.message || errData.error) {
+            serverErrorMsg = errData.message || errData.error;
           }
-        } catch { /* tiếp tục poll */ }
-      }, POLL_INTERVAL);
-    });
+        } catch {}
+        throw new Error(`Server báo lỗi: ${serverErrorMsg}`);
+      }
+
+      // 2. Wait 8 seconds for processing and upload
+      setCapturePhase("waiting_image");
+      setCaptureMsg("ESP32 đang tải ảnh lên Cloudinary...");
+      await new Promise(resolve => setTimeout(resolve, 8000));
+
+      // 3. Fetch latest image
+      setCapturePhase("analyzing");
+      setCaptureMsg("Đang lấy ảnh vệ tinh...");
+      
+      const snapRes = await fetch(`/api/devices/${deviceId}/camera/latest?t=${Date.now()}`, { signal: controller.signal });
+      if (!snapRes.ok) {
+        let serverErrorMsg = "Không thể tải ảnh mới.";
+        try {
+          const errData = await snapRes.json();
+          if (errData.message || errData.error) {
+            serverErrorMsg = errData.message || errData.error;
+          }
+        } catch {}
+        throw new Error(`Lấy ảnh thất bại: ${serverErrorMsg}`);
+      }
+      
+      const snap = await snapRes.json();
+      
+      if (snap.success === true && snap.data && snap.data.imageUrl) {
+        const newImageUrl = snap.data.imageUrl;
+        const newTimestampRaw = snap.data.timestamp;
+        const newTimestamp = newTimestampRaw ? new Date(newTimestampRaw).getTime() : 0;
+
+        // KIỂM TRA LOGIC SO SÁNH: So sánh Timestamp
+        if (oldTimestamp > 0 && newTimestamp <= oldTimestamp) {
+            throw new Error("Máy chủ Cloudinary đang bận hoặc ESP32 upload lỗi, vui lòng kiểm tra lại sau 1 phút.");
+        }
+
+        // Cache-busting
+        const separator = newImageUrl.includes("?") ? "&" : "?";
+        const src = `${newImageUrl}${separator}t=${Date.now()}`;
+
+        setPreview(src);
+        const tmp = new Image();
+        tmp.onload = () => setOrigSize({ w: tmp.naturalWidth, h: tmp.naturalHeight });
+        tmp.src = src;
+        
+        // 4. Auto-analyze
+        setCaptureMsg("Đang chuẩn đoán cây bằng AI...");
+        await runPredict(src);
+      } else {
+        throw new Error("Chưa nhận được ảnh từ thiết bị");
+      }
+    } catch (err: any) {
+      if (err.name === 'AbortError') {
+         setError("Thao tác vượt quá 15 giây. Đã ép buộc dừng vòng xoay.");
+      } else {
+         setError(err instanceof Error ? err.message : String(err));
+      }
+    } finally {
+      clearTimeout(safetyTimeout);
+      setCapturePhase("idle");
+      setLoading(false);
+    }
   }
 
   /* Cleanup poll khi unmount */
@@ -313,13 +369,12 @@ export default function AITestUpload({ deviceId, sensorContext, onSaved }: Props
   }, []);
 
   const cfg = result ? STATUS_CFG[result.status] : null;
-  const isBusy = loading || capturePhase !== "idle";
 
   const captureLabel = {
     idle:           <>Capture</>,
-    sending_command: <><Loader2 size={13} className="animate-spin" /> Sending…</>,
-    waiting_image:   <><Loader2 size={13} className="animate-spin" /> Waiting…</>,
-    analyzing:       <><Loader2 size={13} className="animate-spin" /> Analyzing…</>,
+    sending_command: <><Loader2 size={13} className="animate-spin" /> Capturing...</>,
+    waiting_image:   <><Loader2 size={13} className="animate-spin" /> Capturing...</>,
+    analyzing:       <><Loader2 size={13} className="animate-spin" /> Capturing...</>,
   }[capturePhase];
 
   return (
@@ -404,7 +459,7 @@ export default function AITestUpload({ deviceId, sensorContext, onSaved }: Props
               {capturePhase !== "idle" ? (
                 <>
                   <div className="flex h-14 w-14 items-center justify-center rounded-2xl" style={{ background: "rgba(16,185,129,0.08)", border: "1px solid rgba(16,185,129,0.2)" }}>
-                    <Camera size={24} style={{ color: "var(--emerald-400)" }} />
+                    <Loader2 size={24} className="animate-spin" style={{ color: "var(--emerald-400)" }} />
                   </div>
                   <p className="text-sm font-semibold" style={{ color: "var(--emerald-400)" }}>{captureMsg}</p>
                   <div className="flex gap-1">
