@@ -62,7 +62,7 @@ function useLiveData(deviceId: string, enabled = true) {
   return data;
 }
 
-function CardBody({ device, index }: { device: DeviceView; index: number }) {
+function CardBody({ device }: { device: DeviceView }) {
   const isDemo = device.deviceId.startsWith("SG-DEMO-");
   const live = useLiveData(device.deviceId, !isDemo);
   const isOnline = isDemo ? false : live.isOnline ?? device.isOnline;
@@ -195,7 +195,7 @@ export default function DeviceCard({ device, index }: { device: DeviceView; inde
         element.style.transform = "translateY(0)";
       }}
     >
-      <CardBody device={device} index={index} />
+      <CardBody device={device} />
     </div>
   );
 

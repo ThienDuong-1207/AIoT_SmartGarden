@@ -1,7 +1,6 @@
 import { NextResponse } from "next/server";
 import ProductModel from "@/models/Product";
 import { dbConnect } from "@/lib/mongodb";
-import { sampleProducts } from "@/lib/mock-data";
 
 export async function GET(req: Request) {
   const { searchParams } = new URL(req.url);

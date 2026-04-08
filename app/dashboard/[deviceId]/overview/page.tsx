@@ -275,7 +275,6 @@ export default function OverviewPage() {
 
   // Fetch Camera Image
   useEffect(() => {
-    let interval: NodeJS.Timeout;
     async function fetchCamera() {
       try {
         const res = await fetch(`/api/devices/${deviceId}/camera/latest?t=${Date.now()}`);
@@ -293,13 +292,12 @@ export default function OverviewPage() {
     }
     
     fetchCamera();
-    interval = setInterval(fetchCamera, 30000); // Tự động refetch mỗi 30s
+    const interval = setInterval(fetchCamera, 30000); // Tự động refetch mỗi 30s
     return () => clearInterval(interval);
   }, [deviceId]);
 
   const safeTimeAgo = (dateStr?: string) => (isClient ? timeAgo(dateStr) : "—");
   const safeLocaleDateTime = (dateStr?: string) => (isClient && dateStr ? new Date(dateStr).toLocaleString("en-US") : "—");
-  const safeLocaleTime = (dateStr?: string) => (isClient && dateStr ? new Date(dateStr).toLocaleTimeString("en-US") : "—");
 
   const normalizeReadings = (items: unknown[]): ChartReading[] => {
     return items

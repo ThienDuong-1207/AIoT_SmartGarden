@@ -172,7 +172,7 @@ function DetailModal({ id, deviceId, onClose }: { id: string; deviceId: string; 
 
         <div className="p-5 space-y-4">
           {detail.imageUrl && (
-            // eslint-disable-next-line @next/next/no-img-element
+             
             <img src={detail.imageUrl} alt="capture" className="w-full rounded-xl object-contain" style={{ maxHeight: 320, background: "#06080F" }} />
           )}
 

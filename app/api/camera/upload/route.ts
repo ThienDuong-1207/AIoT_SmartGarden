@@ -13,9 +13,6 @@ export async function POST(request: Request) {
         if (!device) return NextResponse.json({ success: false }, { status: 404 });
 
         const arrayBuffer = await request.arrayBuffer();
-        const buffer = Buffer.from(arrayBuffer);
-        const base64Image = `data:image/jpeg;base64,${buffer.toString('base64')}`;
-
         // Chuyển sang Unsigned Upload (Fetch API) để bypass xác thực và tránh timeout 499
         const formData = new FormData();
         const blob = new Blob([arrayBuffer], { type: 'image/jpeg' });
@@ -47,8 +44,9 @@ export async function POST(request: Request) {
         });
 
         return NextResponse.json({ success: true, url: uploadResult.secure_url });
-    } catch (error: any) {
-        console.error("❌ Upload Error:", error.message);
-        return NextResponse.json({ success: false, message: error.message }, { status: 500 });
+    } catch (error: unknown) {
+        const message = error instanceof Error ? error.message : "Upload failed";
+        console.error("❌ Upload Error:", message);
+        return NextResponse.json({ success: false, message }, { status: 500 });
     }
 }

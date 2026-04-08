@@ -1,5 +1,6 @@
 import { initializeApp } from "firebase/app";
 import { getMessaging, onMessage } from "firebase/messaging";
+import type { MessagePayload } from "firebase/messaging";
 
 const firebaseConfig = {
   apiKey: process.env.NEXT_PUBLIC_FIREBASE_API_KEY,
@@ -36,7 +37,7 @@ export function getFirebaseMessaging() {
 }
 
 // Listen to foreground messages
-export function setupMessagingListener(callback: (payload: any) => void) {
+export function setupMessagingListener(callback: (payload: MessagePayload) => void) {
   if (typeof window === "undefined") return;
 
   const messaging = getFirebaseMessaging();

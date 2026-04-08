@@ -1,13 +1,11 @@
 "use client";
 
 import { FormEvent, useEffect, useState } from "react";
-import { useRouter } from "next/navigation";
 import { getProviders, signIn } from "next-auth/react";
 import Link from "next/link";
-import { ArrowLeft, Leaf, UserCog, LogIn, Mail, KeyRound, ChevronRight } from "lucide-react";
+import { ArrowLeft, Mail, KeyRound, ChevronRight } from "lucide-react";
 
 export default function LoginPage() {
-  const router = useRouter();
   const [mode, setMode] = useState<"customer" | "admin">("customer");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");

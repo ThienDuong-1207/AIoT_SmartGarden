@@ -1,13 +1,13 @@
 "use client";
 
 import { useState } from "react";
-import { Power, Loader2, Droplets } from "lucide-react";
+import { Loader2, Droplets } from "lucide-react";
 
 interface PumpControlProps {
   deviceId: string;
   initialStatus: boolean;
   initialSchedule: Array<{ time: string; durationMinutes: number; enabled: boolean }>;
-  onUpdate?: (config: any) => void;
+  onUpdate?: (config: Record<string, unknown>) => void;
   disabled?: boolean;
 }
 

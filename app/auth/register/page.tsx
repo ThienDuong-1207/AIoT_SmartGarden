@@ -1,13 +1,11 @@
 "use client";
 
 import { FormEvent, useEffect, useState } from "react";
-import { useRouter } from "next/navigation";
 import { getProviders, signIn } from "next-auth/react";
 import Link from "next/link";
 import { ArrowLeft, KeyRound, Leaf, Mail, User } from "lucide-react";
 
 export default function RegisterPage() {
-  const router = useRouter();
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");

@@ -5,6 +5,18 @@ import SensorReadingModel from "@/models/SensorReading";
 import AlertModel from "@/models/Alert";
 import { sendNotification, alertToNotification } from "@/lib/sendNotification";
 
+type SensorPayload = {
+  temperature?: number;
+  temp?: number;
+  humidity?: number;
+  humi?: number;
+  tds_ppm?: number;
+  tds?: number;
+  ph?: number;
+  light_status?: boolean;
+  water_level?: number;
+};
+
 /*
   POST /api/ingest
   Nhận data từ ESP32 theo format:
@@ -59,7 +71,7 @@ export async function POST(req: NextRequest) {
       return NextResponse.json({ error: "Invalid token" }, { status: 401 });
     }
 
-    const sd = (body.sensor_data ?? {}) as Record<string, any>;
+    const sd = (body.sensor_data ?? {}) as SensorPayload;
     const rawTimestamp = body.timestamp;
     const epochSeconds =
       typeof rawTimestamp === "number"

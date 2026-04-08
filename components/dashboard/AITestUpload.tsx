@@ -350,8 +350,8 @@ export default function AITestUpload({ deviceId, sensorContext, onSaved }: Props
       } else {
         throw new Error("Chưa nhận được ảnh từ thiết bị");
       }
-    } catch (err: any) {
-      if (err.name === 'AbortError') {
+     } catch (err: unknown) {
+      if (err instanceof DOMException && err.name === "AbortError") {
          setError("Thao tác vượt quá 15 giây. Đã ép buộc dừng vòng xoay.");
       } else {
          setError(err instanceof Error ? err.message : String(err));
@@ -422,7 +422,7 @@ export default function AITestUpload({ deviceId, sensorContext, onSaved }: Props
         >
           {preview ? (
             <>
-              {/* eslint-disable-next-line @next/next/no-img-element */}
+              { }
               <img
                 ref={imgRef}
                 src={preview}

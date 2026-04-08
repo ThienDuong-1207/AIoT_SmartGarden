@@ -8,7 +8,7 @@ interface LightControlProps {
   initialStatus: boolean;
   initialBrightness: number;
   initialSchedule: Array<{ startTime: string; endTime: string; brightness: number; enabled: boolean }>;
-  onUpdate?: (config: any) => void;
+  onUpdate?: (config: Record<string, unknown>) => void;
   disabled?: boolean;
 }
 

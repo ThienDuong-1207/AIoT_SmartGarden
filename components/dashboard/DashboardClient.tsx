@@ -32,15 +32,15 @@ export default function DashboardClient({
         const data = await res.json();
         const now = Date.now();
         setDevices(
-          data.data.map((d: any) => ({
-            _id: String(d._id),
-            deviceId: d.deviceId,
-            name: d.name,
-            plantType: d.plantType,
+          ((data?.data ?? []) as Array<Record<string, unknown>>).map((d) => ({
+            _id: String(d._id ?? ""),
+            deviceId: String(d.deviceId ?? ""),
+            name: String(d.name ?? ""),
+            plantType: String(d.plantType ?? ""),
             isOnline: d.lastSeenAt
-              ? now - new Date(d.lastSeenAt).getTime() < 5 * 60 * 1000
+              ? now - new Date(String(d.lastSeenAt)).getTime() < 5 * 60 * 1000
               : false,
-            image: d.image,
+            image: typeof d.image === "string" ? d.image : undefined,
           }))
         );
       }
