@@ -22,7 +22,7 @@ export async function POST(
             rejectUnauthorized: false
         });
 
-        return new Promise((resolve) => {
+        return new Promise<Response>((resolve) => {
             const timeout = setTimeout(() => {
                 client.end();
                 resolve(NextResponse.json({ success: false, error: "MQTT Timeout" }, { status: 504 }));

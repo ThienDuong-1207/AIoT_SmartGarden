@@ -24,6 +24,10 @@ const DeviceSchema = new Schema(
           min: { type: Number, default: 800 },
           max: { type: Number, default: 1800 },
         },
+        ph: {
+          min: { type: Number, default: 5.8 },
+          max: { type: Number, default: 6.5 },
+        },
         temp: {
           min: { type: Number, default: 18 },
           max: { type: Number, default: 30 },

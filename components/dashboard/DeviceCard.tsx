@@ -3,7 +3,7 @@
 import Image from "next/image";
 import Link from "next/link";
 import { useEffect, useState, type MouseEvent } from "react";
-import { ChevronRight, Droplets, FlaskConical, Leaf, Thermometer } from "lucide-react";
+import { ChevronRight, Droplets, Thermometer } from "lucide-react";
 
 type DeviceView = {
   _id: string;
@@ -21,7 +21,7 @@ type LiveData = {
   isOnline: boolean | null;
 };
 
-function useLiveData(deviceId: string) {
+function useLiveData(deviceId: string, enabled = true) {
   const [data, setData] = useState<LiveData>({ tds: null, temp: null, isOnline: null });
 
   useEffect(() => {
@@ -74,28 +74,7 @@ function CardBody({ device, index }: { device: DeviceView; index: number }) {
   ];
 
   return (
-    <Link
-      href={`/dashboard/${device.deviceId}/overview`}
-      className="group relative flex flex-col overflow-hidden rounded-2xl animate-fade-up"
-      style={{
-        animationDelay: `${index * 80}ms`,
-        border: "1px solid var(--border-subtle)",
-        background: "var(--bg-elevated)",
-        transition: "border-color 0.2s ease, box-shadow 0.2s ease, transform 0.2s ease",
-      }}
-      onMouseEnter={(e) => {
-        const el = e.currentTarget as HTMLElement;
-        el.style.borderColor = isOnline ? "rgba(16,185,129,0.35)" : "rgba(255,255,255,0.12)";
-        el.style.boxShadow = isOnline ? "0 8px 32px rgba(16,185,129,0.10)" : "0 8px 24px rgba(0,0,0,0.3)";
-        el.style.transform = "translateY(-2px)";
-      }}
-      onMouseLeave={(e) => {
-        const el = e.currentTarget as HTMLElement;
-        el.style.borderColor = "var(--border-subtle)";
-        el.style.boxShadow = "none";
-        el.style.transform = "translateY(0)";
-      }}
-    >
+    <>
       {/* ── Image zone ── */}
       <div className="relative overflow-hidden" style={{ height: 180 }}>
         <Image
