@@ -42,22 +42,14 @@ async function getDevices(userId: string): Promise<DeviceView[]> {
   }
 }
 
-function getGreeting() {
-  const hour = new Date().getHours();
-  if (hour < 12) return "Good morning";
-  if (hour < 18) return "Good afternoon";
-  return "Good evening";
-}
-
 export default async function DashboardPage() {
   const session = await getServerSession(authOptions);
   const userId = session?.user?.id;
   const devices = userId ? await getDevices(userId) : [];
   const firstName = session?.user?.name?.split(" ").at(-1) ?? "there";
-  const greeting = getGreeting();
 
   return (
-    <DashboardClient greeting={greeting} firstName={firstName} devices={devices}>
+    <DashboardClient firstName={firstName} devices={devices}>
       {/* ── Device grid ── */}
       <div>
         <p className="mb-3 text-xs font-semibold uppercase tracking-wider" style={{ color: "var(--text-muted)" }}>

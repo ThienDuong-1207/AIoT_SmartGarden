@@ -6,13 +6,15 @@ import UserModel from "@/models/User";
 import { dbConnect } from "@/lib/mongodb";
 
 const authSecret = process.env.NEXTAUTH_SECRET ?? process.env.AUTH_SECRET;
+const isProductionBuildPhase = process.env.NEXT_PHASE === "phase-production-build";
+const resolvedAuthSecret = authSecret ?? (isProductionBuildPhase ? "build-time-auth-secret-placeholder" : undefined);
 
-if (process.env.NODE_ENV === "production" && !authSecret) {
-  throw new Error("Missing auth secret: set NEXTAUTH_SECRET or AUTH_SECRET in production environment.");
+if (process.env.NODE_ENV === "production" && !authSecret && !isProductionBuildPhase) {
+  console.error("Missing auth secret: set NEXTAUTH_SECRET or AUTH_SECRET in production environment.");
 }
 
 export const authOptions: NextAuthOptions = {
-  secret: authSecret,
+  secret: resolvedAuthSecret,
   debug: process.env.NODE_ENV === "development",
   providers: [
     GoogleProvider({

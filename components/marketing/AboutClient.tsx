@@ -39,6 +39,8 @@ const TEAM = [
   { id: "04", name: "Dương Chí Thiện", role: "Hardware Engineer / IoT", image: "/window.svg" },
 ];
 
+type TeamMember = (typeof TEAM)[number];
+
 /* ────────────────────────────────────────────────────────────────────────────
    COMPONENTS
 ──────────────────────────────────────────────────────────────────────────── */
@@ -87,7 +89,7 @@ function RadarSkillChart() {
   );
 }
 
-function TeamCard({ member }: { member: any }) {
+function TeamCard({ member }: { member: TeamMember }) {
   const cardRef = useRef<HTMLDivElement>(null);
 
   const handleMouseMove = (e: React.MouseEvent<HTMLDivElement>) => {
@@ -209,7 +211,7 @@ export default function AboutClient() {
     }
 
     // 4. Timeline Event blur reveals
-    gsap.utils.toArray(".timeline-event").forEach((el: any) => {
+    gsap.utils.toArray<HTMLElement>(".timeline-event").forEach((el) => {
       gsap.fromTo(el,
         { filter: "blur(8px)", opacity: 0.2, scale: 0.95 },
         { 
@@ -222,8 +224,8 @@ export default function AboutClient() {
     });
 
     // 5. Team Card Hologram Lift styling fix (CSS selectors can be tricky via class injections, handle directly in React/CSS)
-    const teamCards = gsap.utils.toArray(".perspective-1000");
-    teamCards.forEach((card: any) => {
+    const teamCards = gsap.utils.toArray<HTMLElement>(".perspective-1000");
+    teamCards.forEach((card) => {
       const avatar = card.querySelector(".rounded-full.overflow-hidden");
       const info = card.querySelector(".text-center.w-full");
       

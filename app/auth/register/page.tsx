@@ -1,13 +1,11 @@
 "use client";
 
 import { FormEvent, useEffect, useState } from "react";
-import { useRouter } from "next/navigation";
 import { getProviders, signIn } from "next-auth/react";
 import Link from "next/link";
 import { ArrowLeft, KeyRound, Leaf, Mail, User } from "lucide-react";
 
 export default function RegisterPage() {
-  const router = useRouter();
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
@@ -94,7 +92,7 @@ export default function RegisterPage() {
             className="font-mono text-xs font-semibold uppercase tracking-[0.15em]"
             style={{ color: "var(--emerald-500)" }}
           >
-            // REDIRECTING
+            {"// REDIRECTING"}
           </p>
           <p className="mt-2 text-sm" style={{ color: "var(--text-secondary)" }}>
             Create your customer account with email and password.

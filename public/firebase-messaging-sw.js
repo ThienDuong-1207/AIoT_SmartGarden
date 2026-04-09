@@ -1,4 +1,4 @@
-/* eslint-disable no-undef */
+ 
 // Firebase Messaging Service Worker
 // Xử lý push notifications khi browser/tab đang đóng (background)
 

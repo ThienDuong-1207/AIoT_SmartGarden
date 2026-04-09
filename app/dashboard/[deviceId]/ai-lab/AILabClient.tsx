@@ -172,7 +172,7 @@ function DetailModal({ id, deviceId, onClose }: { id: string; deviceId: string; 
 
         <div className="p-5 space-y-4">
           {detail.imageUrl && (
-            // eslint-disable-next-line @next/next/no-img-element
+             
             <img src={detail.imageUrl} alt="capture" className="w-full rounded-xl object-contain" style={{ maxHeight: 320, background: "#06080F" }} />
           )}
 
@@ -243,7 +243,7 @@ export default function AILabPage() {
   const [hasAnalysisInSession, setHasAnalysisInSession] = useState(false);
   const [records,    setRecords]    = useState<DiagRecord[]>([]);
   const [latestRecord, setLatestRecord] = useState<DiagRecord | null>(null);
-  const [stats,      setStats]      = useState({ healthy: 0, warning: 0, danger: 0 });
+  const [, setStats] = useState({ healthy: 0, warning: 0, danger: 0 });
   const [total,      setTotal]      = useState(0);
   const [filter,     setFilter]     = useState<string>("All");
   const [selectedId, setSelectedId] = useState<string | null>(null);
@@ -376,11 +376,14 @@ export default function AILabPage() {
     fetchOllamaPlan();
     return () => controller.abort();
   }, [
+    latestRecord,
     latestRecord?._id,
     latestRecord?.status,
     latestRecord?.topDisease,
     latestRecord?.topConfidence,
     latestRecord?.fusedDiagnosis,
+    dominantFactor,
+    ollamaSuggestions,
     tds,
     ph,
     temp,

@@ -6,6 +6,31 @@ import UserModel from "@/models/User";
 import { authOptions } from "@/lib/auth";
 import { getMqttClient } from "@/lib/mqtt";
 
+type DeviceRuntimeConfig = {
+  pump: {
+    status: boolean;
+    schedule: Array<{ time?: string; durationMinutes?: number; enabled?: boolean }>;
+    activationCount: number;
+    lastActivated?: Date;
+  };
+  light: {
+    status: boolean;
+    brightness: number;
+    schedule: Array<{ startTime?: string; endTime?: string; brightness?: number; enabled?: boolean }>;
+  };
+  watering: {
+    autoMode: boolean;
+    intervalHours: number;
+    schedule: Array<{ time?: string; durationMinutes?: number; enabled?: boolean }>;
+  };
+  sensor: {
+    calibrationMode: boolean;
+    calibratingType: "TDS" | "pH" | null;
+    lastCalibrated?: Date;
+  };
+  operationEvents: Array<{ type: string; timestamp: Date; meta?: Record<string, unknown> }>;
+};
+
 export async function PATCH(
   req: NextRequest,
   { params }: { params: Promise<{ deviceId: string }> }
@@ -30,7 +55,7 @@ export async function PATCH(
       return NextResponse.json({ error: "Device not found" }, { status: 404 });
     }
 
-    const cfg: any = device.config || {};
+    const cfg = (device.config || {}) as Partial<DeviceRuntimeConfig> & Record<string, unknown>;
     cfg.pump ??= { status: false, schedule: [], activationCount: 0 };
     cfg.light ??= { status: false, brightness: 100, schedule: [] };
     cfg.watering ??= { autoMode: false, intervalHours: 6, schedule: [] };
@@ -104,7 +129,7 @@ export async function PATCH(
       cfg.operationEvents = [...cfg.operationEvents, ...newEvents].slice(-200);
     }
 
-    device.config = cfg;
+    device.config = cfg as typeof device.config;
     await device.save();
 
     // Publish MQTT command to ESP32
@@ -165,14 +190,14 @@ export async function GET(
       return NextResponse.json({ error: "Device not found" }, { status: 404 });
     }
 
-    const cfg: any = device.config || {};
+    const cfg = (device.config || {}) as Partial<DeviceRuntimeConfig> & Record<string, unknown>;
     cfg.pump ??= { status: false, schedule: [], activationCount: 0 };
     cfg.light ??= { status: false, brightness: 100, schedule: [] };
     cfg.watering ??= { autoMode: false, intervalHours: 6, schedule: [] };
     cfg.sensor ??= { calibrationMode: false, calibratingType: null };
     cfg.operationEvents ??= [];
 
-    device.config = cfg;
+    device.config = cfg as typeof device.config;
     await device.save();
 
     return NextResponse.json({

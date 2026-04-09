@@ -1,12 +1,11 @@
 "use client";
 
 import { useState } from "react";
-import { Cpu, Wifi, WifiOff, Activity, Leaf } from "lucide-react";
+import { Cpu, Wifi, WifiOff, Activity, Flower2 } from "lucide-react";
 import type { ReactNode } from "react";
 import AddDeviceContent from "@/components/dashboard/AddDeviceContent";
 
 interface DashboardClientProps {
-  greeting: string;
   firstName: string;
   devices: Array<{
     _id: string;
@@ -20,7 +19,6 @@ interface DashboardClientProps {
 }
 
 export default function DashboardClient({
-  greeting,
   firstName,
   devices: initialDevices,
   children,
@@ -34,15 +32,15 @@ export default function DashboardClient({
         const data = await res.json();
         const now = Date.now();
         setDevices(
-          data.data.map((d: any) => ({
-            _id: String(d._id),
-            deviceId: d.deviceId,
-            name: d.name,
-            plantType: d.plantType,
+          ((data?.data ?? []) as Array<Record<string, unknown>>).map((d) => ({
+            _id: String(d._id ?? ""),
+            deviceId: String(d.deviceId ?? ""),
+            name: String(d.name ?? ""),
+            plantType: String(d.plantType ?? ""),
             isOnline: d.lastSeenAt
-              ? now - new Date(d.lastSeenAt).getTime() < 5 * 60 * 1000
+              ? now - new Date(String(d.lastSeenAt)).getTime() < 5 * 60 * 1000
               : false,
-            image: d.image,
+            image: typeof d.image === "string" ? d.image : undefined,
           }))
         );
       }
@@ -65,10 +63,10 @@ export default function DashboardClient({
               className="flex h-7 w-7 items-center justify-center rounded-lg"
               style={{ background: "linear-gradient(135deg, var(--emerald-500), var(--emerald-600))" }}
             >
-              <Leaf size={13} color="#fff" />
+              <Flower2 size={13} color="#fff" />
             </div>
             <p className="text-sm font-medium" style={{ color: "var(--text-muted)" }}>
-              {greeting},&nbsp;
+              Hello,&nbsp;
               <span style={{ color: "var(--text-primary)" }}>{firstName}</span>
             </p>
           </div>

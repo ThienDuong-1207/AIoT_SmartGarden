@@ -187,7 +187,7 @@ export default function UserSettingsPage() {
         <div className="mb-6 flex flex-col items-start gap-4 sm:flex-row sm:items-center sm:gap-5">
           <div className="relative">
             {avatar ? (
-              // eslint-disable-next-line @next/next/no-img-element
+               
               <img
                 src={avatar}
                 alt={displayName || "avatar"}
