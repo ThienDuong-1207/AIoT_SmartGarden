@@ -129,7 +129,7 @@ export async function PATCH(
       cfg.operationEvents = [...cfg.operationEvents, ...newEvents].slice(-200);
     }
 
-    device.config = cfg;
+    device.config = cfg as typeof device.config;
     await device.save();
 
     // Publish MQTT command to ESP32
@@ -197,7 +197,7 @@ export async function GET(
     cfg.sensor ??= { calibrationMode: false, calibratingType: null };
     cfg.operationEvents ??= [];
 
-    device.config = cfg;
+    device.config = cfg as typeof device.config;
     await device.save();
 
     return NextResponse.json({

@@ -243,7 +243,7 @@ export default function AILabPage() {
   const [hasAnalysisInSession, setHasAnalysisInSession] = useState(false);
   const [records,    setRecords]    = useState<DiagRecord[]>([]);
   const [latestRecord, setLatestRecord] = useState<DiagRecord | null>(null);
-  const [stats,      setStats]      = useState({ healthy: 0, warning: 0, danger: 0 });
+  const [, setStats] = useState({ healthy: 0, warning: 0, danger: 0 });
   const [total,      setTotal]      = useState(0);
   const [filter,     setFilter]     = useState<string>("All");
   const [selectedId, setSelectedId] = useState<string | null>(null);
@@ -376,11 +376,14 @@ export default function AILabPage() {
     fetchOllamaPlan();
     return () => controller.abort();
   }, [
+    latestRecord,
     latestRecord?._id,
     latestRecord?.status,
     latestRecord?.topDisease,
     latestRecord?.topConfidence,
     latestRecord?.fusedDiagnosis,
+    dominantFactor,
+    ollamaSuggestions,
     tds,
     ph,
     temp,

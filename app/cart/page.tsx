@@ -108,7 +108,7 @@ export default function CartPage() {
               className="mb-1 font-mono text-xs font-semibold uppercase tracking-[0.15em]"
               style={{ color: "var(--emerald-500)" }}
             >
-              // CART
+              {"// CART"}
             </p>
             <h1 className="text-3xl font-black" style={{ color: "var(--text-primary)" }}>
               Shopping Cart

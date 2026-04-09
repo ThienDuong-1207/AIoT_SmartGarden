@@ -92,7 +92,7 @@ export default function RegisterPage() {
             className="font-mono text-xs font-semibold uppercase tracking-[0.15em]"
             style={{ color: "var(--emerald-500)" }}
           >
-            // REDIRECTING
+            {"// REDIRECTING"}
           </p>
           <p className="mt-2 text-sm" style={{ color: "var(--text-secondary)" }}>
             Create your customer account with email and password.
